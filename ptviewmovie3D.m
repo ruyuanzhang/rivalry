@@ -1105,16 +1105,16 @@ for frame=1:frameskip:size(frameorder,2)+1
     extracircshift = [0 0];
     if iscellimages
       if dimwithim==4   % THIS IS VERY VERY UGLY
-        switch size(whs,2)
-        case 2
-          txttemp = feval(flipfun,images{whs(frame0,1)}(:,:,:,whs(frame0,2)));
-        case 3
-          MI = maskimages(:,:,whs(frame0,3));
-          txttemp = feval(flipfun,cat(3,images{whs(frame0,1)}(:,:,:,whs(frame0,2)),MI));
-        case 4
-          txttemp = feval(flipfun,images{whs(frame0,1)}(:,:,:,whs(frame0,2)));
-          extracircshift = whs(frame0,3:4) .* (-2*(movieflip-.5));
-        end
+          switch size(whs,2)
+              case 2
+                  txttemp = feval(flipfun,images{whs(frame0,1)}(:,:,:,whs(frame0,2)));
+              case 3
+                  MI = maskimages(:,:,whs(frame0,3));
+                  txttemp = feval(flipfun,cat(3,images{whs(frame0,1)}(:,:,:,whs(frame0,2)),MI));
+              case 4
+                  txttemp = feval(flipfun,images{whs(frame0,1)}(:,:,:,whs(frame0,2)));
+                  extracircshift = whs(frame0,3:4) .* (-2*(movieflip-.5));
+          end
         texture = Screen('MakeTexture',win,txttemp);
       else
         switch size(whs,2)
@@ -1130,17 +1130,42 @@ for frame=1:frameskip:size(frameorder,2)+1
         texture = Screen('MakeTexture',win,txttemp);
       end
     else
-      switch size(frameorder,1)
-      case 1
-        txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0)));
-      case 2
-        MI = maskimages(:,:,frameorder(2,frame0));
-        txttemp = feval(flipfun,cat(3,images(:,:,:,frameorder(1,frame0)),MI));
-      case 3
-        txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0)));
-        extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
-      end
-      texture = Screen('MakeTexture',win,txttemp);
+        
+        % now we make a little trick here to generate textures
+        % for distinct images presented for two eyes.
+        % This is ugly. didn't consider same texture with different
+        % disparity..
+        % 03/08/2016 Ruyuan Zhang
+        if stereoMode == 0
+            switch size(frameorder,1)
+                case 1
+                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0)));
+                case 2
+                    MI = maskimages(:,:,frameorder(2,frame0));
+                    txttemp = feval(flipfun,cat(3,images(:,:,:,frameorder(1,frame0)),MI));
+                case 3
+                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0)));
+                    extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
+            end
+            texture = Screen('MakeTexture',win,txttemp);
+        elseif stereoMode == 1
+            
+            switch size(frameorder,1)
+                case 1
+                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),1));
+                    txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),2));
+                case 2
+                    MI = maskimages(:,:,frameorder(2,frame0));
+                    txttemp = feval(flipfun,cat(3,images(:,:,:,frameorder(1,frame0),1),MI));
+                    txttemp2 = feval(flipfun,cat(3,images(:,:,:,frameorder(1,frame0),2),MI));
+                case 3
+                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),1));
+                    txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),2));
+                    extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
+            end
+            texture = Screen('MakeTexture',win,txttemp);
+            texture2 = Screen('MakeTexture',win,txttemp2);
+        end
     end
     movierect = CenterRect([0 0 round(scfactor*d2images) round(scfactor*d1images)],rect) + ...
                 repmat(extracircshift([2 1]),[1 2]) + ...
@@ -1154,7 +1179,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                     Screen('SelectStereoDrawBuffer', win, 0);
                     Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
                     Screen('SelectStereoDrawBuffer', win, 1);
-                    Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture2,[],movierect,0,filtermode,1,framecolor(frame0,:));
                 elseif stereoModel == 2
                     %%% 3D BEGIN
                     % BR: Looks like this is the default stimulus texture drawing case
@@ -1177,7 +1202,7 @@ for frame=1:frameskip:size(frameorder,2)+1
           Screen('DrawTexture',win,texture,[],overlayrect,0,0);
           Screen('Close',texture);
       end
-  elseif stereoModel == 1||stereoModel == 2
+  elseif stereoMode == 1||stereoMode == 2
       % draw the overlay
       if ~isempty(specialoverlay)
           %%% 3D BEGIN
