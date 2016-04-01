@@ -31,15 +31,31 @@ p2 = imread('mooney-mf/mooney1f.bmp');
 
 %
 img = [];
-img(:,:,1,1) = p1;
-img(:,:,2,1) = p2;
-img(:,:,1,2) = p2;
-img(:,:,2,2) = p1;
+img(:,:,1,1)        = p1;
+img(:,:,2,1)        = p2;
+img(:,:,1,2)        = p2;
+img(:,:,2,2)        = p1;
 
 img=uint8(img);
 
 
 %% remake the images with some random background dots 
+
+bgImgSize           = 400;%400 * 400 background image Size
+bgimgRect           = [0 0 bgImgSize bgImgSize];         
+stimRect
+
+%now draw dots
+pton3D([],1);
+bgImgDesRect        = centerRect(bgImgRect,winRect);
+stimDesRect         = centerRect(stimRect,winRect);
+
+
+
+
+%draw background and pixture
+
+%
 
 
 

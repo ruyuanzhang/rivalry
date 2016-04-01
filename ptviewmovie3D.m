@@ -926,6 +926,11 @@ if ~isempty(trialtask)
 
 end
 
+%%%%%%%%%%%%%%%%% SET UP DOTS BACKGROUND
+SetupBgDots;
+
+
+
 %%%%%%%%%%%%%%%%% START THE EXPERIMENT
 
 % draw the background, overlay, and fixation
@@ -1098,7 +1103,8 @@ for frame=1:frameskip:size(frameorder,2)+1
 % OMIT!!!
 %    Screen('FillRect',win,grayval);   % REMOVED! this means do whole screen.    % ,movierect);
 
-%%% 3D END
+  %draw background
+  DrawDotsBg;
 
   % otherwise, make a texture, draw it at a particular position
   else
@@ -1148,8 +1154,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             texture = Screen('MakeTexture',win,txttemp);
-        elseif stereoMode == 1
-            
+        elseif stereoMode == 1 || stereoMode == 2
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),1));
@@ -1170,6 +1175,10 @@ for frame=1:frameskip:size(frameorder,2)+1
     movierect = CenterRect([0 0 round(scfactor*d2images) round(scfactor*d1images)],rect) + ...
                 repmat(extracircshift([2 1]),[1 2]) + ...
                 [offset(1) offset(2) offset(1) offset(2)];
+            
+    %draw background
+    DrawDotsBg;        
+    
 
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
@@ -1194,8 +1203,8 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
     Screen('Close',texture);
   end
-  
-  if stereoMode == 0 
+    
+  if stereoMode == 0
       % draw the overlay
       if ~isempty(specialoverlay)
           texture = Screen('MakeTexture',win,specialoverlay);
