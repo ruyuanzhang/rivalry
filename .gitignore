@@ -1,9 +1,7 @@
 functions/*
-mooney-mf/*
 bas3d/*
-objectcategories/*
-CreateLexicalityStim.m
-ptviewmovie.m
+stim/*
+
+
 run_Lexicality.m
 LexicalityExp.mat
-Lumi+contrast_Equal/
