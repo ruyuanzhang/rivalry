@@ -40,7 +40,7 @@ Screen('CloseAll');
 
 
 
-if stereoMode == 2
+if stereoMode == 2 || stereoMode == 4
     %%% 3D BEGIN
     if Datapixx('IsViewpixx3D')
         Datapixx('DisableVideoLcd3D60Hz');

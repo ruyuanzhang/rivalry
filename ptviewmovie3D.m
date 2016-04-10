@@ -249,11 +249,14 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   experiment starts.  Default: [].
 % <cleanupscript> (optional) is a string or a function handle that is evaluated after the
 %   experiment ends.  Default: [].
-% <stereoMode> (optional) is a interger (0, 1 or 2), where
+% <stereoMode> (optional) is a interger (0, 1, 2 , 3, 4), where
 %       0: default, no stereoMode;
-%       1: stereoMode,workwith heploscope Two stimuli will be presented
+%       1: stereoMode,workwith heploscope Two different stimuli will be presented
 %           on two sides on the same monitor
-%       2: stereoMode using Vpixx.
+%       2: stereoMode using Vpixx, two different images will be presented 
+%       3: similar with 1, stereoMode,workwith heploscope, the same images with different disparity will be presented
+%           on two sides on the same monitor
+%       4: stereoMode using Vpixx, same image with two disparities will be presented
 %
 % return <timeframes> as a 1 x size(<frameorder>,2) vector with the time of each frame showing.
 %   (time is relative to the time of the first frame.)
@@ -547,7 +550,7 @@ win = firstel(Screen('Windows'));
 rect = Screen('Rect',win);
 
 
-if stereoMode == 2 % using Vpixx
+if stereoMode == 2||stereoMode == 4 %in this case, you present same img with disparty, need to define disparity here
     %%% 3D BEGIN
     % TODO: Update to be set at as a parameter +/- binocular disparity
     dsdeltapx = 14; % +/- this many pixels
@@ -941,7 +944,7 @@ if stereoMode == 0
         Screen('DrawTexture',win,texture,[],overlayrect,[],0);
         Screen('Close',texture);
     end  
-elseif stereoMode == 1||stereoMode == 2
+elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4
     %%% 3D BEGIN
     % Screen('FillRect',win,grayval,rect);
     % gray
@@ -983,7 +986,7 @@ for p=1:length(texture) % br: stereo-fy, draw to both eyes
     if stereoMode ==0
         Screen('DrawTexture',win,texture{p},[],fixationrect{p},[],0);
         Screen('Close',texture{p});
-    elseif stereoMode == 1||stereoMode == 2
+    elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4
         Screen('SelectStereoDrawBuffer', win, 0);
         Screen('DrawTexture',win,texture{p},[],fixationrect{p} - [0 0 0 0],[],0);
         Screen('SelectStereoDrawBuffer', win, 1);
@@ -996,7 +999,7 @@ if ~isempty(specialcon)
   lastsc = 100;
 end
 
-if stereoMode == 2
+if stereoMode == 2||stereoMode == 4
     %%% 3D BEGIN
     % BLUE LINES:
     Screen('SelectStereoDrawBuffer', win, 0);
@@ -1089,7 +1092,7 @@ for frame=1:frameskip:size(frameorder,2)+1
   %%% 3D BEGIN
   if stereoMode == 0
       Screen('FillRect',win,grayval);
-  elseif stereoMode == 1 || stereoMode == 2
+  elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
       Screen('SelectStereoDrawBuffer', win, 0);
       Screen('FillRect',win,grayval);
       Screen('SelectStereoDrawBuffer', win, 1);
@@ -1097,13 +1100,12 @@ for frame=1:frameskip:size(frameorder,2)+1
   end
       
   
-  
   if frameorder(1,frame0) == 0
 
 % OMIT!!!
 %    Screen('FillRect',win,grayval);   % REMOVED! this means do whole screen.    % ,movierect);
 
-  %draw background
+  %draw dots background
   DrawDotsBg;
 
   % otherwise, make a texture, draw it at a particular position
@@ -1139,8 +1141,7 @@ for frame=1:frameskip:size(frameorder,2)+1
         
         % now we make a little trick here to generate textures
         % for distinct images presented for two eyes.
-        % This is ugly. didn't consider same texture with different
-        % disparity..
+        % This is ugly.
         % 03/08/2016 Ruyuan Zhang
         if stereoMode == 0
             switch size(frameorder,1)
@@ -1154,18 +1155,19 @@ for frame=1:frameskip:size(frameorder,2)+1
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             texture = Screen('MakeTexture',win,txttemp);
-        elseif stereoMode == 1 || stereoMode == 2
+        elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
+            [leftEyeImg,rightEyeImg] = ExpCondMatrix(frameorder(1,frame0));% read in condition
             switch size(frameorder,1)
                 case 1
-                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),1));
-                    txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),2));
+                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
+                    txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),rightEyeImg));
                 case 2
                     MI = maskimages(:,:,frameorder(2,frame0));
                     txttemp = feval(flipfun,cat(3,images(:,:,:,frameorder(1,frame0),1),MI));
                     txttemp2 = feval(flipfun,cat(3,images(:,:,:,frameorder(1,frame0),2),MI));
                 case 3
-                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),1));
-                    txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),2));
+                    txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
+                    txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),rightEyeImg));
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             texture = Screen('MakeTexture',win,txttemp);
@@ -1176,20 +1178,20 @@ for frame=1:frameskip:size(frameorder,2)+1
                 repmat(extracircshift([2 1]),[1 2]) + ...
                 [offset(1) offset(2) offset(1) offset(2)];
             
-    %draw background
-    DrawDotsBg;        
+    %draw dots background
+    DrawDotsBg; %specifically for binocular rivalry       
     
 
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
-                if stereoMode == 0
+                if stereoMode == 0 % monocular representation
                     Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
-                elseif stereoMode == 1
+                elseif stereoMode == 1||2 %present two different images to two eyes
                     Screen('SelectStereoDrawBuffer', win, 0);
                     Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
                     Screen('SelectStereoDrawBuffer', win, 1);
                     Screen('DrawTexture',win,texture2,[],movierect,0,filtermode,1,framecolor(frame0,:));
-                elseif stereoModel == 2
+                elseif stereoModel == 3||4 %present same images but jitter dispartity
                     %%% 3D BEGIN
                     % BR: Looks like this is the default stimulus texture drawing case
                     Screen('SelectStereoDrawBuffer', win, 0);
@@ -1211,7 +1213,7 @@ for frame=1:frameskip:size(frameorder,2)+1
           Screen('DrawTexture',win,texture,[],overlayrect,0,0);
           Screen('Close',texture);
       end
-  elseif stereoMode == 1||stereoMode == 2
+  elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4
       % draw the overlay
       if ~isempty(specialoverlay)
           %%% 3D BEGIN
@@ -1263,7 +1265,7 @@ for frame=1:frameskip:size(frameorder,2)+1
       if stereoMode == 0
           Screen('DrawTexture',win,texture{p},[],fixationrect{p},0,0);
           Screen('Close',texture{p});
-      elseif stereoMode == 1||stereoMode ==2
+      elseif stereoMode == 1||stereoMode ==2||stereoMode == 3||stereoMode == 4
           %%% 3D BEGIN
           % This puts up the fixation dot in the right eye, but no stimulus yet
           Screen('SelectStereoDrawBuffer', win, 0);
@@ -1292,7 +1294,7 @@ for frame=1:frameskip:size(frameorder,2)+1
           if   stereoMode ==0
               texture = Screen('MakeTexture',win,cat(3,trialimage,trialalpha));
               Screen('DrawTexture',win,texture,[],trialrect,0,0);
-          elseif stereoMode ==1||stereoMode ==2
+          elseif stereoMode ==1||stereoMode ==2||stereoMode == 3||stereoMode == 4
               %%% 3D BEGIN
               texture = Screen('MakeTexture',win,cat(3,trialimage,trialalpha));
               Screen('SelectStereoDrawBuffer', win, 0);
@@ -1321,7 +1323,7 @@ for frame=1:frameskip:size(frameorder,2)+1
           if stereoMode ==0
               texture = Screen('MakeTexture',win,cat(3,extractTI,extractFA));
               Screen('DrawTexture',win,texture,[],rect0,0,0);            
-          elseif stereoMode ==1|| stereoMode ==2
+          elseif stereoMode ==1|| stereoMode ==2||stereoMode == 3||stereoMode == 4
               %%% 3D BEGIN
               texture = Screen('MakeTexture',win,cat(3,extractTI,extractFA));
               Screen('SelectStereoDrawBuffer', win, 0);
@@ -1338,7 +1340,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     end
   end
 
-  if stereoMode ==2
+  if stereoMode ==2||stereoMode == 4
       %%% 3D BEGIN
       % BLUE LINES:
       Screen('SelectStereoDrawBuffer', win, 0);
@@ -1464,7 +1466,7 @@ if stereoMode == 0
         Screen('DrawTexture',win,texture,[],overlayrect,[],0);
         Screen('Close',texture);
     end    
-elseif stereoMode ==1 || stereoMode ==2
+elseif stereoMode ==1 || stereoMode ==2||stereoMode == 3||stereoMode == 4
     %%% 3D BEGIN
     % Screen('FillRect',win,grayval,rect);
     % gray
@@ -1507,7 +1509,7 @@ for p=1:length(texture)
         Screen('DrawTexture',win,texture{p},[],fixationrect{p},0,0);
         Screen('Close',texture{p});
         
-    elseif stereoMode ==1||stereoMode ==2
+    elseif stereoMode ==1||stereoMode ==2||stereoMode == 3||stereoMode == 4
         %%% 3D BEGIN
         Screen('SelectStereoDrawBuffer', win, 0);
         Screen('DrawTexture',win,texture{p},[],fixationrect{p} - [0 0 0 0],[],0);
@@ -1520,7 +1522,7 @@ end
 if ~isempty(specialcon)
   Screen('LoadNormalizedGammaTable',win,specialcluts(:,:,allcons==100),1);  % use loadOnNextFlip!
 end
-if stereoMode == 2
+if stereoMode == 2||stereoMode == 4
     %%% 3D BEGIN
     % BLUE LINES:
     Screen('SelectStereoDrawBuffer', win, 0);
@@ -1555,6 +1557,7 @@ fprintf('frames per second: %.10f\n',length(timeframes)/dur);
 
 % prepare output
 digitrecord = {digitrecord digitframe digitpolarity};
+save('test','timeframes','timekeys');
 
 % do cleanup if necessary
 if ~isempty(cleanupscript)

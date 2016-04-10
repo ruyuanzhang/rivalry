@@ -1,4 +1,4 @@
-function run_rivalryExp(runnum,stimfile)
+function run_RivalryExp(runnum,stimfile)
 
 % The main experiment function for binocular rivalry experiment with
 % ptmovieview function, maybe not use movieview
@@ -26,12 +26,15 @@ load('RivalryExp.mat');
 addpath(genpath(pwd));
 
 %% Set experiment parameters
-stereoMode        =  1; % 0?no stereo; 1,haplo scope;2, Vpixx
+stereoMode        =  1; 
+% 0,no stereo; 1,haploscope, two different images;2, Vpixx two
+% different images;3,haploscope same image with disparity;4 Vpixx same image with
+% dispartity
+
 skipsync          =  1; % skip syncrony test for the monitor;
 
 fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum);
 %% Set experiment parameters
-skipsync = 1
 offset = [];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12
@@ -55,6 +58,8 @@ if contrast_factor ~= 1
         img(img==pixVal(i+1)) = pixVal_tmp(i); % change the pix value to new contrast
     end
 end
+
+
 
 
 %% Run experiment

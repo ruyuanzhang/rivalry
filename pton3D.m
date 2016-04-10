@@ -80,7 +80,7 @@ screennum = max(Screen('Screens'));
 
 
 
-if stereoMode == 2
+if stereoMode == 2||stereoMode == 4
     %%% 3D BEGIN
     % NOTE: we assume useHardwareStereo==1 is true!!
     PsychImaging('PrepareConfiguration');
@@ -122,10 +122,10 @@ bggray = round(255*.2);  % 127??
 
 if stereoMode == 0
     [win,rect] = Screen('OpenWindow',screennum,127,rect);
-elseif stereoMode == 1
+elseif stereoMode == 1||stereoMode == 3  % simulated two windows on single monitor window, mainly heloscope.
     screennum = 0;
     [win,rect] = Screen('OpenWindow',screennum,127,rect,[],[],4); % number four is the stereoMode for openwindow function
-elseif stereoMode == 2
+elseif stereoMode == 2||stereoMode == 4 % use two windows by Vpixx
 
     %%% 3D BEGIN
     

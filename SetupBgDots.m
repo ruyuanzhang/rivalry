@@ -8,14 +8,14 @@
 
 % Draw background frame and dots
 % Determine 
-bgSize          = 800; % the background should be biggher than
+bgSize          = 500; % the background should be biggher than
 desRect         = [0 0 bgSize bgSize];
 
 %set up dots
 x_bound         = desRect(3)-desRect(1);%
 y_bound         = desRect(4)-desRect(2);%
 dotsSize        = 10; %# of pixel;
-dotsNum         = 300; %# of dots in total
+dotsNum         = 200; %# of dots in total
 
 dotColor        = uint8(round(repmat(rand(1,dotsNum),3,1)*255)); 
 
