@@ -1,11 +1,9 @@
-functions/
-bas3d/
-stim/
+functions
+bas3d
+stim
 
 
 
-CreateLexicalityStim.m
-ptviewmovie.m
 run_Lexicality.m
 LexicalityExp.mat
 
