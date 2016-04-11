@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 functions
 bas3d
 stim
 
+=======
+functions/*
+bas3d/*
+stim/*
+>>>>>>> dev
 
 
 run_Lexicality.m
 LexicalityExp.mat
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
