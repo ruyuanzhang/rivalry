@@ -545,9 +545,7 @@ end
 
 %%%%%%%%%%%%%%%%% PREP
 
-% get information about the PT setup
-win = firstel(Screen('Windows'));
-rect = Screen('Rect',win);
+
 
 
 if stereoMode == 2||stereoMode == 4 %in this case, you present same img with disparty, need to define disparity here
