@@ -78,8 +78,8 @@ clear tmp images faces houses;% clear some redundency
 %Now we create a big matrix to include these five categories
 img = zeros(imageSize,imageSize,trialNum,5);
 img (:,:,:,1) = bgColor*2*blankimg;
-img (:,:,:,2) = bgColor*2*faceimg;
-img (:,:,:,3) = bgColor*2*houseimg;
+img (:,:,:,2) = bgColor*2*2*faceimg;
+img (:,:,:,3) = bgColor*2*2*houseimg;
 img (:,:,:,4) = wordimg;%we already set pixel values before
 img (:,:,:,5) = bgColor*2*faceHouseimg;
 img = uint8(img);

@@ -34,8 +34,8 @@ win = Screen('Windows');
 %end
 
 %%% 3D END
-Screen('Close',win);
-Screen('CloseAll');
+%Screen('Close',win);
+%Screen('CloseAll');
 
 
 
@@ -51,4 +51,4 @@ if stereoMode == 2 || stereoMode == 4
 end
 
 %Screen('Close',win);
-%Screen('CloseAll');
+Screen('CloseAll');

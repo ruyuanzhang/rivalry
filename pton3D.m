@@ -24,7 +24,9 @@ function oldclut = pton3D(resolution,winsize,clutfile,skipsync,stereoMode)
 %       0:  no stereo
 %       1:  stereo with heloscope, which corresponding to stereoMode 4 in
 %           StereoDemo.m
-%       2:  stereo with Vpixx
+%       2:  stereo with Vpixx with different images
+%       3:  stereo with heloscope, same image with disparity 
+%       4:  stereo with Vpixx, same image with disparity
 %
 %
 %
