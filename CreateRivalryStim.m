@@ -120,7 +120,7 @@ end
 
 %% Save it out
 desc = ' img is the image stack \n sc denotes the contrast of each image\n sl denotes the lexicality level\n stimcat denotes the category\n stimorder gives the order of the stimulus for each run\n'
-save RivalryExp img desc stimorder frameorder fixorder fixcolor faceimg houseimg wordimg blankimg faceHouseimg
+save RivalryExp img desc stimorder frameorder fixorder fixcolor
 
 return
 
