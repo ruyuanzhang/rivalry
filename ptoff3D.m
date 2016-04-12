@@ -1,6 +1,6 @@
 function ptoff3D(oldclut,stereoMode)
 
-% function ptoff(oldclut)
+% function ptoff3D(oldclut.stereoMode)
 %
 % <oldclut> (optional) is the clut to restore.
 %   default is [] which means do not restore a clut.
@@ -49,3 +49,6 @@ if stereoMode == 2 || stereoMode == 4
     Datapixx('Close');    
     %%% 3D END
 end
+
+%Screen('Close',win);
+%Screen('CloseAll');

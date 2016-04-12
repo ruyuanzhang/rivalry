@@ -544,11 +544,12 @@ else
 end
 
 %%%%%%%%%%%%%%%%% PREP
+% get information about the PT setup
+win = firstel(Screen('Windows'));
+rect = Screen('Rect',win);
 
 
-
-
-if stereoMode == 2||stereoMode == 4 %in this case, you present same img with disparty, need to define disparity here
+if stereoMode == 2||stereoMode == 4 %4, you present same img with disparty, need to define disparity here
     %%% 3D BEGIN
     % TODO: Update to be set at as a parameter +/- binocular disparity
     dsdeltapx = 14; % +/- this many pixels
@@ -1506,7 +1507,6 @@ for p=1:length(texture)
     if stereoMode ==0
         Screen('DrawTexture',win,texture{p},[],fixationrect{p},0,0);
         Screen('Close',texture{p});
-        
     elseif stereoMode ==1||stereoMode ==2||stereoMode == 3||stereoMode == 4
         %%% 3D BEGIN
         Screen('SelectStereoDrawBuffer', win, 0);
