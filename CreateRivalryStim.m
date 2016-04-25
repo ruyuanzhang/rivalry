@@ -24,7 +24,7 @@ timeUnit        = 0.2;% duration of each time unit
 onoffFrameNum   = onoff/timeUnit;
 imageSize       = 230; %  pixels
 bgColor         = 127;
-contrastRatio   = 0.3; 
+contrastRatio   = 0.15; 
 %contrast ratio for face stimuli for adjusting the relative contrast strengh of face and house.
 %contrastRatio for house is 1-contrastRatio
 

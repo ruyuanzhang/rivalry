@@ -15,7 +15,7 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix(condition)
 %      1     5; % no stim, F+H
 %      2     1; % F, no stim
 %      1     2; % no stim, F
-%      2     2; % no stim, H
+%      2     2; % F, F
 %      3     1; % H, no stim
 %      1     3; % no stim, H
 %      3     3; % H,H
@@ -25,7 +25,7 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix(condition)
  %for testing purpose, you can set all condition as F,H, then you can test
  %your binocular presentation.
  
- conditionMatrix=repmat([2 3],15,1);
+ conditionMatrix=repmat([3 2],15,1);
 
  
  
