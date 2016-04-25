@@ -24,6 +24,10 @@ timeUnit        = 0.2;% duration of each time unit
 onoffFrameNum   = onoff/timeUnit;
 imageSize       = 230; %  pixels
 bgColor         = 127;
+contrastRatio   = 0.3; 
+%contrast ratio for face stimuli for adjusting the relative contrast strengh of face and house.
+%contrastRatio for house is 1-contrastRatio
+
 
 
 %% let's read in face, house stimuli.
@@ -41,7 +45,7 @@ for i=1:trialNum
     tmp=faces(:,:,i);
     tmp=imresize(tmp,imageSize/max(size(tmp)));
     tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));%set to 0-1
-    tmp=(tmp-0.5)/2+0.5;
+    tmp=(tmp-0.5)*contrastRatio+0.5;
     tmp=uint8(round(bgColor*2*tmp));%set to 50% contrast and scale it to 0~254;
     faceimg(:,:,i)=tmp;
     rms_tmp = sqrt(sum((tmp(:)-bgColor).^2));
@@ -50,7 +54,7 @@ for i=1:trialNum
     tmp=houses(:,:,i);
     tmp=imresize(tmp,imageSize/max(size(tmp)));
     tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));%set to 0-1
-    tmp=(tmp-0.5)/2+0.5;
+    tmp=(tmp-0.5)*(1-contrastRatio)+0.5;
     tmp=uint8(round(bgColor*2*tmp));%set to 50% contrast and scale it to 0~254;
     houseimg(:,:,i)=tmp;  
     rms_tmp = sqrt(sum((tmp(:)-bgColor).^2));
@@ -61,7 +65,6 @@ faceHouseimg = (faceimg-bgColor)+(houseimg-bgColor)+bgColor;
 %We might also need blank images with gray background
 blankimg    = bgColor*2*0.5*ones(imageSize,imageSize,trialNum);
 clear tmp images faces houses;% clear some redundency 
-
 RMS = mean(horzcat(faceRMS,houseRMS));
 
 %% load the images and do some simple computation
@@ -84,6 +87,8 @@ tmp    = bgColor*ones(imageSize,imageSize,trialNum);
 tmp(wordRect(1):wordRect(3)-1,:,:) = wordimg;
 wordimg = tmp;clear tmp;
 save('afterWord');
+
+
 
 
 %% Now we create a big matrix to include these five categories
@@ -132,6 +137,10 @@ end
 %% Save it out
 desc = ' img is the image stack \n sc denotes the contrast of each image\n sl denotes the lexicality level\n stimcat denotes the category\n stimorder gives the order of the stimulus for each run\n'
 save RivalryExp img desc stimorder frameorder fixorder fixcolor
+
+% also change the test stimuli
+clear all;
+CreateRivalryStim_test;
 
 return
 
