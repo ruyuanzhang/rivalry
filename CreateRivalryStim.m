@@ -25,17 +25,56 @@ onoffFrameNum   = onoff/timeUnit;
 imageSize       = 230; %  pixels
 bgColor         = 127;
 
-% load the images and do some simple computation
+
+%% let's read in face, house stimuli.
+load('faces.mat');
+faces=images(:,:,1:trialNum);
+load('houses.mat');
+houses=images(:,:,1:trialNum);
+faceimg=[];
+houseimg=[];
+faceRMS = [];
+houseRMS = [];
+% do some processing on face and house images
+for i=1:trialNum
+    %let's resize face and house images and adjust their contrast to 50%
+    tmp=faces(:,:,i);
+    tmp=imresize(tmp,imageSize/max(size(tmp)));
+    tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));%set to 0-1
+    tmp=(tmp-0.5)/2+0.5;
+    tmp=uint8(round(bgColor*2*tmp));%set to 50% contrast and scale it to 0~254;
+    faceimg(:,:,i)=tmp;
+    rms_tmp = sqrt(sum((tmp(:)-bgColor).^2));
+    faceRMS = horzcat(faceRMS,rms_tmp);%compute the rms contrast;
+  
+    tmp=houses(:,:,i);
+    tmp=imresize(tmp,imageSize/max(size(tmp)));
+    tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));%set to 0-1
+    tmp=(tmp-0.5)/2+0.5;
+    tmp=uint8(round(bgColor*2*tmp));%set to 50% contrast and scale it to 0~254;
+    houseimg(:,:,i)=tmp;  
+    rms_tmp = sqrt(sum((tmp(:)-bgColor).^2));
+    houseRMS = horzcat(houseRMS,rms_tmp);%compute the rms contrast;
+end
+% Create four different stimuli, face, house, word, face+house
+faceHouseimg = (faceimg-bgColor)+(houseimg-bgColor)+bgColor;
+%We might also need blank images with gray background
+blankimg    = bgColor*2*0.5*ones(imageSize,imageSize,trialNum);
+clear tmp images faces houses;% clear some redundency 
+
+RMS = mean(horzcat(faceRMS,houseRMS));
+
+%% load the images and do some simple computation
 %dealing with word stim. word is a little bit trikcy, do some process here.
 words=textread('3_letter_words.txt','%s');
 words=words';
 wordimg=[];
 for i = 1:trialNum
     tmp = uint8(renderText(words{i},'Courier',24,6));
+    tmp=imresize(tmp,imageSize/max(size(tmp))); %resize the images
     % Set contrast
-    tmp(tmp==1)=bgColor*2;
+    tmp(tmp==1)=round(sqrt(RMS.^2/sum(tmp(:)>0))+bgColor); %we matched the RMS contrast to face and house img
     tmp(tmp==0)=bgColor;
-    tmp=imresize(tmp,imageSize/max(size(tmp)));
     % stack it up
     wordimg(:,:,i) = tmp; % all images
 end
@@ -44,44 +83,16 @@ wordRect = CenterRect([0 0 size(wordimg,1) size(wordimg,2)], [0 0 imageSize imag
 tmp    = bgColor*ones(imageSize,imageSize,trialNum);
 tmp(wordRect(1):wordRect(3)-1,:,:) = wordimg;
 wordimg = tmp;clear tmp;
-
 save('afterWord');
 
-%let's read in face, house stimuli.
-load('faces.mat');
-faces=images(:,:,1:trialNum);
-load('houses.mat');
-houses=images(:,:,1:trialNum);
-faceimg=[];
-houseimg=[];
-% do some processing on face and house images
-for i=1:trialNum
-    %let's resize face and house images and adjust their contrast to 50%
-    tmp=faces(:,:,i);
-    tmp=imresize(tmp,imageSize/max(size(tmp)));
-    tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));%set to 100%contrast
-    tmp=tmp/2;%set to 50% contrast;
-    faceimg(:,:,i)=tmp;
-    
-    tmp=houses(:,:,i);
-    tmp=imresize(tmp,imageSize/max(size(tmp)));
-    tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));
-    tmp=tmp/2;
-    houseimg(:,:,i)=tmp;
-end
-% Create four different stimuli, face, house, word, face+house
-faceHouseimg = faceimg+houseimg;
-%We might also need blank images with gray background
-blankimg    = 0.5*ones(imageSize,imageSize,trialNum);
 
-clear tmp images faces houses;% clear some redundency 
-%Now we create a big matrix to include these five categories
+%% Now we create a big matrix to include these five categories
 img = zeros(imageSize,imageSize,trialNum,5);
-img (:,:,:,1) = bgColor*2*blankimg;
-img (:,:,:,2) = bgColor*2*faceimg;
-img (:,:,:,3) = bgColor*2*houseimg;
+img (:,:,:,1) = blankimg;
+img (:,:,:,2) = faceimg;
+img (:,:,:,3) = houseimg;
 img (:,:,:,4) = wordimg;%we already set pixel values before
-img (:,:,:,5) = bgColor*2*faceHouseimg;
+img (:,:,:,5) = faceHouseimg;
 img = uint8(img);
 
 %save('RivalryExp'); % Save the data;
