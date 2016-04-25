@@ -5,3 +5,6 @@ stim/morekgs/*
 *.m~
 
 LexicalityExp.mat
+
+run*.mat
+test.mat
