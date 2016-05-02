@@ -1,5 +1,5 @@
 % draw a circular mask on the stimulus
-function mask = createRoundMask(radius,varargin)
+function mask = createMask(radius,varargin)
 % maskCOS = SetupCircularMask(radius,w,maskType)
 % 
 % Inputs:
