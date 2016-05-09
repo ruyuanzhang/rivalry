@@ -1203,7 +1203,8 @@ for frame=1:frameskip:size(frameorder,2)+1
                     Screen('SelectStereoDrawBuffer', win, 0);
                     %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
                     Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[255 100 100]);
-                    %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    %Screen('BlendFunction', win, GL_SRC_ALPHA,
+                    %GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
@@ -1211,7 +1212,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                     
                     Screen('SelectStereoDrawBuffer', win, 1);
                     %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,[50 100 50]);
+                    Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,[100 255 100]);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

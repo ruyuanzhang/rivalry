@@ -22,6 +22,8 @@ function [leftEyeImg,rightEyeImg]  = expCondMatrix(condition)
 %      ];
 %  
 %  
+
+
  %for testing purpose, you can set all condition as F,H, then you can test
  %your binocular presentation.
  
