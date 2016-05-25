@@ -19,7 +19,7 @@ blankTrialNum   = [5 4]; %[A B] where
                             % A:blank trials in the run
                             % B:blank trials at the beginning and the end                            
 runNum          = 12; % how many runs in total
-onoff           = [0.6 3.4]; % 1s-ON/3s-OFF design
+onoff           = [0.6 0.8]; % 1s-ON/3s-OFF design
 timeUnit        = 0.2;% duration of each time unit
 onoffFrameNum   = int8(onoff/timeUnit);
 imageSize       = 230; %  pixels

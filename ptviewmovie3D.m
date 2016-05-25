@@ -1202,7 +1202,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                 elseif stereoMode == 1||2 %present two different images to two eyes
                     Screen('SelectStereoDrawBuffer', win, 0);
                     %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[255 100 100]);
+                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[195 55 55]);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA,
                     %GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
