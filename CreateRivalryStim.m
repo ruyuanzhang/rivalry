@@ -1,11 +1,12 @@
 % Create stimulus for binocular rivalry experiment
 clear all;close all;clc
 
-%% add functions repository
+
+%% 
+
+% add functions repository
 addpath(genpath(pwd));
-
-
-%% set parameters
+% set image parameters
 conditions      =[9 6]; % [a b] where
                             %a conditions need double trials 
                             %b conditions need singal trials 
@@ -15,14 +16,7 @@ nTrial          =[6 3]; % [a b] where
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions
 trialNum        = conditions*nTrial'; % OK. We need these many stimulus trials in a run
-blankTrialNum   = [5 4]; %[A B] where 
-                            % A:blank trials in the run
-                            % B:blank trials at the beginning and the end                            
-runNum          = 12; % how many runs in total
-onoff           = [0.6 0.8]; % 1s-ON/3s-OFF design
-timeUnit        = 0.2;% duration of each time unit
-onoffFrameNum   = int8(onoff/timeUnit);
-imageSize       = 230; %  pixels
+imageSize       = 110; %  pixels
 bgColor         = 127;
 contrastRatio   = 0.5; 
 %contrast ratio for face stimuli for adjusting the relative contrast strengh of face and house.
@@ -43,7 +37,7 @@ houseRMS = [];
 for i=1:trialNum
     %let's resize face and house images and adjust their contrast to 50%
     tmp=faces(:,:,i);
-    tmp=imresize(tmp,imageSize/max(size(tmp)));
+    tmp=imresize(tmp,[imageSize imageSize]);
     tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));%set to 0-1
     tmp=(tmp-0.5)*contrastRatio+0.5;
     tmp=uint8(round(bgColor*2*tmp));%set to 50% contrast and scale it to 0~254;
@@ -52,7 +46,7 @@ for i=1:trialNum
     faceRMS = horzcat(faceRMS,rms_tmp);%compute the rms contrast;
   
     tmp=houses(:,:,i);
-    tmp=imresize(tmp,imageSize/max(size(tmp)));
+    tmp=imresize(tmp,[imageSize imageSize]);
     tmp=(tmp-min(tmp(:)))/(max(tmp(:))-min(tmp(:)));%set to 0-1
     tmp=(tmp-0.5)*(1-contrastRatio)+0.5;
     tmp=uint8(round(bgColor*2*tmp));%set to 50% contrast and scale it to 0~254;
@@ -88,10 +82,7 @@ tmp(wordRect(1):wordRect(3)-1,:,:) = wordimg;
 wordimg = tmp;clear tmp;
 save('afterWord');
 
-
-
-
-%% Now we create a big matrix to include these five categories
+%Now we create a big matrix to include these five categories
 img = zeros(imageSize,imageSize,trialNum,5);
 img (:,:,:,1) = blankimg;
 img (:,:,:,2) = faceimg;
@@ -102,13 +93,33 @@ img = uint8(img);
 
 %save('RivalryExp'); % Save the data;
 
-%% Decide on the frame order
-nruns               = 14; %how many runs you want 
+%% --------- create presentation sequence
+% to quickly change some parameters for piloting purpose, I redundantly
+% repeat some variable.
 
+%add functions repository
+addpath(genpath(pwd));
+%Decide on the frame order
+% some parameters
+nruns           = 14; %how many runs you want                             
+onoff           = [2 2]; % 1s-ON/3s-OFF design
+timeUnit        = 0.2;% duration of each time unit
+onoffFrameNum   = int8(onoff/timeUnit);
+conditions      =[9 6]; % [a b] where
+                            %a conditions need double trials 
+                            %b conditions need singal trials 
+                            %total a+b conditions  
+nTrial          =[6 3]; % [a b] where
+                            %a trials for double trial conditions in a run
+                            %b trials for singal trial conditiosn in a run
+                            %total a+b conditions
+blankTrialNum   = [5 4]; %[A B] where 
+                            % A:blank trials in the run
+                            % B:blank trials at the beginning and the end                        
+                           
 %generate stimulus order, we need to go back this section to do some work
 %
 for rn = 1:nruns
-
     tmp1 = rem(1:nTrial(1)*conditions(1),conditions(1))+1; 
     tmp2 = rem(1:nTrial(2)*conditions(2),conditions(2))+1+conditions(1);
     tmp  = horzcat(tmp1,tmp2); %trials from 
@@ -126,10 +137,11 @@ frameorder = makeFrameOrder(stimorder,onoffFrameNum(1),onoffFrameNum(2));
 % we add 4 trials blank at the very begining and the very end for both frame
 % and fixation order
 % for stim frame
-blankframe = zeros(nruns,sum(onoff)/timeUnit*blankTrialNum(2)); % 20 frames/trial, we want to 4 trials blank
+blankframe = zeros(nruns,round(sum(onoff)/timeUnit*blankTrialNum(2))); % 20 frames/trial, we want to 4 trials blank
 frameorder = horzcat(blankframe,frameorder,blankframe);
 
 %% Create fixation task
+clear fixorder fixcolor;
 for rn = 1 : nruns
     [fixorder(rn,:), fixcolor] = CreateFixationTask_Luminance(size(frameorder,2));
 end
