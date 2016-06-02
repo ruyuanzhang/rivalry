@@ -1,4 +1,4 @@
-function run_RivalryExp(runnum,stimfile)
+function run_rivalryExp(runnum,stimfile)
 
 % The main experiment function for binocular rivalry experiment with
 % ptmovieview function, maybe not use movieview
@@ -43,7 +43,7 @@ ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
 
 
 % Size of fixation
-fixationsize = [11 0];
+fixationsize = [8 0];
 grayval = uint8(127);
 scfactor = 1;  % scale images bigger or smaller
 

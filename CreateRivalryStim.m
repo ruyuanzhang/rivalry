@@ -101,15 +101,16 @@ img = uint8(img);
 addpath(genpath(pwd));
 %Decide on the frame order
 % some parameters
+onoff           = [1 3]; % 1s-ON/3s-OFF design
+
 nruns           = 14; %how many runs you want                             
-onoff           = [2 2]; % 1s-ON/3s-OFF design
 timeUnit        = 0.2;% duration of each time unit
 onoffFrameNum   = int8(onoff/timeUnit);
-conditions      =[9 6]; % [a b] where
+conditions      = [9 6]; % [a b] where
                             %a conditions need double trials 
                             %b conditions need singal trials 
                             %total a+b conditions  
-nTrial          =[6 3]; % [a b] where
+nTrial          = [6 3]; % [a b] where
                             %a trials for double trial conditions in a run
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions
