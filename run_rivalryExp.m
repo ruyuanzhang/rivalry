@@ -20,13 +20,13 @@ if ~exist('stimfile','var') || isempty(stimfile)
 end
 
 %load the file
-load('RivalryExp.mat');
+load('RivalryExp4D.mat');
 
 % add functions untilized in the exp
 addpath(genpath(pwd));
 
 %% Set experiment parameters
-stereoMode        =  1; 
+stereoMode        =  2; 
 % 0,no stereo; 1,haploscope, two different images;2, Vpixx two
 % different images;3,haploscope same image with disparity;4 Vpixx same image with
 % dispartity
@@ -37,13 +37,13 @@ fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum)
 %% Set experiment parameters
 offset = [];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
-frameduration = 12;  % number of monitor frames for one unit.  120/5 = 12
+frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
 ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
 
 
 
 % Size of fixation
-fixationsize = [8 0];
+fixationsize = [11 0];
 grayval = uint8(127);
 scfactor = 1;  % scale images bigger or smaller
 
