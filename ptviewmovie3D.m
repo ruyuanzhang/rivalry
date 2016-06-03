@@ -929,7 +929,7 @@ if ~isempty(trialtask)
 end
 
 %%%%%%%%%%%%%%%%% SET UP DOTS BACKGROUND
-SetupBgDots;
+setupBgDots;
 
 
 
@@ -1064,6 +1064,7 @@ if ~isempty(triggerfun)
   timekeys = [timekeys; {GetSecs 'trigger'}];
 end
 
+
 % show the movie
 framecnt = 0;
 for frame=1:frameskip:size(frameorder,2)+1
@@ -1105,7 +1106,7 @@ for frame=1:frameskip:size(frameorder,2)+1
 %    Screen('FillRect',win,grayval);   % REMOVED! this means do whole screen.    % ,movierect);
 
   %draw dots background
-  DrawDotsBg;
+  drawDotsBg;
 
   % otherwise, make a texture, draw it at a particular position
   else
@@ -1155,7 +1156,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
             texture = Screen('MakeTexture',win,txttemp);
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
-            [leftEyeImg,rightEyeImg] = ExpCondMatrix(frameorder(1,frame0));% read in condition
+            [leftEyeImg,rightEyeImg] = expCondMatrix(frameorder(1,frame0));% read in condition
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
@@ -1178,25 +1179,58 @@ for frame=1:frameskip:size(frameorder,2)+1
                 [offset(1) offset(2) offset(1) offset(2)];
             
     %draw dots background
-    DrawDotsBg; %specifically for binocular rivalry       
+    drawDotsBg; %specifically for binocular rivalry
+    mask=createMask(round(min(d1images,d2images)/2),'maskType','circular');
+    mask = Screen('MakeTexture',win,mask);
+    annulus=createMask(round(min(d1images,d2images)/2)+50,'maskType','annulus','innerRadius',round(min(d1images,d2images)/2));
+    annulusMask = Screen('MakeTexture',win,annulus);
+    annulusRect=CenterRect([0 0 size(annulus,2) size(annulus,1)],rect) + ...
+                repmat(extracircshift([2 1]),[1 2]) + ...
+                [offset(1) offset(2) offset(1) offset(2)];
+    
+    %compuate the rotation angle
+    rotate = 1;
+    setupImgRotate;
     
 
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation
                     Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
+                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                 elseif stereoMode == 1||2 %present two different images to two eyes
                     Screen('SelectStereoDrawBuffer', win, 0);
-                    Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
+                    %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[195 55 ]);
+                    %Screen('BlendFunction', win, GL_SRC_ALPHA,
+                    %GL_ONE_MINUS_SRC_ALPHA);
+                    %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
+                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                    
+                    
                     Screen('SelectStereoDrawBuffer', win, 1);
-                    Screen('DrawTexture',win,texture2,[],movierect,0,filtermode,1,framecolor(frame0,:));
+                    %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,[100 255 100]);
+                    %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
+                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                    
+                    
                 elseif stereoModel == 3||4 %present same images but jitter dispartity
                     %%% 3D BEGIN
                     % BR: Looks like this is the default stimulus texture drawing case
                     Screen('SelectStereoDrawBuffer', win, 0);
-                    Screen('DrawTexture',win,texture,[],movierect - [disparity 0 disparity 0],0,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture,[],movierect - [disparity 0 disparity 0],rotangle,filtermode,1,framecolor(frame0,:));
+                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                     Screen('SelectStereoDrawBuffer', win, 1);
-                    Screen('DrawTexture',win,texture,[],movierect + [disparity 0 disparity 0],0,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture,[],movierect + [disparity 0 disparity 0],-rotangle,filtermode,1,framecolor(frame0,:));
+                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
+                 
                     %%% 3D END
                 end
             else % BR: When does this happen?

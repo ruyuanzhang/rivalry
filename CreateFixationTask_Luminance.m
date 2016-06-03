@@ -30,8 +30,8 @@ if ~exist('nlum','var')||isempty('nlum')
     nlum = 5; %default, 5 luminance levels;
 end
 
-color =[255 0 0] ;% color for detecting. default is red [255 0 0];
-colors=[linspace(color(1),40,nlum)' linspace(color(2),0,nlum)' linspace(color(3),0,nlum)'];
+color =[0 0 255] ;% color for detecting. default is red [255 0 0];
+colors=[linspace(color(1),0,nlum)' linspace(color(2),0,nlum)' linspace(color(3),40,nlum)'];
 
 % total size(colors,1) color items in this color list, so the target rate will be every
 % fixrate * size(colors,1) per target.If you want to change the target rate, simple
