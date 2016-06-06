@@ -16,7 +16,7 @@ nTrial          =[6 3]; % [a b] where
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions
 trialNum        = conditions*nTrial'; % OK. We need these many stimulus trials in a run
-imageSize       = 216; %  pixels
+imageSize       = 162; %  pixels
 bgColor         = 127;
 contrastRatio   = 0.5; 
 %contrast ratio for face stimuli for adjusting the relative contrast strengh of face and house.
@@ -119,20 +119,23 @@ blankTrialNum   = [5 4]; %[A B] where
                             % B:blank trials at the beginning and the end                        
                            
 %generate stimulus order, we need to go back this section to do some work
-%
+
 for rn = 1:nruns
     tmp1 = rem(1:nTrial(1)*conditions(1),conditions(1))+1; 
     tmp2 = rem(1:nTrial(2)*conditions(2),conditions(2))+1+conditions(1);
-    tmp  = horzcat(tmp1,tmp2); %trials from 
+    tmp_cond = horzcat(tmp1,tmp2);
+    tmp_stim  = 1:(nTrial*conditions');
     % Add in blanks and Shuffle stim order to randomize conditions for the run
     %stimorder(rn,:) = Shuffle(horzcat(tmp, zeros(1,nblank)));
     % here, we need two constraints
     % 1. blanks cannnot be consecutive
     % 2. blank should not be at very beginning and very end
     % use insertBlankTrial function to deal with it
-    stimorder(rn,:) = insertBlankTrial(horzcat(tmp, zeros(1,blankTrialNum(1))));
+    stimorder(rn,:) = insertBlankTrial(horzcat(tmp_stim, zeros(1,blankTrialNum(1))));
+    condorder(rn,:) = insertel(Shuffle(tmp_cond),zeros(1,blankTrialNum(1)),find(stimorder(rn,:)==0));
 end
 frameorder = makeFrameOrder(stimorder,onoffFrameNum(1),onoffFrameNum(2));
+expcondorder = makeFrameOrder(condorder,onoffFrameNum(1),onoffFrameNum(2));
 
 % 02/23/2016, by RZ
 % we add 4 trials blank at the very begining and the very end for both frame
@@ -140,7 +143,7 @@ frameorder = makeFrameOrder(stimorder,onoffFrameNum(1),onoffFrameNum(2));
 % for stim frame
 blankframe = zeros(nruns,round(sum(onoff)/timeUnit*blankTrialNum(2))); % 20 frames/trial, we want to 4 trials blank
 frameorder = horzcat(blankframe,frameorder,blankframe);
-
+expcondorder = horzcat(blankframe,expcondorder,blankframe);
 %% Create fixation task
 clear fixorder fixcolor;
 for rn = 1 : nruns
@@ -149,7 +152,7 @@ end
 
 %% Save it out
 desc = ' img is the image stack \n sc denotes the contrast of each image\n sl denotes the lexicality level\n stimcat denotes the category\n stimorder gives the order of the stimulus for each run\n'
-save RivalryExp img desc stimorder frameorder fixorder fixcolor
+save RivalryExp img desc stimorder frameorder fixorder fixcolor expcondorder
 
 % also change the test stimuli
 clear all;

@@ -2,7 +2,7 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
   ptviewmovie3D(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
               grayval,detectinput,wantcheck,offset,moviemask,movieflip,scfactor,allowforceglitch, ...
               triggerfun,framefiles,frameskip,triggerkey,specialcon,trialtask,maskimages,specialoverlay, ...
-              frameevents,framefuncs,setupscript,cleanupscript,stereoMode)
+              frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder)
 
 % function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   ptviewmovie(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
@@ -257,6 +257,9 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %       3: similar with 1, stereoMode,workwith heploscope, the same images with different disparity will be presented
 %           on two sides on the same monitor
 %       4: stereoMode using Vpixx, same image with two disparities will be presented
+% <expcondorder> (optional) is a design matrix indicate condition in each
+% trial, hacked by Ruyuan..
+%
 %
 % return <timeframes> as a 1 x size(<frameorder>,2) vector with the time of each frame showing.
 %   (time is relative to the time of the first frame.)
@@ -308,6 +311,7 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   So it is important to test your particular setup!
 %
 % history:
+% 2016/06/06 - Ruyuan did a lot of hacked to creat rivalry stimuli
 % 2015/11/09 - add cleanupscript as input
 % 2015/09/30 - add frameevents,framefuncs,setupscript as inputs.
 % 2015/03/23 - oops. fix bug in the circshifting introduced by the previous checkin.
@@ -1156,7 +1160,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
             texture = Screen('MakeTexture',win,txttemp);
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
-            [leftEyeImg,rightEyeImg] = expCondMatrix(frameorder(1,frame0));% read in condition
+            [leftEyeImg,rightEyeImg] = expCondMatrix(expcondorder(1,frame0));% read in condition
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
