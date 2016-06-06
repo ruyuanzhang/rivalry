@@ -61,7 +61,7 @@ ptoff3D(oldclut,stereoMode);
 
 %Save the timing info and key button press for future analysis
 load('test.mat');
-save(['run' num2str(runnum)],'timeframes','timekeys');
+save(['run' num2str(runnum)],'timeframes','timekeys','keytimes','badtimes','keybuttons');
 
 % clear path
 rmpath(genpath(pwd));

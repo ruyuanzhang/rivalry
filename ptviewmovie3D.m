@@ -1593,7 +1593,6 @@ fprintf('frames per second: %.10f\n',length(timeframes)/dur);
 
 % prepare output
 digitrecord = {digitrecord digitframe digitpolarity};
-save('test','timeframes','timekeys');
 
 % do cleanup if necessary
 if ~isempty(cleanupscript)
@@ -1606,7 +1605,8 @@ end
 
 % do some checks
 if wantcheck
-  ptviewmoviecheck(timeframes,timekeys,[],'t');
+  [keytimes,badtimes,keybuttons]=ptviewmoviecheck(timeframes,timekeys,[],'t');
+  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
