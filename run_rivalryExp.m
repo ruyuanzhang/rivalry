@@ -20,7 +20,7 @@ if ~exist('stimfile','var') || isempty(stimfile)
 end
 
 %load the file
-load('RivalryExp3D.mat');t
+load('RivalryExp.mat');
 
 
 % add functions untilized in the exp
@@ -38,8 +38,12 @@ fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum)
 %% Set experiment parameters
 offset = [];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
+
+RGcolor=[188 0 0;0 255 0];
 frameduration = 12;  % number of monitor frames for one unit.  120/5 = 24
+%ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % don't change resolution
 ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
+
 
 
 
@@ -56,7 +60,7 @@ oldclut = pton3D(ptonparams{:});
     ptviewmovie3D(reshape(img,[size(img,1), size(img,2), 1 , size(img,3),size(img,4)]), ...
     frameorder(runnum,:),[],frameduration,fixorder(runnum,:),fixcolor, ...
     fixationsize,grayval,[],[],offset,[],movieflip,scfactor,[], ...
-    [],[],[],'t',[],[],[],[],[],[],[],[],stereoMode,expcondorder); % scanner button box trigger, for letter, use 't' ; for digit, use "5" 
+    [],[],[],'t',[],[],[],[],[],[],[],[],stereoMode,expcondorder(runnum,:),RGcolor,RGcolororder(runnum,:)); % scanner button box trigger, for letter, use 't' ; for digit, use "5" 
 ptoff3D(oldclut,stereoMode);
 
 %Save the timing info and key button press for future analysis

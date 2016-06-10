@@ -2,7 +2,7 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
   ptviewmovie3D(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
               grayval,detectinput,wantcheck,offset,moviemask,movieflip,scfactor,allowforceglitch, ...
               triggerfun,framefiles,frameskip,triggerkey,specialcon,trialtask,maskimages,specialoverlay, ...
-              frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder)
+              frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder,RGcolor,RGcolororder);
 
 % function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   ptviewmovie(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
@@ -259,6 +259,11 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %       4: stereoMode using Vpixx, same image with two disparities will be presented
 % <expcondorder> (optional) is a design matrix indicate condition in each
 % trial, hacked by Ruyuan..
+% <RGcolor> (optional) is the red and green alpha channel value,
+% predetermined in pilot, hacked by Ruyuan
+% <RGcolororder> (optional) is the order of left/right eye corrspondence of
+% red and green channel. We want red and gree strickly balanced across eyes
+% and experiment condition
 %
 %
 % return <timeframes> as a 1 x size(<frameorder>,2) vector with the time of each frame showing.
@@ -1195,8 +1200,15 @@ for frame=1:frameskip:size(frameorder,2)+1
     %compuate the rotation angle
     rotate = 1;
     setupImgRotate;
-    
-
+       
+    switch RGcolororder(frame0)
+        case 1
+            lefteyealpha = RGcolor(1,:);
+            righteyealpha = RGcolor(2,:);
+        case 2
+            lefteyealpha = RGcolor(2,:);
+            righteyealpha = RGcolor(1,:);
+    end
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation
@@ -1206,7 +1218,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                 elseif stereoMode == 1||2 %present two different images to two eyes
                     Screen('SelectStereoDrawBuffer', win, 0);
                     %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[185 0 0]);
+                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,lefteyealpha);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA,
                     %GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
@@ -1216,7 +1228,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                     
                     Screen('SelectStereoDrawBuffer', win, 1);
                     %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,[0 255 0]);
+                    Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

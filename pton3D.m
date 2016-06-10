@@ -100,9 +100,6 @@ if stereoMode == 2||stereoMode == 4
 end
 
 
-
-
-
 % set the resolution of the screen
 if ~isempty(resolution)
   SetResolution(screennum,resolution(1),resolution(2),resolution(3),resolution(4));
