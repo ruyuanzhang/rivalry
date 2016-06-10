@@ -3,7 +3,7 @@ function [leftEyeImg,rightEyeImg]  = expCondMatrix(condition)
 
 %let's mark, 1,blank;2,face;3,house;4,word;5,face+house
 %the matrix for three condition can be presented as
- conditionMatrix=[
+conditionMatrix=[
      2     3; % F,H
      3     2; % H,F
      4     3; % W,H
@@ -27,16 +27,8 @@ function [leftEyeImg,rightEyeImg]  = expCondMatrix(condition)
  %for testing purpose, you can set all condition as F,H, then you can test
  %your binocular presentation.
  
-%conditionMatrix=repmat([2 3],15,1);
+%conditionMatrix=repmat([4 3],15,1);
 
-
- 
- 
- 
- 
- 
- 
- 
 condNum = conditionMatrix(condition,:);
 leftEyeImg = condNum(1);
 rightEyeImg =condNum(2); 

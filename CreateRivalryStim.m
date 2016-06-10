@@ -1,5 +1,5 @@
 % Create stimulus for binocular rivalry experiment
-clear all;close all;clc
+clear all;close all;clc;
 
 
 %% 
@@ -16,7 +16,7 @@ nTrial          =[6 3]; % [a b] where
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions
 trialNum        = conditions*nTrial'; % OK. We need these many stimulus trials in a run
-imageSize       = 216; %  pixels
+imageSize       = 270; %  pixels
 bgColor         = 127;
 contrastRatio   = 0.5; 
 %contrast ratio for face stimuli for adjusting the relative contrast strengh of face and house.
@@ -69,17 +69,26 @@ wordimg=[];
 for i = 1:trialNum
     tmp = uint8(renderText(words{i},'Courier',24,6));
     tmp=imresize(tmp,imageSize/max(size(tmp))); %resize the images
-    % Set contrast
+    % Set luminance
     tmp(tmp==1)=round(sqrt(RMS.^2/sum(tmp(:)>0))+bgColor); %we matched the RMS contrast to face and house img
     tmp(tmp==0)=bgColor;
+    %resize again to make it imageSize*imageSize
+    wordRect = CenterRect([0 0 size(tmp,1) size(tmp,2)], [0 0 imageSize imageSize]);
+    tmp2 = bgColor*ones(imageSize,imageSize);
+    tmp2(wordRect(1):wordRect(3)-1,:,:) = tmp;
+    
+    %generate pinknoise background
+    pinkBg = generatepinknoise(imageSize); %create pinknoise background
+    pinkBg = ((pinkBg-min(pinkBg(:)))/range(pinkBg(:))-0.5)*0.5+0.5;
+    
+    %scale it to 0.25~0.75,50% contrast;
+    pinkBg = pinkBg*127;
+    pinkBg(tmp2>bgColor)=max(tmp2(:));
     % stack it up
-    wordimg(:,:,i) = tmp; % all images
+    wordimg(:,:,i) = pinkBg; % all images
+    
 end
-% Ugly...Word image is not a square, we want to center the rect
-wordRect = CenterRect([0 0 size(wordimg,1) size(wordimg,2)], [0 0 imageSize imageSize]);
-tmp    = bgColor*ones(imageSize,imageSize,trialNum);
-tmp(wordRect(1):wordRect(3)-1,:,:) = wordimg;
-wordimg = tmp;clear tmp;
+
 save('afterWord');
 
 %Now we create a big matrix to include these five categories
@@ -119,20 +128,29 @@ blankTrialNum   = [5 4]; %[A B] where
                             % B:blank trials at the beginning and the end                        
                            
 %generate stimulus order, we need to go back this section to do some work
-%
+
 for rn = 1:nruns
     tmp1 = rem(1:nTrial(1)*conditions(1),conditions(1))+1; 
     tmp2 = rem(1:nTrial(2)*conditions(2),conditions(2))+1+conditions(1);
-    tmp  = horzcat(tmp1,tmp2); %trials from 
+    tmp_cond = horzcat(tmp1,tmp2);
+    tmp_stim  = 1:(nTrial*conditions');
+    tmp_color = rem(tmp_stim,2)+1;
     % Add in blanks and Shuffle stim order to randomize conditions for the run
     %stimorder(rn,:) = Shuffle(horzcat(tmp, zeros(1,nblank)));
     % here, we need two constraints
     % 1. blanks cannnot be consecutive
     % 2. blank should not be at very beginning and very end
     % use insertBlankTrial function to deal with it
-    stimorder(rn,:) = insertBlankTrial(horzcat(tmp, zeros(1,blankTrialNum(1))));
+    
+    [tmp_cond, index]=Shuffle(tmp_cond);
+    tmp_color=tmp_color(index);
+    stimorder(rn,:) = insertBlankTrial(horzcat(tmp_stim, zeros(1,blankTrialNum(1))));
+    condorder(rn,:) = insertel(tmp_cond,zeros(1,blankTrialNum(1)),find(stimorder(rn,:)==0));
+    rg_colororder(rn,:) = insertel(tmp_color,zeros(1,blankTrialNum(1)),find(stimorder(rn,:)==0));
 end
 frameorder = makeFrameOrder(stimorder,onoffFrameNum(1),onoffFrameNum(2));
+expcondorder = makeFrameOrder(condorder,onoffFrameNum(1),onoffFrameNum(2));
+RGcolororder = makeFrameOrder(rg_colororder,onoffFrameNum(1),onoffFrameNum(2));
 
 % 02/23/2016, by RZ
 % we add 4 trials blank at the very begining and the very end for both frame
@@ -140,21 +158,21 @@ frameorder = makeFrameOrder(stimorder,onoffFrameNum(1),onoffFrameNum(2));
 % for stim frame
 blankframe = zeros(nruns,round(sum(onoff)/timeUnit*blankTrialNum(2))); % 20 frames/trial, we want to 4 trials blank
 frameorder = horzcat(blankframe,frameorder,blankframe);
+expcondorder = horzcat(blankframe,expcondorder,blankframe);
+RGcolororder = horzcat(blankframe,RGcolororder,blankframe);
 
 %% Create fixation task
 clear fixorder fixcolor;
 for rn = 1 : nruns
-    [fixorder(rn,:), fixcolor] = CreateFixationTask_Luminance(size(frameorder,2));
+    [fixorder(rn,:), fixcolor] = CreateFixationTask_LDT(size(frameorder,2));
 end
 
 %% Save it out
-desc = ' img is the image stack \n sc denotes the contrast of each image\n sl denotes the lexicality level\n stimcat denotes the category\n stimorder gives the order of the stimulus for each run\n'
-save RivalryExp img desc stimorder frameorder fixorder fixcolor
+desc = ' img is the image stack \n stimorder gives the order of the stimulus for each run \n frameorder gives image number in each trial \n fixorder gives order of fixation luminance \n fixcolor gives levels of fixation luminance \n expcondorder gives order of experiment conditions every frame \n condorder gives order of experiment conditions in every trial'
+save RivalryExp_original img desc stimorder frameorder fixorder fixcolor expcondorder condorder rg_colororder RGcolororder
 
 % also change the test stimuli
 clear all;
 CreateRivalryStim_test;
 
 return
-
-
