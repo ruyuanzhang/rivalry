@@ -1165,7 +1165,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
             texture = Screen('MakeTexture',win,txttemp);
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
-            [leftEyeImg,rightEyeImg] = expCondMatrix(expcondorder(1,frame0));% read in condition
+            [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
@@ -1480,14 +1480,14 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           
           %Participant interactively change the red/green alpha channel
-          switch kn
-              case 'a'
+          switch kn(1)
+              case '1'
                   RGcolor(1,:)=RGcolor(1,:)+[0.5 0 0];
-              case 's'
+              case '2'
                   RGcolor(1,:)=RGcolor(1,:)-[0.5 0 0];
-              case 'd'
+              case '3'
                   RGcolor(2,:)=RGcolor(2,:)+[0 0.5 0];
-              case 'f'
+              case '4'
                   RGcolor(2,:)=RGcolor(2,:)-[0 0.5 0];
           end
           RGcolor(RGcolor>255)=254;
