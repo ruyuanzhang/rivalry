@@ -1,4 +1,4 @@
-function [leftEyeImg,rightEyeImg]  = expCondMatrix(condition)
+function [leftEyeImg,rightEyeImg]  = ExpCondMatrix(condition)
 
 
 %let's mark, 1,blank;2,face;3,house;4,word;5,face+house
