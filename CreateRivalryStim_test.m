@@ -10,7 +10,7 @@ load('RivalryExp.mat');
 clear frameorder fixorder fixcolor;
 
 %only change the stimulus presentation for testing purpose
-onoff           = [1 1]; % 1s-ON/1s-OFF design
+onoff           = [8 0]; % 1s-ON/1s-OFF design
 timeUnit        = 0.2;%duration for one time unit
 onoffFrameNum   = onoff/timeUnit;
 nruns           = 14;

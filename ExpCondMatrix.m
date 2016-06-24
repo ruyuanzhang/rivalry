@@ -13,7 +13,7 @@ conditionMatrix=[
      5     5; % F+H,F+H
      5     1; % F+H, no stim
      1     5; % no stim, F+H
-     2     1; % F, no stim
+     2     1; % F, no stimw
      1     2; % no stim, F
      2     2; % F, F
      3     1; % H, no stim
@@ -27,7 +27,7 @@ conditionMatrix=[
  %for testing purpose, you can set all condition as F,H, then you can test
  %your binocular presentation.
  
-%conditionMatrix=repmat([4 3],15,1);
+%conditionMatrix=repmat([2 3],15,1);
 
 condNum = conditionMatrix(condition,:);
 leftEyeImg = condNum(1);
