@@ -27,7 +27,7 @@ load('RivalryExp.mat');
 addpath(genpath(pwd));
 
 %% Set experiment parameters
-stereoMode        =  2; 
+stereoMode        =  1; 
 % 0,no stereo; 1,haploscope, two different images;2, Vpixx two
 % different images;3,haploscope same image with disparity;4 Vpixx same image with
 % dispartity
@@ -36,14 +36,14 @@ skipsync          =  0; % skip syncrony test for the monitor;
 
 fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum);
 %% Set experiment parameters
-offset = [0 -100];  % [] means no translation of the stimuli
+offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
 RGcolor=[148 0 0;0 255 0];
-frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
-ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
+frameduration = 12;  % number of monitor frames for one unit.  120/5 = 24
+%ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 %change resolution
-%ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
+ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
 
 
 

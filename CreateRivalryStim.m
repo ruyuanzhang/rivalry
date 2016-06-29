@@ -63,6 +63,7 @@ RMS = mean(horzcat(faceRMS,houseRMS));
 
 %% load the images and do some simple computation
 %dealing with word stim. word is a little bit trikcy, do some process here.
+%We need first compute averaged rms contrast.
 words=textread('3_letter_words.txt','%s');
 words=words';
 wordimg=[];
