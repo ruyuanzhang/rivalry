@@ -31,6 +31,15 @@ faceHouseimg = zeros(imageSize,imageSize,24);
 
 %% do some processing on face and house images
 for i=1:24
+   
+    
+    %let's resize face and house images and adjust their contrast to 50%
+    tmp1=double(face(:,:,i));
+    tmp1=imresize(tmp1,[imageSize imageSize]);
+    tmp1=varycontrast(tmp1/254,50); %change to 50% contrast;
+    tmp1=round(tmp1*254);
+    %tmp1=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
+    faceimg(:,:,i)=tmp1; 
     
     tmp2=double(house(:,:,i));
     tmp2=imresize(tmp2,[imageSize imageSize]);
@@ -38,21 +47,6 @@ for i=1:24
     tmp2=round(tmp2*254);
     %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
     houseimg(:,:,i)=tmp2;
-    
-    %let's resize face and house images and adjust their contrast to 50%
-    tmp1=double(face(:,:,i));
-    tmp1=imresize(tmp1,[imageSize imageSize]);
-    tmp1=varycontrast(tmp1/254,50); %change to 50% contrast;
-    tmp1=round(tmp1*254);
-    tmp1=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
-    faceimg(:,:,i)=tmp1; 
-    
-%     tmp2=double(house(:,:,i));
-%     tmp2=imresize(tmp2,[imageSize imageSize]);
-%     tmp2=varycontrast(double(tmp2)/254,50); %change to 50% contrast;
-%     tmp2=round(tmp2*254);
-%     %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
-%     houseimg(:,:,i)=tmp2;
     
     faceHouseimg(:,:,i)=tmp1+tmp2-127;
     
