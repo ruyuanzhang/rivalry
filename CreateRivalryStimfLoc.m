@@ -32,21 +32,34 @@ faceHouseimg = zeros(imageSize,imageSize,24);
 %% do some processing on face and house images
 for i=1:24
     
-    %let's resize face and house images and adjust their contrast to 50%
-    tmp1=double(face(:,:,i));
-    tmp1=imresize(tmp1,[imageSize imageSize]);
-    tmp1=varycontrast(double(tmp1)/254,50); %change to 50% contrast;
-    faceimg(:,:,i)=tmp1*254;
-    
     tmp2=double(house(:,:,i));
     tmp2=imresize(tmp2,[imageSize imageSize]);
     tmp2=varycontrast(double(tmp2)/254,50); %change to 50% contrast;
-    houseimg(:,:,i)=tmp2*254;  
+    tmp2=round(tmp2*254);
+    %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
+    houseimg(:,:,i)=tmp2;
     
-    faceHouseimg(:,:,i)=tmp1+tmp2-bgColor;
+    %let's resize face and house images and adjust their contrast to 50%
+    tmp1=double(face(:,:,i));
+    tmp1=imresize(tmp1,[imageSize imageSize]);
+    tmp1=varycontrast(tmp1/254,50); %change to 50% contrast;
+    tmp1=round(tmp1*254);
+    tmp1=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
+    faceimg(:,:,i)=tmp1; 
+    
+%     tmp2=double(house(:,:,i));
+%     tmp2=imresize(tmp2,[imageSize imageSize]);
+%     tmp2=varycontrast(double(tmp2)/254,50); %change to 50% contrast;
+%     tmp2=round(tmp2*254);
+%     %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
+%     houseimg(:,:,i)=tmp2;
+    
+    faceHouseimg(:,:,i)=tmp1+tmp2-127;
     
   
 end
+
+
 
 viewimages(faceimg);colormap(gray);
 viewimages(houseimg);colormap(gray);
@@ -170,7 +183,7 @@ end
 
 %% Save it out
 desc = ' img is the image stack \n stimorder gives the order of the stimulus for each run \n frameorder gives image number in each trial \n fixorder gives order of fixation luminance \n fixcolor gives levels of fixation luminance \n expcondorder gives order of experiment conditions every frame \n condorder gives order of experiment conditions in every trial'
-%save RivalryExp_original img desc stimorder frameorder fixorder fixcolor expcondorder condorder rg_colororder RGcolororder
+save RivalryExp_original img desc stimorder frameorder fixorder fixcolor expcondorder condorder rg_colororder RGcolororder
 
 % also change the test stimuli
 clear all;
