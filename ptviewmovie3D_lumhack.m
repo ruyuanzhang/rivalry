@@ -1165,7 +1165,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
             texture = Screen('MakeTexture',win,txttemp);
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
-            [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
+            [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(expcondorder(1,frame0));% read in condition
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
@@ -1200,10 +1200,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     %compuate the rotation angle
     rotate = 1;
     setupImgRotate;
-    
-    
-    RGcolororder(frame0)
-    
+      
     switch RGcolororder(frame0)
         case 1
             lefteyealpha = RGcolor(1,:);
@@ -1482,13 +1479,13 @@ for frame=1:frameskip:size(frameorder,2)+1
           %Participant interactively change the red/green alpha channel
           switch kn(1)
               case '1'
-                  RGcolor(1,:)=RGcolor(1,:)+[0.5 0 0];
+                  RGcolor(1,:)=RGcolor(1,:)+[0.2 0 0];
               case '2'
-                  RGcolor(1,:)=RGcolor(1,:)-[0.5 0 0];
+                  RGcolor(1,:)=RGcolor(1,:)-[0.2 0 0];
               case '3'
-                  RGcolor(2,:)=RGcolor(2,:)+[0 0.5 0];
+                  RGcolor(2,:)=RGcolor(2,:)+[0 0.2 0];
               case '4'
-                  RGcolor(2,:)=RGcolor(2,:)-[0 0.5 0];
+                  RGcolor(2,:)=RGcolor(2,:)-[0 0.2 0];
           end
           RGcolor(RGcolor>255)=254;
           RGcolor  
