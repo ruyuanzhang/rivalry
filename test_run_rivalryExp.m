@@ -1,4 +1,4 @@
-function test_run_RivalryExp(runnum,stimfile)
+function test_run_rivalryExp(runnum,stimfile)
 
 % The main experiment function for binocular rivalry experiment with
 % ptmovieview function, maybe not use movieview
@@ -26,7 +26,7 @@ load('RivalryExpTest.mat');
 addpath(genpath(pwd));
 
 %% Set experiment parameters
-stereoMode        =  2; 
+stereoMode        =  1; 
 % 0,no stereo; 1,haploscope, two different images;2, Vpixx two
 % different images;3,haploscope same image with disparity;4 Vpixx same image with
 % dispartity
@@ -35,13 +35,13 @@ skipsync          =  1; % skip syncrony test for the monitor;
 
 fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum);
 %% Set experiment parameters
-offset = [0 -100];  % [] means no translation of the stimuli
+offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
 
 RGcolor=[185 0 0;0 255 0]; %red and green
-frameduration = 24;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
-ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
+frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
+%ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 %change resolution
 ptonparams = {[],[],0,skipsync,stereoMode };  % don't change resolution
 
@@ -67,8 +67,11 @@ end
 
 %img = uint8(round(faceimg*254));
 
-%% Run experiment
+%%
+% we use key buttons '1','2'to increase/decrease red and '1','2'to increase/decrease green 
 
+
+%% Run experiment
 oldclut = pton3D(ptonparams{:});
 [timeframes,timekeys,digitrecord,trialoffsets] = ...
     ptviewmovie3D_lumhack(reshape(img,[size(img,1), size(img,2), 1 , size(img,3),size(img,4)]), ...
