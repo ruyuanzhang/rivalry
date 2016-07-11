@@ -8,7 +8,7 @@
 
 % Draw background frame and dots
 % Determine 
-bgSize          = 500; % the background should be biggher than
+bgSize          = 600; % the background should be biggher than
 desRect         = [0 0 bgSize bgSize];
 
 %set up dots
