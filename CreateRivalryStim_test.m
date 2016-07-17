@@ -6,7 +6,7 @@ clear all;close all;clc
 %% add functions repository
 addpath(genpath(pwd));
 
-load('RivalryExp_original.mat');
+load('RivalryExp.mat');
 clear frameorder fixorder fixcolor;
 
 %only change the stimulus presentation for testing purpose

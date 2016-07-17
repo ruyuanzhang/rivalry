@@ -7,7 +7,7 @@ movierect = CenterRect([0 0 round(scfactor*d2images) round(scfactor*d1images)],r
 if stereoMode == 0
     Screen('DrawDots', win, xy,dotsSize,dotColor,[rect(3)/2 rect(4)/2],1); %drawDots
     Screen('FrameRect', win, [255 255 255],[desRect(1)-dotsSize desRect(2)-dotsSize desRect(3)+dotsSize desRect(4)+dotsSize],5); %DrawFrame
-    Screen('FillRect', win, grayval,movierect); %Draw blank for stimuli presentation
+    Screen('FillOval', win, grayval,movierect+[-50 -50 50 50]); %Draw blank for stimuli presentation
     
 elseif stereoMode == 1||stereoMode == 2
     Screen('SelectStereoDrawBuffer', win, 0);

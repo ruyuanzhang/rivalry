@@ -3,7 +3,8 @@ clear all;close all;clc;
 load('RivalryExp_original'); %load the original files,
 %the original image size is 270*270
 
-imageSize   = 232; %orginal one is 5 deg, 232 is 4 deg
+effectiveimageSize   = 290; %orginal one is 5 deg, 232 is 4 deg
+imageSize = round(effectiveimageSize *sqrt(2));
 
 tmp = zeros(imageSize,imageSize,size(img,3),size(img,4));
 
