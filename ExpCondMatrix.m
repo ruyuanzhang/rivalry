@@ -31,7 +31,7 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix(condition)
 %for testing purpose, you can set all condition as F,H, then you can test
 %your binocular presentation.
  
-conditionMatrix=repmat([2 1;1 2],8,1);
+conditionMatrix=repmat([2 3;3 2],8,1);
 
 condNum = conditionMatrix(condition,:);
 leftEyeImg = condNum(1);

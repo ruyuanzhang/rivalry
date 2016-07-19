@@ -69,10 +69,10 @@ viewimages(faceHouseimg);colormap(gray);
 viewimages(objectimg);colormap(gray);
 
 %create 76 pics
-faceimg=repmat(faceimg(:,:,1:19),1,1,4);
-houseimg=repmat(houseimg(:,:,1:19),1,1,4);
-faceHouseimg=repmat(faceHouseimg(:,:,1:19),1,1,4);
-objectimg=repmat(objectimg(:,:,1:19),1,1,4);
+faceimg=repmat(faceimg,[1,1,4]);
+houseimg=repmat(houseimg,[1 1 4]);
+faceHouseimg=repmat(faceHouseimg,[1 1 4]);
+objectimg=repmat(objectimg,[1 1 4]);
 %We also need blank images with gray background
 blankimg    = bgColor*2*0.5*ones(imageSize,imageSize,trialNum);
 clear tmp images faces houses;% clear some redundency 

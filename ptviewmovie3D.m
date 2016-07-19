@@ -1203,15 +1203,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     DrawDotsBg; %specifically for binocular rivalry
     mask=createMask(round(min(d1images,d2images)/2),'maskType','circular');
     mask = Screen('MakeTexture',win,mask);
-<<<<<<< HEAD
-    annulus=createMask(round(min(d1images,d2images)/2),'maskType','annulus','innerRadius',round(min(d1images,d2images)/2));
-    annulusMask = Screen('MakeTexture',win,annulus);
-    annulusRect=CenterRect([0 0 size(annulus,2) size(annulus,1)],rect) + ...
-                repmat(extracircshift([2 1]),[1 2]) + ...
-                [offset(1) offset(2) offset(1) offset(2)];
-=======
-    
->>>>>>> boldscreen
+
     
     %compuate the rotation angle
     rotate = 1;

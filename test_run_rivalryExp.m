@@ -42,13 +42,12 @@ movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror
 
 
 RGcolor=[255 0 0;0 255 0]; %red and green
-<<<<<<< HEAD
+
 frameduration = 24;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
-=======
-frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
+
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
->>>>>>> boldscreen
+
 %change resolution
 %ptonparams = {[],[],0,skipsync,stereoMode };  % don't change resolution
 

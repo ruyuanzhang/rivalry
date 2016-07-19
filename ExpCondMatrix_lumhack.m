@@ -6,22 +6,27 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix_lumhack(condition)
 % conditionMatrix=[
 %      2     3; % F,H
 %      3     2; % H,F
-%      4     3; % W,H
-%      3     4; % H,W
-%      2     4; % F,W
-%      4     2; % W,F
-%      5     5; % F+H,F+H
+%      4     3; % O,H
+%      3     4; % H,O
+
+
 %      5     1; % F+H, no stim
 %      1     5; % no stim, F+H
-%      2     1; % F, no stimw
+%      5     5; % F+H,F+H
+
+%      2     1; % F, no stim
 %      1     2; % no stim, F
 %      2     2; % F, F
 %      3     1; % H, no stim
 %      1     3; % no stim, H
 %      3     3; % H,H
+%      4     1; % O, no stim
+%      1     4; % no stim,O
+%      4     4; % O, O
 %      ];
 %  
- 
+%  
+
 
 
  %for testing purpose, you can set all condition as F,H, then you can test
