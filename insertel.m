@@ -6,6 +6,7 @@ function new_vector=insertel(a,b,index)
 %       index:  index of new elements in the new vector
 % Output
 %       new_a : new vector, length(new_a) =length*(a)+length(b)
+%
 
 if ~exist('a','var')||isempty('a')
     error('please input original vector');

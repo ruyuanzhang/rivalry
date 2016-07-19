@@ -7,17 +7,18 @@ clear all;close all;clc;
 % add functions repository
 addpath(genpath(pwd));
 % set image parameters
-conditions      =[9 6]; % [a b] where
+conditions      =[7 9]; % [a b] where
                             %a conditions need double trials 
                             %b conditions need singal trials 
                             %total a+b conditions                            
-nTrial          =[6 3]; % [a b] where
+nTrial          =[7 3]; % [a b] where
                             %a trials for double trial conditions in a run
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions
 trialNum        = conditions*nTrial'; % OK. We need these many stimulus trials in a run
 effectiveSize   = 500;
-imageSize       = round(sqrt(2)*effectiveSize); %  pixels
+%imageSize       = round(sqrt(2)*effectiveSize); %  pixels
+imageSize       = 720;
 bgColor         = 127;
 contrastRatio   = 0.5; 
 %contrast ratio for face stimuli for adjusting the relative contrast strengh of face and house.
@@ -48,7 +49,14 @@ for i=1:24
     %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
     houseimg(:,:,i)=tmp2;
     
-    faceHouseimg(:,:,i)=tmp1+tmp2-127;
+    faceHouseimg(:,:,i)=tmp1-127+tmp2-127+127;
+    
+    tmp3=double(object(:,:,i));
+    tmp3=imresize(tmp3,[imageSize imageSize]);
+    tmp3=varycontrast(double(tmp3)/254,50); %change to 50% contrast;
+    tmp3=round(tmp3*254);
+    %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
+    objectimg(:,:,i)=tmp3;
     
   
 end
@@ -58,45 +66,16 @@ end
 viewimages(faceimg);colormap(gray);
 viewimages(houseimg);colormap(gray);
 viewimages(faceHouseimg);colormap(gray);
+viewimages(objectimg);colormap(gray);
 
-
-faceimg=repmat(faceimg,1,1,3);
-houseimg=repmat(houseimg,1,1,3);
-faceHouseimg=repmat(faceHouseimg,1,1,3);
+%create 76 pics
+faceimg=repmat(faceimg(:,:,1:19),1,1,4);
+houseimg=repmat(houseimg(:,:,1:19),1,1,4);
+faceHouseimg=repmat(faceHouseimg(:,:,1:19),1,1,4);
+objectimg=repmat(objectimg(:,:,1:19),1,1,4);
 %We also need blank images with gray background
 blankimg    = bgColor*2*0.5*ones(imageSize,imageSize,trialNum);
 clear tmp images faces houses;% clear some redundency 
-
-%% Now we need to make some word image,we are trying to match 
-%dealing with word stim. word is a little bit trikcy, do some process here.
-%We need first compute averaged rms contrast.
-RMS= (sqrt(sum((faceimg(:)-bgColor).^2))+sqrt(sum((houseimg(:)-bgColor).^2)))/(2*size(faceimg,3));
-words=textread('3_letter_words.txt','%s');
-words=words';
-wordimg=[];
-for i = 1:trialNum
-    tmp = uint8(renderText(words{i},'Courier',24,6));
-    tmp=imresize(tmp,imageSize/max(size(tmp))); %resize the images
-    % Set luminance
-    tmp(tmp==1)=round(sqrt(RMS.^2/sum(tmp(:)>0))+bgColor); %we matched the RMS contrast to face and house img
-    tmp(tmp==0)=bgColor;
-    
-    %resize again to make it imageSize*imageSize
-    wordRect = CenterRect([0 0 size(tmp,1) size(tmp,2)], [0 0 imageSize imageSize]);
-    tmp2 = bgColor*ones(imageSize,imageSize);
-    tmp2(wordRect(1):wordRect(3)-1,:,:) = tmp;
-    
-    %generate pinknoise background
-    pinkBg = generatepinknoise(imageSize); %create pinknoise background
-    pinkBg = (imnormconst(pinkBg)/254-0.5)*0.5+0.5;%scale it to 0.25~0.75,50% contrast;
-    
-    pinkBg = pinkBg*127;
-    pinkBg(tmp2>bgColor)=max(tmp2(:));
-    % stack it up
-    wordimg(:,:,i) = pinkBg; % all images
-end
-viewimages(wordimg);colormap(gray);
-
 
 
 %% Now we create a big matrix to include these five categories
@@ -104,7 +83,7 @@ img = zeros(imageSize,imageSize,trialNum,5);
 img (:,:,:,1) = blankimg;
 img (:,:,:,2) = faceimg;
 img (:,:,:,3) = houseimg;
-img (:,:,:,4) = wordimg;%we already set pixel values before
+img (:,:,:,4) = objectimg;%we already set pixel values before
 img (:,:,:,5) = faceHouseimg;
 img = uint8(img);
 
@@ -123,11 +102,11 @@ onoff           = [1 3]; % 1s-ON/3s-OFF design
 nruns           = 14; %how many runs you want                             
 timeUnit        = 0.2;% duration of each time unit
 onoffFrameNum   = int8(onoff/timeUnit);
-conditions      = [9 6]; % [a b] where
+conditions      = [7 9]; % [a b] where
                             %a conditions need double trials 
                             %b conditions need singal trials 
                             %total a+b conditions  
-nTrial          = [6 3]; % [a b] where
+nTrial          = [7 3]; % [a b] where
                             %a trials for double trial conditions in a run
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions

@@ -34,7 +34,7 @@ stereoMode        =  0;
 
 skipsync          =  0; % skip syncrony test for the monitor;
 
-fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum);
+fprintf('\n\nRUNNING BINOCULAR RIVALRY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum);
 %% Set experiment parameters
 offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
