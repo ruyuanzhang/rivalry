@@ -26,12 +26,12 @@ contrastRatio   = 0.5;
 
 
 %let's read in face, house stimuli.
-load('fLocStim.mat');
-faceHouseimg = zeros(imageSize,imageSize,24);
+load('fLocStim_19.mat');
+faceHouseimg = zeros(imageSize,imageSize,size(face,3));
 
 
 %% do some processing on face and house images
-for i=1:24
+for i=1:19
    
     
     %let's resize face and house images and adjust their contrast to 50%

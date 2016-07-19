@@ -7,6 +7,10 @@ function new_vector=insertel(a,b,index)
 % Output
 %       new_a : new vector, length(new_a) =length*(a)+length(b)
 %
+%Example
+% a = rand(1,5);b=rand(1,3);c=insertel(a,b,[1 3 4]);
+% display(a);display(b);display(c)
+
 
 if ~exist('a','var')||isempty('a')
     error('please input original vector');
