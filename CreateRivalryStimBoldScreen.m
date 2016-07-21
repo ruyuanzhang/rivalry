@@ -26,7 +26,7 @@ contrastRatio   = 0.5;
 
 
 %let's read in face, house stimuli.
-load('fLocStim_19.mat');
+load('fLocStim_unifbg_19.mat');
 faceHouseimg = zeros(imageSize,imageSize,size(face,3));
 
 
