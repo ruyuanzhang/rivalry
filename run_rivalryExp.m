@@ -40,7 +40,7 @@ fprintf('\n\nRUNNING BINOCULAR RIVALRY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,
 offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
-lfconst=[1 1];
+lrconst=[0.35 1];
 RGcolor=[255 255 255;255 255 255];
 frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
@@ -63,7 +63,7 @@ oldclut = pton3D(ptonparams{:});
     ptviewmovie3D(reshape(img,[size(img,1), size(img,2), 1 , size(img,3),size(img,4)]), ...
     frameorder(runnum,:),[],frameduration,fixorder(runnum,:),fixcolor, ...
     fixationsize,grayval,[],[],offset,[],movieflip,scfactor,[], ...
-    [],[],[],'t',[],[],[],[],[],[],[],[],stereoMode,expcondorder(runnum,:),RGcolor,RGcolororder(runnum,:)); % scanner button box trigger, for letter, use 't' ; for digit, use "5" 
+    [],[],[],'t',[],[],[],[],[],[],[],[],stereoMode,expcondorder(runnum,:),lrconst,RGcolororder(runnum,:)); % scanner button box trigger, for letter, use 't' ; for digit, use "5" 
 ptoff3D(oldclut,stereoMode);
 
 %Save the timing info and key button press for future analysis

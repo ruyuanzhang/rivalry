@@ -1191,6 +1191,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             tmp(:,:,1)=adjustconst(txttemp2,lrconst(2)); %red, right eye
             tmp(:,:,2)=adjustconst(txttemp,lrconst(1));%green, left eye
             tmp(:,:,3)=adjustconst(txttemp,lrconst(1));%blue,  
+            %tmp(:,:,3)=0;%blue,  
 
             
             texture = Screen('MakeTexture',win,tmp);
