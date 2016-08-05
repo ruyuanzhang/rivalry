@@ -7,7 +7,7 @@ function run_rivalryExp(runnum,stimfile)
 %Input:
 %   optional
 %       runnum: number of current run?default = 1;
-%       stimfile: specifile stim file, default = "rivalryExp.mat"
+%       stimfile: specifile stim file, default = "RivalryExp.mat"
 
 
 
@@ -21,7 +21,6 @@ end
 
 %load the file
 load('RivalryExp.mat');
-
 
 % add functions untilized in the exp
 addpath(genpath(pwd));
@@ -41,11 +40,12 @@ fprintf('\n\nRUNNING BINOCULAR RIVALRY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,
 offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
+lfconst=[1 1];
 RGcolor=[255 255 255;255 255 255];
 frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
-ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
+%ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 %change resolution
-%ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
+ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
 
 
 

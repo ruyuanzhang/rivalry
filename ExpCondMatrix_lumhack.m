@@ -32,7 +32,7 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix_lumhack(condition)
  %for testing purpose, you can set all condition as F,H, then you can test
  %your binocular presentation.
  
-conditionMatrix=repmat([2 3;3 2],8,1);
+conditionMatrix=repmat([2 3;2 3],8,1);
 
 
 condNum = conditionMatrix(condition,:);

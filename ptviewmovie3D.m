@@ -2,7 +2,7 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
   ptviewmovie3D(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
               grayval,detectinput,wantcheck,offset,moviemask,movieflip,scfactor,allowforceglitch, ...
               triggerfun,framefiles,frameskip,triggerkey,specialcon,trialtask,maskimages,specialoverlay, ...
-              frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder,RGcolor,RGcolororder)
+              frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder,lrconst,RGcolororder)
 
 % function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   ptviewmovie(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
@@ -1185,10 +1185,12 @@ for frame=1:frameskip:size(frameorder,2)+1
                     txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),rightEyeImg));
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
+            
+            % 
             tmp=zeros(size(txttemp,1),size(txttemp,2),3);
-            tmp(:,:,1)=txttemp2; %red, right eye
-            tmp(:,:,2)=txttemp;%green, left eye
-            tmp(:,:,3)=txttemp;%blue,
+            tmp(:,:,1)=adjustconst(txttemp2,lrconst(2)); %red, right eye
+            tmp(:,:,2)=adjustconst(txttemp,lrconst(1));%green, left eye
+            tmp(:,:,3)=adjustconst(txttemp,lrconst(1));%blue,  
 
             
             texture = Screen('MakeTexture',win,tmp);
@@ -1209,14 +1211,14 @@ for frame=1:frameskip:size(frameorder,2)+1
     rotate = 1;
     setupImgRotate;
        
-    switch RGcolororder(frame0)
-        case 1
-            lefteyealpha = RGcolor(1,:);
-            righteyealpha = RGcolor(2,:);
-        case 2
-            lefteyealpha = RGcolor(2,:);
-            righteyealpha = RGcolor(1,:);
-    end
+%     switch RGcolororder(frame0)
+%         case 1
+%             lefteyealpha = RGcolor(1,:);
+%             righteyealpha = RGcolor(2,:);
+%         case 2
+%             lefteyealpha = RGcolor(2,:);
+%             righteyealpha = RGcolor(1,:);
+%     end
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation

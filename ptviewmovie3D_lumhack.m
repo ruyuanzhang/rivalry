@@ -2,7 +2,7 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
   ptviewmovie3D_lumhack(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
               grayval,detectinput,wantcheck,offset,moviemask,movieflip,scfactor,allowforceglitch, ...
               triggerfun,framefiles,frameskip,triggerkey,specialcon,trialtask,maskimages,specialoverlay, ...
-              frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder,RGcolor,RGcolororder);
+              frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder,lrconst,RGcolororder)
 
 % function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   ptviewmovie(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
@@ -938,7 +938,7 @@ if ~isempty(trialtask)
 end
 
 %%%%%%%%%%%%%%%%% SET UP DOTS BACKGROUND
-setupBgDots;
+SetupBgDots;
 
 
 
@@ -991,7 +991,7 @@ if ~iscell(texture)
   texture = {texture};
 end
 for p=1:length(texture) % br: stereo-fy, draw to both eyes
-    if stereoMode ==0
+    if stereoMode == 0
         Screen('DrawTexture',win,texture{p},[],fixationrect{p},[],0);
         Screen('Close',texture{p});
     elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4
@@ -1115,7 +1115,7 @@ for frame=1:frameskip:size(frameorder,2)+1
 %    Screen('FillRect',win,grayval);   % REMOVED! this means do whole screen.    % ,movierect);
 
   %draw dots background
-  drawDotsBg;
+  DrawDotsBg;
 
   % otherwise, make a texture, draw it at a particular position
   else
@@ -1152,7 +1152,7 @@ for frame=1:frameskip:size(frameorder,2)+1
         % for distinct images presented for two eyes.
         % This is ugly.
         % 03/08/2016 Ruyuan Zhang
-        if stereoMode == 0
+        if stereoMode == -1
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0)));
@@ -1164,12 +1164,18 @@ for frame=1:frameskip:size(frameorder,2)+1
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             texture = Screen('MakeTexture',win,txttemp);
-        elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
-            [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(expcondorder(1,frame0));% read in condition
+
+        elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0
+            [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
+            
+            %frameorder(1,frame0)=1;
+            
+
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
                     txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),rightEyeImg));
+                    %txttemp3 = feval(flipfun,images(:,:,:,frameorder(1,frame0),5));
                 case 2
                     MI = maskimages(:,:,frameorder(2,frame0));
                     txttemp = feval(flipfun,cat(3,images(:,:,:,frameorder(1,frame0),1),MI));
@@ -1179,8 +1185,18 @@ for frame=1:frameskip:size(frameorder,2)+1
                     txttemp2 = feval(flipfun,images(:,:,:,frameorder(1,frame0),rightEyeImg));
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
-            texture = Screen('MakeTexture',win,txttemp);
-            texture2 = Screen('MakeTexture',win,txttemp2);
+            
+            % 
+            
+            
+            tmp=zeros(size(txttemp,1),size(txttemp,2),3);
+            tmp(:,:,1)=adjustconst(txttemp2,lrconst(2)); %red, right eye
+            tmp(:,:,2)=adjustconst(txttemp,lrconst(1));%green, left eye
+            tmp(:,:,3)=adjustconst(txttemp,lrconst(1));%blue,  
+
+            
+            texture = Screen('MakeTexture',win,tmp);
+            %texture2 = Screen('MakeTexture',win,txttemp2);
         end
     end
     movierect = CenterRect([0 0 round(scfactor*d2images) round(scfactor*d1images)],rect) + ...
@@ -1188,33 +1204,30 @@ for frame=1:frameskip:size(frameorder,2)+1
                 [offset(1) offset(2) offset(1) offset(2)];
             
     %draw dots background
-    drawDotsBg; %specifically for binocular rivalry
+    DrawDotsBg; %specifically for binocular rivalry
     mask=createMask(round(min(d1images,d2images)/2),'maskType','circular');
     mask = Screen('MakeTexture',win,mask);
-    annulus=createMask(round(min(d1images,d2images)/2)+50,'maskType','annulus','innerRadius',round(min(d1images,d2images)/2));
-    annulusMask = Screen('MakeTexture',win,annulus);
-    annulusRect=CenterRect([0 0 size(annulus,2) size(annulus,1)],rect) + ...
-                repmat(extracircshift([2 1]),[1 2]) + ...
-                [offset(1) offset(2) offset(1) offset(2)];
+
     
     %compuate the rotation angle
     rotate = 1;
     setupImgRotate;
-      
-    switch RGcolororder(frame0)
-        case 1
-            lefteyealpha = RGcolor(1,:);
-            righteyealpha = RGcolor(2,:);
-        case 2
-            lefteyealpha = RGcolor(2,:);
-            righteyealpha = RGcolor(1,:);
-    end
+       
+    
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation
                     Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
+                    %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
+                    
+                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[255 255 255]);
+                    
+                    
+                    %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
+                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    Screen('DrawTexture',win,mask,[],movierect,[],[],[],[]); % we draw a 2D round mask
+                    
                 elseif stereoMode == 1||2 %present two different images to two eyes
                     Screen('SelectStereoDrawBuffer', win, 0);
                     %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
@@ -1476,21 +1489,23 @@ for frame=1:frameskip:size(frameorder,2)+1
             WaitSecs(allowforceglitch(2));
           end
           
+          
           %Participant interactively change the red/green alpha channel
           switch kn(1)
               case '1'
-                  RGcolor(1,:)=RGcolor(1,:)+[0.2 0 0];
+                  lrconst=lrconst+[0.001 0];
               case '2'
-                  RGcolor(1,:)=RGcolor(1,:)-[0.2 0 0];
+                  lrconst=lrconst-[0.001 0];
               case '3'
-                  RGcolor(2,:)=RGcolor(2,:)+[0 0.2 0];
+                  lrconst=lrconst+[0 0.001];
               case '4'
-                  RGcolor(2,:)=RGcolor(2,:)-[0 0.2 0];
+                  lrconst=lrconst-[0 0.001];
           end
-          RGcolor(RGcolor>255)=254;
-          RGcolor  
-          
-        end      
+          lrconst = [min(lrconst(1),1) min(lrconst(2),1)];
+          lrconst = [max(lrconst(1),0) max(lrconst(2),0)];
+          lrconst
+
+        end
       end
     end
 
