@@ -8,12 +8,12 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix(condition)
 %      3     2; % H,F
 %      4     3; % O,H
 %      3     4; % H,O
-
-
+% 
+% 
 %      5     1; % F+H, no stim
 %      1     5; % no stim, F+H
 %      5     5; % F+H,F+H
-
+% 
 %      2     1; % F, no stim
 %      1     2; % no stim, F
 %      2     2; % F, F
@@ -25,7 +25,7 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix(condition)
 %      4     4; % O, O
 %      ];
 %  
-%  
+ 
 
 
 %for testing purpose, you can set all condition as F,H, then you can test

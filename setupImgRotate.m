@@ -1,6 +1,6 @@
 
 %compuate the rotation angle
-angleStep = 0;
+angleStep = 5;
 if frameorder(framecnt)~=frameorder(framecnt-1)
     angleStepCnt = 0;
 elseif frameorder(framecnt)==frameorder(framecnt-1)

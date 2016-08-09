@@ -1264,7 +1264,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     Screen('Close',texture);
   end
   %%==========Here is the key part==========================
-  %
+  %08/08/16 by Ruyuan
   %Now we drawtexture, we need to take a screesnop of the whole screen and
   %independently set contrast and luminance for two eye channels
   
@@ -1312,12 +1312,6 @@ for frame=1:frameskip:size(frameorder,2)+1
   
   
   %%==================================================
-  
-  
-  
-  
-  
-  
     
   if stereoMode == 0
       % draw the overlay
