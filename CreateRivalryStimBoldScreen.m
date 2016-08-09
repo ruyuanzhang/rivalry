@@ -33,12 +33,12 @@ faceHouseimg = zeros(imageSize,imageSize,size(face,3));
 %% do some processing on face and house images
 for i=1:19
    
-    
     %let's resize face and house images and adjust their contrast to 50%
     tmp1=double(face(:,:,i));
     tmp1=imresize(tmp1,[imageSize imageSize]);
     tmp1=varycontrast(tmp1/254,50); %change to 50% contrast;
     tmp1=round(tmp1*254);
+    tmp1=setbgcolor(tmp1,127);
     %tmp1=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
     faceimg(:,:,i)=tmp1; 
     
@@ -46,6 +46,7 @@ for i=1:19
     tmp2=imresize(tmp2,[imageSize imageSize]);
     tmp2=varycontrast(double(tmp2)/254,50); %change to 50% contrast;
     tmp2=round(tmp2*254);
+    tmp2=setbgcolor(tmp2,127);
     %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
     houseimg(:,:,i)=tmp2;
     
@@ -55,12 +56,12 @@ for i=1:19
     tmp3=imresize(tmp3,[imageSize imageSize]);
     tmp3=varycontrast(double(tmp3)/254,50); %change to 50% contrast;
     tmp3=round(tmp3*254);
+    tmp3=setbgcolor(tmp3,127);
     %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
     objectimg(:,:,i)=tmp3;
     
   
 end
-
 
 
 viewimages(faceimg);colormap(gray);

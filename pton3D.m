@@ -78,7 +78,7 @@ ptoff3D([],stereoMode);
 AssertOpenGL;
 
 % which screen will we be operating upon?
-screennum = max(Screen('Screens'));
+screennum = min(Screen('Screens'));
 
 
 
@@ -117,6 +117,7 @@ else
 end
 
 
+
 bggray = round(255*.2);  % 127??
 
 if stereoMode == 0
@@ -140,7 +141,7 @@ elseif stereoMode == 2||stereoMode == 4 % use two windows by Vpixx
 end
 
 
-
+rect
 
 
 % record the current clut
