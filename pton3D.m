@@ -78,7 +78,7 @@ ptoff3D([],stereoMode);
 AssertOpenGL;
 
 % which screen will we be operating upon?
-screennum = min(Screen('Screens'));
+screennum = max(Screen('Screens'));
 
 
 

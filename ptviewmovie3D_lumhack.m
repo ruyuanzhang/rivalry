@@ -1527,23 +1527,25 @@ for frame=1:frameskip:size(frameorder,2)+1
           
           
           %Participant interactively change the red/green alpha channel
+          lumstep=1;
+          conststep=0.05;
           switch kn(1)
               case '1'
-                  rblumconst=rblumconst+[0.5 0 0 0];
+                  rblumconst=rblumconst+[lumstep 0 0 0];
               case '2'
-                  rblumconst=rblumconst-[0.5 0 0 0];
+                  rblumconst=rblumconst-[lumstep 0 0 0];
               case '3'
-                  rblumconst=rblumconst+[0 0.0005 0 0];
+                  rblumconst=rblumconst+[0 conststep 0 0];
               case '4'
-                  rblumconst=rblumconst-[0 0.0005 0 0];
+                  rblumconst=rblumconst-[0 conststep 0 0];
               case '5'
-                  rblumconst=rblumconst+[0 0 0.5 0];
+                  rblumconst=rblumconst+[0 0 lumstep 0];
               case '6'
-                  rblumconst=rblumconst-[0 0 0.5 0];
+                  rblumconst=rblumconst-[0 0 lumstep 0];
               case '7'
-                  rblumconst=rblumconst+[0 0 0 0.0005];
+                  rblumconst=rblumconst+[0 0 0 conststep];
               case '8'
-                  rblumconst=rblumconst-[0 0 0 0.0005];
+                  rblumconst=rblumconst-[0 0 0 conststep];
           end
           rblumconst = [min(rblumconst(1),254) min(rblumconst(2),1) min(rblumconst(3),254) min(rblumconst(4),1)];
           rblumconst = [max(rblumconst(1),0) max(rblumconst(2),0) max(rblumconst(3),0) max(rblumconst(4),0)];

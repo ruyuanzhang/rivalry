@@ -1295,7 +1295,7 @@ for frame=1:frameskip:size(frameorder,2)+1
   tmp_Big = zeros(size(im));
   tmp_Big(:,:,1)=txttemp_r; %red
   tmp_Big(:,:,2)=txttemp_b;
-  %tmp_Big(:,:,3)=txttemp_b; %
+  tmp_Big(:,:,3)=txttemp_b; %
   textureBig = Screen('MakeTexture',win,tmp_Big);
   %present stimuli
   if size(framecolor,2) == 3  % the usual case
