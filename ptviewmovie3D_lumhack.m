@@ -259,10 +259,11 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %       4: stereoMode using Vpixx, same image with two disparities will be presented
 % <expcondorder> (optional) is a design matrix indicate condition in each
 % trial, hacked by Ruyuan..
-% <rblumconst> (optional) is the for red and blue channel
-% 
+% <RGcolor> (optional) is the red and green alpha channel value,
 % predetermined in pilot, hacked by Ruyuan
-
+% <RGcolororder> (optional) is the order of left/right eye corrspondence of
+% red and green channel. We want red and gree strickly balanced across eyes
+% and experiment condition
 %
 %
 % return <timeframes> as a 1 x size(<frameorder>,2) vector with the time of each frame showing.
@@ -940,6 +941,7 @@ end
 SetupBgDots;
 
 
+
 %%%%%%%%%%%%%%%%% START THE EXPERIMENT
 
 % draw the background, overlay, and fixation
@@ -1145,6 +1147,7 @@ for frame=1:frameskip:size(frameorder,2)+1
         texture = Screen('MakeTexture',win,txttemp);
       end
     else
+        
         % now we make a little trick here to generate textures
         % for distinct images presented for two eyes.
         % This is ugly.
@@ -1163,9 +1166,11 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0
-            [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(expcondorder(1,frame0));% read in condition
+            [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             %frameorder(1,frame0)=1;
+            
+
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
@@ -1181,12 +1186,11 @@ for frame=1:frameskip:size(frameorder,2)+1
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             
-            % 
+            %             
             tmp=zeros(size(txttemp,1),size(txttemp,2),3);
             tmp(:,:,1)=txttemp2; %red, right eye
             tmp(:,:,2)=txttemp;%green, left eye
-            tmp(:,:,3)=txttemp;%blue  
-           
+            tmp(:,:,3)=txttemp;%blue,  
             texture = Screen('MakeTexture',win,tmp);
             %texture2 = Screen('MakeTexture',win,txttemp2);
         end
@@ -1200,7 +1204,12 @@ for frame=1:frameskip:size(frameorder,2)+1
     mask=createMask(round(min(d1images,d2images)/2),'maskType','circular');
     mask = Screen('MakeTexture',win,mask);
 
-     
+    
+    %compuate the rotation angle
+    rotate = 1;
+    setupImgRotate;
+       
+    
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation
@@ -1208,17 +1217,17 @@ for frame=1:frameskip:size(frameorder,2)+1
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                     
-                    Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,[255 255 255]);
+                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[255 255 255]);
                     
                     
-                    %Screen('DrawTexture',win,texture2,[],movierect,-0,filtermode,1,righteyealpha);
+                    %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     Screen('DrawTexture',win,mask,[],movierect,[],[],[],[]); % we draw a 2D round mask
                     
                 elseif stereoMode == 1||2 %present two different images to two eyes
                     Screen('SelectStereoDrawBuffer', win, 0);
-                    %Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,lefteyealpha);
+                    %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,lefteyealpha);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA,
                     %GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
@@ -1227,36 +1236,38 @@ for frame=1:frameskip:size(frameorder,2)+1
                     
                     
                     Screen('SelectStereoDrawBuffer', win, 1);
-                    %Screen('DrawTexture',win,texture2,[],movierect,-0,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture2,[],movierect,-0,filtermode,1,righteyealpha);
+                    %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask     
+                    Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                    
+                    
                 elseif stereoModel == 3||4 %present same images but jitter dispartity
                     %%% 3D BEGIN
                     % BR: Looks like this is the default stimulus texture drawing case
                     Screen('SelectStereoDrawBuffer', win, 0);
-                    Screen('DrawTexture',win,texture,[],movierect - [disparity 0 disparity 0],0,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture,[],movierect - [disparity 0 disparity 0],rotangle,filtermode,1,framecolor(frame0,:));
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
                     Screen('SelectStereoDrawBuffer', win, 1);
-                    Screen('DrawTexture',win,texture,[],movierect + [disparity 0 disparity 0],-0,filtermode,1,framecolor(frame0,:));
+                    Screen('DrawTexture',win,texture,[],movierect + [disparity 0 disparity 0],-rotangle,filtermode,1,framecolor(frame0,:));
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask  
+                    Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
+                 
                     %%% 3D END
                 end
             else % BR: When does this happen?
                 Screen('DrawTexture',win,texture,[],movierect,0,filtermode,framecolor(frame0));
             end
-    Screen('Close',texture);  
+    Screen('Close',texture);
   end
-  
   %%==========Here is the key part==========================
   %
   %Now we drawtexture, we need to take a screesnop of the whole screen and
   %independently set contrast and luminance for two eye channels
-  meanlum=127;
+  
   %take the whole screen snap,
   %===========!!!!!================================
   %Somehow this Screen('GetImage') function works weird on mac retina
@@ -1267,31 +1278,27 @@ for frame=1:frameskip:size(frameorder,2)+1
   im = Screen('GetImage',win,[],'backBuffer',[],3);
   im = double(im);
   im = (im-127)/127; %scale img to -1~1
+  
   r_lum = rblumconst(1);
   r_const =rblumconst(2);
   b_lum = rblumconst(3);
   b_const = rblumconst(4);
-  
-  
-  % do some computation
-  % change im range to -1 to 1;
-  %txttemp_r = im(:,:,1)*rblumconst(1)*meanlum+meanlum;
-  %txttemp_b = im(:,:,2)*rblumconst(2)*meanlum+meanlum;
-  
-  %four button 1-4 to change blue channel, both lum and const
-  txttemp_r = im(:,:,1)*r_const*((r_lum)*(r_lum<128)+(254-r_lum)*(r_lum>127))+r_lum;% fix r channel
-  txttemp_b = im(:,:,2)*b_const*((b_lum)*(b_lum<128)+(254-b_lum)*(b_lum>127))+b_lum;
    
-%   %four button 1-4 to change red channel, both lum and const
-%   txttemp_b = im(:,:,2)*127+127;% fix r channel
-%   txttemp_r = im(:,:,1)*rblumconst(2)*rblumconst(1)*meanlum+rblumconst(1)*meanlum;
-  
-%   %four button 1-8 to change red/blue channel, both lum and const
-%   txttemp_b = im(:,:,2)*127+127;% fix r channel
-%   txttemp_r = im(:,:,1)*rblumconst(2)*rblumconst(1)*meanlum+rblumconst(1)*meanlum;
-  
-  
-  
+  %four button 1-4 to change red channel, both lum and const
+  if r_lum<128
+      txttemp_r = im(:,:,1)*r_const*r_lum+r_lum;% fix r channel
+  else
+      txttemp_r = im(:,:,1)*r_const*(254-r_lum)+r_lum;% fix r channel
+  end
+  if b_lum<128
+      txttemp_b = im(:,:,2)*b_const*b_lum+b_lum;% fix r channel
+  else
+      txttemp_b = im(:,:,2)*b_const*(254-b_lum)+b_lum;% fix r channel
+  end
+   %txttemp_r=im*127+127;
+   %txttemp_b=im*127+127;
+% 
+%   
   tmp_Big = zeros(size(im));
   tmp_Big(:,:,1)=txttemp_r; %red
   tmp_Big(:,:,2)=txttemp_b;
@@ -1302,8 +1309,16 @@ for frame=1:frameskip:size(frameorder,2)+1
       Screen('DrawTexture',win,textureBig,[],rect,0,filtermode,1,[255 255 255]);
   end
   Screen('Close',textureBig);
+  
+  
   %%==================================================
   
+  
+  
+  
+  
+  
+    
   if stereoMode == 0
       % draw the overlay
       if ~isempty(specialoverlay)
@@ -1500,6 +1515,58 @@ for frame=1:frameskip:size(frameorder,2)+1
         didglitch = 0;
       end
       
+      %% add by Ruyuan, since we noticed the timing issue
+      %try to read input
+      if detectinput
+        [keyIsDown,secs,keyCode,deltaSecs] = KbCheck(-3);  % all devices
+        if keyIsDown
+
+          % get the name of the key and record it
+          kn = KbName(keyCode);
+          timekeys = [timekeys; {secs kn}];
+
+          % check if ESCAPE was pressed
+          if isequal(kn,'ESCAPE')
+            fprintf('Escape key detected.  Exiting prematurely.\n');
+            getoutearly = 1;
+            break;
+          end
+
+          % force a glitch?
+          if allowforceglitch(1) && isequal(kn,'p')
+            WaitSecs(allowforceglitch(2));
+          end
+          
+          %Participant interactively change the red/green alpha channel
+          lumstep=3;
+          conststep=0.02;
+          switch kn(1)
+              case '1'
+                  rblumconst=rblumconst+[lumstep 0 0 0];
+              case '2'
+                  rblumconst=rblumconst-[lumstep 0 0 0];
+              case '3'
+                  rblumconst=rblumconst+[0 conststep 0 0];
+              case '4'
+                  rblumconst=rblumconst-[0 conststep 0 0];
+              case '5'
+                  rblumconst=rblumconst+[0 0 lumstep 0];
+              case '6'
+                  rblumconst=rblumconst-[0 0 lumstep 0];
+              case '7'
+                  rblumconst=rblumconst+[0 0 0 conststep];
+              case '8'
+                  rblumconst=rblumconst-[0 0 0 conststep];
+          end
+          rblumconst = [min(rblumconst(1),254) min(rblumconst(2),1) min(rblumconst(3),254) min(rblumconst(4),1)];
+          rblumconst = [max(rblumconst(1),0) max(rblumconst(2),0) max(rblumconst(3),0) max(rblumconst(4),0)];
+          rblumconst
+
+        end
+      end
+      %% ============above added by Ruyuan
+      
+      
       % get out of this loop
       break;
     
@@ -1525,7 +1592,6 @@ for frame=1:frameskip:size(frameorder,2)+1
             WaitSecs(allowforceglitch(2));
           end
           
-          
           %Participant interactively change the red/green alpha channel
           lumstep=1;
           conststep=0.05;
@@ -1549,7 +1615,7 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           rblumconst = [min(rblumconst(1),254) min(rblumconst(2),1) min(rblumconst(3),254) min(rblumconst(4),1)];
           rblumconst = [max(rblumconst(1),0) max(rblumconst(2),0) max(rblumconst(3),0) max(rblumconst(4),0)];
-          rblumconst
+          %rblumconst
 
         end
       end
@@ -1579,7 +1645,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     % since we keep resetting to the empirical VBLTimestamp.
     when = VBLTimestamp + mfi * frameduration - mfi / 2;  % should we be less aggressive??
   end
-  
+    
 end
 
 % draw the background, overlay, and fixation
