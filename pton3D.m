@@ -27,6 +27,7 @@ function oldclut = pton3D(resolution,winsize,clutfile,skipsync,stereoMode)
 %       2:  stereo with Vpixx with different images
 %       3:  stereo with heloscope, same image with disparity 
 %       4:  stereo with Vpixx, same image with disparity
+%       5:  stereoMode for Anaglyph stereo
 %
 %
 %
@@ -45,6 +46,7 @@ function oldclut = pton3D(resolution,winsize,clutfile,skipsync,stereoMode)
 %   we don't rely on any java stuff.
 %
 % history:
+% 2016/08/09 - add a stereoMode option for Anaglyph stereo       
 % 2011/10/13 - now always generate a CLUT at 8-bit (256 rows).
 % 2016/03/07 - add a stereoModel variable to accordinate with normal
 %              monitor presentation and Vpixx stereo presetation
@@ -79,7 +81,6 @@ AssertOpenGL;
 
 % which screen will we be operating upon?
 screennum = max(Screen('Screens'));
-
 
 
 if stereoMode == 2||stereoMode == 4
@@ -138,10 +139,10 @@ elseif stereoMode == 2||stereoMode == 4 % use two windows by Vpixx
     SetStereoBlueLineSyncParameters(win, rect(4)+10);
     
     %%% 3D END
+elseif stereoMode == 5
+    [win,rect] = Screen('OpenWindow',screennum,127,rect,[],[],8); % number 8 is the stereoMode for openwindow function
 end
 
-
-rect
 
 
 % record the current clut

@@ -945,7 +945,7 @@ SetupBgDots;
 %%%%%%%%%%%%%%%%% START THE EXPERIMENT
 
 % draw the background, overlay, and fixation
-if stereoMode == 0
+if stereoMode == 0 ||stereoMode == 5
     Screen('FillRect',win,grayval,rect);
     if ~isempty(specialoverlay)
         texture = Screen('MakeTexture',win,specialoverlay);
@@ -1099,7 +1099,7 @@ for frame=1:frameskip:size(frameorder,2)+1
   MI = [];
   
   %%% 3D BEGIN
-  if stereoMode == 0
+  if stereoMode == 0 || stereoMode == 5
       Screen('FillRect',win,grayval);
   elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
       Screen('SelectStereoDrawBuffer', win, 0);
@@ -1165,7 +1165,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
             texture = Screen('MakeTexture',win,txttemp);
 
-        elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0
+        elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
             [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             %frameorder(1,frame0)=1;
@@ -1224,15 +1224,15 @@ for frame=1:frameskip:size(frameorder,2)+1
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     Screen('DrawTexture',win,mask,[],movierect,[],[],[],[]); % we draw a 2D round mask
                     
-                elseif stereoMode == 1||2 %present two different images to two eyes
+                elseif stereoMode == 1||2||5 %present two different images to two eyes
                     Screen('SelectStereoDrawBuffer', win, 0);
                     %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
                     Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,lefteyealpha);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA,
                     %GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
-                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                    %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    %Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                     
                     
                     Screen('SelectStereoDrawBuffer', win, 1);
@@ -1240,8 +1240,8 @@ for frame=1:frameskip:size(frameorder,2)+1
                     Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
                     %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
-                    Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                    %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                    %Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                     
                     
                 elseif stereoModel == 3||4 %present same images but jitter dispartity
