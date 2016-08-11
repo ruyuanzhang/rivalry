@@ -1551,8 +1551,8 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           
           %Participant interactively change the red/green alpha channel
-          lumstep=0.1;
-          conststep=0.0002;
+          lumstep=1;
+          conststep=0.05;
           kn
 
           if ~iscell(kn)
@@ -1610,8 +1610,8 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           
           %Participant interactively change the red/green alpha channel
-          lumstep=0.1;
-          conststep=0.0005;
+          lumstep=1;
+          conststep=0.05;
           
 
           if ~iscell(kn) %exclude the cases has more than one button press
