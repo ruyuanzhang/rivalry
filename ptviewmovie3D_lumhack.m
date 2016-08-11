@@ -945,14 +945,14 @@ SetupBgDots;
 %%%%%%%%%%%%%%%%% START THE EXPERIMENT
 
 % draw the background, overlay, and fixation
-if stereoMode == 0 ||stereoMode == 5
+if stereoMode == 0 
     Screen('FillRect',win,grayval,rect);
     if ~isempty(specialoverlay)
         texture = Screen('MakeTexture',win,specialoverlay);
         Screen('DrawTexture',win,texture,[],overlayrect,[],0);
         Screen('Close',texture);
     end  
-elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4
+elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4|| stereoMode == 5
     %%% 3D BEGIN
     % Screen('FillRect',win,grayval,rect);
     % gray
@@ -994,7 +994,7 @@ for p=1:length(texture) % br: stereo-fy, draw to both eyes
     if stereoMode == 0
         Screen('DrawTexture',win,texture{p},[],fixationrect{p},[],0);
         Screen('Close',texture{p});
-    elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4
+    elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4|| stereoMode == 5
         Screen('SelectStereoDrawBuffer', win, 0);
         Screen('DrawTexture',win,texture{p},[],fixationrect{p} - [0 0 0 0],[],0);
         Screen('SelectStereoDrawBuffer', win, 1);
@@ -1099,9 +1099,9 @@ for frame=1:frameskip:size(frameorder,2)+1
   MI = [];
   
   %%% 3D BEGIN
-  if stereoMode == 0 || stereoMode == 5
+  if stereoMode == 0 
       Screen('FillRect',win,grayval);
-  elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4
+  elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4|| stereoMode == 5
       Screen('SelectStereoDrawBuffer', win, 0);
       Screen('FillRect',win,grayval);
       Screen('SelectStereoDrawBuffer', win, 1);
@@ -1187,12 +1187,12 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
             
             %             
-            tmp=zeros(size(txttemp,1),size(txttemp,2),3);
-            tmp(:,:,1)=txttemp2; %red, right eye
-            tmp(:,:,2)=txttemp;%green, left eye
-            tmp(:,:,3)=txttemp;%blue,  
-            texture = Screen('MakeTexture',win,tmp);
-            %texture2 = Screen('MakeTexture',win,txttemp2);
+%             tmp=zeros(size(txttemp,1),size(txttemp,2),3);
+%             tmp(:,:,1)=txttemp2; %red, right eye
+%             tmp(:,:,2)=txttemp;%green, left eye
+%             tmp(:,:,3)=txttemp;%blue,  
+             texture = Screen('MakeTexture',win,txttemp);
+            texture2 = Screen('MakeTexture',win,txttemp2);
         end
     end
     movierect = CenterRect([0 0 round(scfactor*d2images) round(scfactor*d1images)],rect) + ...
@@ -1208,7 +1208,8 @@ for frame=1:frameskip:size(frameorder,2)+1
     %compuate the rotation angle
     rotate = 1;
     setupImgRotate;
-       
+    lefteyealpha=[255 255 255];   
+    righteyealpha=[255 255 255];
     
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
@@ -1262,6 +1263,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                 Screen('DrawTexture',win,texture,[],movierect,0,filtermode,framecolor(frame0));
             end
     Screen('Close',texture);
+    Screen('Close',texture2);
   end
   %%==========Here is the key part==========================
   %08/08/16 by Ruyuan
@@ -1274,10 +1276,19 @@ for frame=1:frameskip:size(frameorder,2)+1
   %screen.But works good
   
   
-  %
+%   
+%   im_r = Screen('GetImage',win,[],'backBuffer',[],3);
+%   im_b = Screen('GetImage',win,[],'backBuffer',[],1);
+%   im_r = double(im_r);
+%   im_r = (im_r-127)/127; %scale img to -1~1
+%   im_b = double(im_b);
+%   im_b = (im_b-127)/127; %scale img to -1~1
+%   
   im = Screen('GetImage',win,[],'backBuffer',[],3);
   im = double(im);
   im = (im-127)/127; %scale img to -1~1
+  
+  
   
   r_lum = rblumconst(1);
   r_const =rblumconst(2);
@@ -1299,28 +1310,36 @@ for frame=1:frameskip:size(frameorder,2)+1
    %txttemp_b=im*127+127;
 % 
 %   
-  tmp_Big = zeros(size(im));
-  tmp_Big(:,:,1)=txttemp_r; %red
-  tmp_Big(:,:,2)=txttemp_b;
-  tmp_Big(:,:,3)=txttemp_b; %
-  textureBig = Screen('MakeTexture',win,tmp_Big);
+%   tmp_Big = zeros(size(im));
+%   tmp_Big(:,:,1)=txttemp_r; %red
+%   tmp_Big(:,:,2)=txttemp_b;
+%   tmp_Big(:,:,3)=txttemp_b; %
+  textureBig1 = Screen('MakeTexture',win,txttemp_r);
+  textureBig2 = Screen('MakeTexture',win,txttemp_b);
   %present stimuli
   if size(framecolor,2) == 3  % the usual case
-      Screen('DrawTexture',win,textureBig,[],rect,0,filtermode,1,[255 255 255]);
+      Screen('SelectStereoDrawBuffer', win, 0);
+      Screen('DrawTexture',win,textureBig1,[],rect,0,filtermode,1,[255 255 255]);
+      %Screen('FillRect',win,127,rect);
+      Screen('SelectStereoDrawBuffer', win, 1);
+      Screen('DrawTexture',win,textureBig2,[],rect,0,filtermode,1,[255 255 255]);
+      %Screen('FillRect',win,127,rect);
+      
   end
-  Screen('Close',textureBig);
+  Screen('Close',textureBig1);
+  Screen('Close',textureBig2);
   
   
   %%==================================================
     
-  if stereoMode == 0
+  if stereoMode == 0 
       % draw the overlay
       if ~isempty(specialoverlay)
           texture = Screen('MakeTexture',win,specialoverlay);
           Screen('DrawTexture',win,texture,[],overlayrect,0,0);
           Screen('Close',texture);
       end
-  elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4
+  elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4|| stereoMode == 5
       % draw the overlay
       if ~isempty(specialoverlay)
           %%% 3D BEGIN
@@ -1369,10 +1388,10 @@ for frame=1:frameskip:size(frameorder,2)+1
     texture = {texture};
   end
   for p=1:length(texture) % Holy crap KK, how many different times can you call DrawTexure?
-      if stereoMode == 0
+      if stereoMode == 0 
           Screen('DrawTexture',win,texture{p},[],fixationrect{p},0,0);
           Screen('Close',texture{p});
-      elseif stereoMode == 1||stereoMode ==2||stereoMode == 3||stereoMode == 4
+      elseif stereoMode == 1||stereoMode ==2||stereoMode == 3||stereoMode == 4|| stereoMode == 5
           %%% 3D BEGIN
           % This puts up the fixation dot in the right eye, but no stimulus yet
           Screen('SelectStereoDrawBuffer', win, 0);
@@ -1532,25 +1551,29 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           
           %Participant interactively change the red/green alpha channel
-          lumstep=3;
-          conststep=0.02;
-          switch kn(1)
-              case '1'
-                  rblumconst=rblumconst+[lumstep 0 0 0];
-              case '2'
-                  rblumconst=rblumconst-[lumstep 0 0 0];
-              case '3'
-                  rblumconst=rblumconst+[0 conststep 0 0];
-              case '4'
-                  rblumconst=rblumconst-[0 conststep 0 0];
-              case '5'
-                  rblumconst=rblumconst+[0 0 lumstep 0];
-              case '6'
-                  rblumconst=rblumconst-[0 0 lumstep 0];
-              case '7'
-                  rblumconst=rblumconst+[0 0 0 conststep];
-              case '8'
-                  rblumconst=rblumconst-[0 0 0 conststep];
+          lumstep=0.1;
+          conststep=0.0002;
+          kn
+
+          if ~iscell(kn)
+              switch kn(1)
+                  case '1'
+                      rblumconst=rblumconst+[lumstep 0 0 0];
+                  case '2'
+                      rblumconst=rblumconst-[lumstep 0 0 0];
+                  case '3'
+                      rblumconst=rblumconst+[0 conststep 0 0];
+                  case '4'
+                      rblumconst=rblumconst-[0 conststep 0 0];
+                  case '5'
+                      rblumconst=rblumconst+[0 0 lumstep 0];
+                  case '6'
+                      rblumconst=rblumconst-[0 0 lumstep 0];
+                  case '7'
+                      rblumconst=rblumconst+[0 0 0 conststep];
+                  case '8'
+                      rblumconst=rblumconst-[0 0 0 conststep];
+              end
           end
           rblumconst = [min(rblumconst(1),254) min(rblumconst(2),1) min(rblumconst(3),254) min(rblumconst(4),1)];
           rblumconst = [max(rblumconst(1),0) max(rblumconst(2),0) max(rblumconst(3),0) max(rblumconst(4),0)];
@@ -1587,29 +1610,34 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           
           %Participant interactively change the red/green alpha channel
-          lumstep=1;
-          conststep=0.05;
-          switch kn(1)
-              case '1'
-                  rblumconst=rblumconst+[lumstep 0 0 0];
-              case '2'
-                  rblumconst=rblumconst-[lumstep 0 0 0];
-              case '3'
-                  rblumconst=rblumconst+[0 conststep 0 0];
-              case '4'
-                  rblumconst=rblumconst-[0 conststep 0 0];
-              case '5'
-                  rblumconst=rblumconst+[0 0 lumstep 0];
-              case '6'
-                  rblumconst=rblumconst-[0 0 lumstep 0];
-              case '7'
-                  rblumconst=rblumconst+[0 0 0 conststep];
-              case '8'
-                  rblumconst=rblumconst-[0 0 0 conststep];
+          lumstep=0.1;
+          conststep=0.0005;
+          
+
+          if ~iscell(kn) %exclude the cases has more than one button press
+              switch kn(1)
+                  case '1'
+                      rblumconst=rblumconst+[lumstep 0 0 0];
+                  case '2'
+                      rblumconst=rblumconst-[lumstep 0 0 0];
+                  case '3'
+                      rblumconst=rblumconst+[0 conststep 0 0];
+                  case '4'
+                      rblumconst=rblumconst-[0 conststep 0 0];
+                  case '5'
+                      rblumconst=rblumconst+[0 0 lumstep 0];
+                  case '6'
+                      rblumconst=rblumconst-[0 0 lumstep 0];
+                  case '7'
+                      rblumconst=rblumconst+[0 0 0 conststep];
+                  case '8'
+                      rblumconst=rblumconst-[0 0 0 conststep];
+              end
           end
           rblumconst = [min(rblumconst(1),254) min(rblumconst(2),1) min(rblumconst(3),254) min(rblumconst(4),1)];
           rblumconst = [max(rblumconst(1),0) max(rblumconst(2),0) max(rblumconst(3),0) max(rblumconst(4),0)];
-          %rblumconst
+          rblumconst
+          
 
         end
       end
@@ -1643,14 +1671,14 @@ for frame=1:frameskip:size(frameorder,2)+1
 end
 
 % draw the background, overlay, and fixation
-if stereoMode == 0
+if stereoMode == 0 
     Screen('FillRect',win,grayval,rect);
     if ~isempty(specialoverlay)
         texture = Screen('MakeTexture',win,specialoverlay);
         Screen('DrawTexture',win,texture,[],overlayrect,[],0);
         Screen('Close',texture);
     end    
-elseif stereoMode ==1 || stereoMode ==2||stereoMode == 3||stereoMode == 4
+elseif stereoMode ==1 || stereoMode ==2||stereoMode == 3||stereoMode == 4|| stereoMode == 5
     %%% 3D BEGIN
     % Screen('FillRect',win,grayval,rect);
     % gray
