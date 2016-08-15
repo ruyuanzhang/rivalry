@@ -140,7 +140,7 @@ elseif stereoMode == 2||stereoMode == 4 % use two windows by Vpixx
     
     %%% 3D END
 elseif stereoMode == 5
-    screennum = 0;
+    %screennum = 0;
     [win,rect] = Screen('OpenWindow',screennum,127,rect,[],[],6); % number 6 is the stereoMode for openwindow function
 end
 
