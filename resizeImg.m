@@ -21,7 +21,7 @@ img = uint8(tmp);
 
 %% Save it out
 desc = ' img is the image stack \n stimorder gives the order of the stimulus for each run \n frameorder gives image number in each trial \n fixorder gives order of fixation luminance \n fixcolor gives levels of fixation luminance \n expcondorder gives order of experiment conditions every frame \n condorder gives order of experiment conditions in every trial'
-save RivalryExp img desc stimorder frameorder fixorder fixcolor expcondorder condorder rg_colororder RGcolororder
+save RivalryExp img desc stimorder frameorder fixorder fixcolor expcondorder condorder
 
 % also change the test stimuli
 clear all;

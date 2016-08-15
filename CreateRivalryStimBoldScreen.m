@@ -26,7 +26,7 @@ contrastRatio   = 0.5;
 
 
 %let's read in face, house stimuli.
-load('fLocStim_unifbg_19.mat');
+load('fLocStim.mat');
 faceHouseimg = zeros(imageSize,imageSize,size(face,3));
 
 
@@ -122,7 +122,7 @@ for rn = 1:nruns
     tmp2 = rem(1:nTrial(2)*conditions(2),conditions(2))+1+conditions(1);
     tmp_cond = horzcat(tmp1,tmp2);
     tmp_stim  = 1:(nTrial*conditions');
-    tmp_color = rem(tmp_stim,2)+1;
+
     % Add in blanks and Shuffle stim order to randomize conditions for the run
     %stimorder(rn,:) = Shuffle(horzcat(tmp, zeros(1,nblank)));
     % here, we need two constraints
@@ -131,14 +131,12 @@ for rn = 1:nruns
     % use insertBlankTrial function to deal with it
     
     [tmp_cond, index]=Shuffle(tmp_cond);
-    tmp_color=tmp_color(index);
-    stimorder(rn,:) = insertBlankTrial(horzcat(tmp_stim, zeros(1,blankTrialNum(1))));
+    stimorder(rn,:) = Shuffle(insertBlankTrial(tmp_stim, blankTrialNum(1)));
     condorder(rn,:) = insertel(tmp_cond,zeros(1,blankTrialNum(1)),find(stimorder(rn,:)==0));
-    rg_colororder(rn,:) = insertel(tmp_color,zeros(1,blankTrialNum(1)),find(stimorder(rn,:)==0));
 end
 frameorder = makeFrameOrder(stimorder,onoffFrameNum(1),onoffFrameNum(2));
 expcondorder = makeFrameOrder(condorder,onoffFrameNum(1),onoffFrameNum(2));
-RGcolororder = makeFrameOrder(rg_colororder,onoffFrameNum(1),onoffFrameNum(2));
+
 
 % 02/23/2016, by RZ
 % we add 4 trials blank at the very begining and the very end for both frame
@@ -147,7 +145,7 @@ RGcolororder = makeFrameOrder(rg_colororder,onoffFrameNum(1),onoffFrameNum(2));
 blankframe = zeros(nruns,round(sum(onoff)/timeUnit*blankTrialNum(2))); % 20 frames/trial, we want to 4 trials blank
 frameorder = horzcat(blankframe,frameorder,blankframe);
 expcondorder = horzcat(blankframe,expcondorder,blankframe);
-RGcolororder = horzcat(blankframe,RGcolororder,blankframe);
+
 
 %% Create fixation task
 clear fixorder fixcolor;
@@ -157,7 +155,7 @@ end
 
 %% Save it out
 desc = ' img is the image stack \n stimorder gives the order of the stimulus for each run \n frameorder gives image number in each trial \n fixorder gives order of fixation luminance \n fixcolor gives levels of fixation luminance \n expcondorder gives order of experiment conditions every frame \n condorder gives order of experiment conditions in every trial'
-save RivalryExp_original img desc stimorder frameorder fixorder fixcolor expcondorder condorder rg_colororder RGcolororder
+save RivalryExp_original img desc stimorder frameorder fixorder fixcolor expcondorder condorder
 
 % also change the test stimuli
 clear all;

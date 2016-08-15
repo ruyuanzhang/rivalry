@@ -12,15 +12,15 @@ function new_vector=insertel(a,b,index)
 % display(a);display(b);display(c)
 
 
-if ~exist('a','var')||isempty('a')
+if ~exist('a','var')||isempty(a)
     error('please input original vector');
 end
 
-if ~exist('b','var')||isempty('b')
+if ~exist('b','var')||isempty(b)
     error('please input the elements to be inserted');
 end
 
-if ~exist('index','var')||isempty('index')
+if ~exist('index','var')||isempty(index)
     error('please input the index of new elements');
 end
 

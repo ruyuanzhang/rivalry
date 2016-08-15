@@ -17,7 +17,8 @@ y_bound         = desRect(4)-desRect(2);%
 dotsSize        = 10; %# of pixel;
 dotsNum         = 200; %# of dots in total
 
-dotColor        = uint8(round(repmat(rand(1,dotsNum),3,1)*255)); 
+
+dotColor        = repmat((rand(1,dotsNum)-0.5)*2,3,1);
 
 desRect         = CenterRect(desRect,rect) + [offset(1) offset(2) offset(1) offset(2)]; %set Frame rect
 xy              = [randi(x_bound,[1,dotsNum])-round(x_bound/2);randi(y_bound,[1,dotsNum])-round(y_bound/2)]; %set location of dots

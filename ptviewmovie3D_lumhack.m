@@ -257,6 +257,7 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %       3: similar with 1, stereoMode,workwith heploscope, the same images with different disparity will be presented
 %           on two sides on the same monitor
 %       4: stereoMode using Vpixx, same image with two disparities will be presented
+%       5: anaglyph stereoMode
 % <expcondorder> (optional) is a design matrix indicate condition in each
 % trial, hacked by Ruyuan..
 % <RGcolor> (optional) is the red and green alpha channel value,
@@ -957,9 +958,9 @@ elseif stereoMode == 1||stereoMode == 2||stereoMode == 3||stereoMode == 4|| ster
     % Screen('FillRect',win,grayval,rect);
     % gray
     Screen('SelectStereoDrawBuffer', win, 0);
-    Screen('FillRect',win,grayval,rect);
+    Screen('FillRect',win,rblumconst(1),rect);
     Screen('SelectStereoDrawBuffer', win, 1);
-    Screen('FillRect',win,grayval,rect);
+    Screen('FillRect',win,rblumconst(3),rect);
     %%% 3D END  
     if ~isempty(specialoverlay)
         %%% 3D BEGIN
@@ -1103,9 +1104,9 @@ for frame=1:frameskip:size(frameorder,2)+1
       Screen('FillRect',win,grayval);
   elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4|| stereoMode == 5
       Screen('SelectStereoDrawBuffer', win, 0);
-      Screen('FillRect',win,grayval);
+      Screen('FillRect',win,rblumconst(1));
       Screen('SelectStereoDrawBuffer', win, 1);
-      Screen('FillRect',win,grayval);
+      Screen('FillRect',win,rblumconst(3));
   end
       
   
@@ -1186,12 +1187,14 @@ for frame=1:frameskip:size(frameorder,2)+1
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             
-            %             
-%             tmp=zeros(size(txttemp,1),size(txttemp,2),3);
-%             tmp(:,:,1)=txttemp2; %red, right eye
-%             tmp(:,:,2)=txttemp;%green, left eye
-%             tmp(:,:,3)=txttemp;%blue,  
-             texture = Screen('MakeTexture',win,txttemp);
+            %
+            txttemp = (double(txttemp)-127)/127; %r,set range to -0.5~0.5, original image is 50% const
+            txttemp2 = (double(txttemp2)-127)/127;%b
+            %txttemp = (txttemp-127)*rblumconst(2)*(rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127))+rblumconst(1);
+            txttemp = txttemp*rblumconst(2)*(rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127))+rblumconst(1);
+            txttemp2 = txttemp2*rblumconst(4)*(rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127))+rblumconst(3);
+  
+            texture = Screen('MakeTexture',win,txttemp);
             texture2 = Screen('MakeTexture',win,txttemp2);
         end
     end
@@ -1284,51 +1287,51 @@ for frame=1:frameskip:size(frameorder,2)+1
 %   im_b = double(im_b);
 %   im_b = (im_b-127)/127; %scale img to -1~1
 %   
-  im = Screen('GetImage',win,[],'backBuffer',[],3);
-  im = double(im);
-  im = (im-127)/127; %scale img to -1~1
-  
-  
-  
-  r_lum = rblumconst(1);
-  r_const =rblumconst(2);
-  b_lum = rblumconst(3);
-  b_const = rblumconst(4);
-   
-  %four button 1-4 to change red channel, both lum and const
-  if r_lum<128
-      txttemp_r = im(:,:,1)*r_const*r_lum+r_lum;% fix r channel
-  else
-      txttemp_r = im(:,:,1)*r_const*(254-r_lum)+r_lum;% fix r channel
-  end
-  if b_lum<128
-      txttemp_b = im(:,:,2)*b_const*b_lum+b_lum;% fix r channel
-  else
-      txttemp_b = im(:,:,2)*b_const*(254-b_lum)+b_lum;% fix r channel
-  end
-   %txttemp_r=im*127+127;
-   %txttemp_b=im*127+127;
-% 
+%   im = Screen('GetImage',win,[],'backBuffer',[],3);
+%   im = double(im);
+%   im = (im-127)/127; %scale img to -1~1
 %   
-%   tmp_Big = zeros(size(im));
-%   tmp_Big(:,:,1)=txttemp_r; %red
-%   tmp_Big(:,:,2)=txttemp_b;
-%   tmp_Big(:,:,3)=txttemp_b; %
-  textureBig1 = Screen('MakeTexture',win,txttemp_r);
-  textureBig2 = Screen('MakeTexture',win,txttemp_b);
-  %present stimuli
-  if size(framecolor,2) == 3  % the usual case
-      Screen('SelectStereoDrawBuffer', win, 0);
-      Screen('DrawTexture',win,textureBig1,[],rect,0,filtermode,1,[255 255 255]);
-      %Screen('FillRect',win,127,rect);
-      Screen('SelectStereoDrawBuffer', win, 1);
-      Screen('DrawTexture',win,textureBig2,[],rect,0,filtermode,1,[255 255 255]);
-      %Screen('FillRect',win,127,rect);
-      
-  end
-  Screen('Close',textureBig1);
-  Screen('Close',textureBig2);
-  
+%   
+%   
+%   r_lum = rblumconst(1);
+%   r_const =rblumconst(2);
+%   b_lum = rblumconst(3);
+%   b_const = rblumconst(4);
+%    
+%   %four button 1-4 to change red channel, both lum and const
+%   if r_lum<128
+%       txttemp_r = im(:,:,1)*r_const*r_lum+r_lum;% fix r channel
+%   else
+%       txttemp_r = im(:,:,1)*r_const*(254-r_lum)+r_lum;% fix r channel
+%   end
+%   if b_lum<128
+%       txttemp_b = im(:,:,2)*b_const*b_lum+b_lum;% fix r channel
+%   else
+%       txttemp_b = im(:,:,2)*b_const*(254-b_lum)+b_lum;% fix r channel
+%   end
+%    %txttemp_r=im*127+127;
+%    %txttemp_b=im*127+127;
+% % 
+% %   
+% %   tmp_Big = zeros(size(im));
+% %   tmp_Big(:,:,1)=txttemp_r; %red
+% %   tmp_Big(:,:,2)=txttemp_b;
+% %   tmp_Big(:,:,3)=txttemp_b; %
+%   textureBig1 = Screen('MakeTexture',win,txttemp_r);
+%   textureBig2 = Screen('MakeTexture',win,txttemp_b);
+%   %present stimuli
+%   if size(framecolor,2) == 3  % the usual case
+%       Screen('SelectStereoDrawBuffer', win, 0);
+%       Screen('DrawTexture',win,textureBig1,[],rect,0,filtermode,1,[255 255 255]);
+%       %Screen('FillRect',win,127,rect);
+%       Screen('SelectStereoDrawBuffer', win, 1);
+%       Screen('DrawTexture',win,textureBig2,[],rect,0,filtermode,1,[255 255 255]);
+%       %Screen('FillRect',win,127,rect);
+%       
+%   end
+%   Screen('Close',textureBig1);
+%   Screen('Close',textureBig2);
+%   
   
   %%==================================================
     
@@ -1683,9 +1686,9 @@ elseif stereoMode ==1 || stereoMode ==2||stereoMode == 3||stereoMode == 4|| ster
     % Screen('FillRect',win,grayval,rect);
     % gray
     Screen('SelectStereoDrawBuffer', win, 0);
-    Screen('FillRect',win,grayval,rect);
+    Screen('FillRect',win,rblumconst(1),rect);
     Screen('SelectStereoDrawBuffer', win, 1);
-    Screen('FillRect',win,grayval,rect);
+    Screen('FillRect',win,rblumconst(3),rect);
     %%% 3D END  
     if ~isempty(specialoverlay)
         %%% 3D BEGIN

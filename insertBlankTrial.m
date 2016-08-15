@@ -15,31 +15,33 @@ function new_order = insertBlankTrial(order,nblank)
 %   1. Blank trials should not be at the very begining and the very end
 %   2. Blank trials should not be consecutive.
 %
+% i.e.
+% order=insertBlankTrial(1:10,3,[2 3 4]);
 % history.
 % 02/24/16, RZ create this function
 
-if ~exist('order','var')||isempty('order')
+if ~exist('order','var')||isempty(order)
     error('please input a correct stimulus order');
 end
 
-if ~exist('nblank','var')||isempty('nblank')
+if ~exist('nblank','var')||isempty(nblank)
     nblank = 0;
 end
 
-order = horzcat(order, zeros(1,nblank));
+tmp = horzcat(order, zeros(1,nblank));
 
 % check the two constraints 
 exitflag = 0;
 while ~exitflag
-    order=Shuffle(order);
-    blankidx = find(order==0);
-    if firstel(order)~=0 && lastel(order)~=0 && ~any(diff(blankidx)==1) 
+    tmp=Shuffle(tmp);
+    blankidx = find(tmp==0);
+    if firstel(tmp)~=0 && lastel(tmp)~=0 && ~any(diff(blankidx)==1) 
         exitflag=1; 
     else
         continue;
     end        
 end
+new_order=insertel(order,zeros(1,nblank),find(tmp==0));
 
-new_order = order;
 
 

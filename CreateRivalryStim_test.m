@@ -20,7 +20,7 @@ blankTrialNum   = [5 4]; %[A B] where
 
 frameorder = makeFrameOrder(stimorder,onoffFrameNum(1),onoffFrameNum(2));
 expcondorder = makeFrameOrder(condorder,onoffFrameNum(1),onoffFrameNum(2));
-RGcolororder = makeFrameOrder(rg_colororder,onoffFrameNum(1),onoffFrameNum(2));
+
 
 % 02/23/2016, by RZ
 % we add 4 trials blank at the very begining and the very end for both frame
@@ -29,7 +29,7 @@ RGcolororder = makeFrameOrder(rg_colororder,onoffFrameNum(1),onoffFrameNum(2));
 blankframe = zeros(nruns,20*blankTrialNum(2)); % 20 frames/trial, we want to 4 trials blank
 frameorder = horzcat(blankframe,frameorder,blankframe);
 expcondorder = horzcat(blankframe,expcondorder,blankframe);
-RGcolororder = horzcat(blankframe,RGcolororder,blankframe);
+
 
 %% Create fixation task
 for rn = 1 : nruns
@@ -38,7 +38,7 @@ end
 
 %% Save it out
 desc = ' img is the image stack \n stimorder gives the order of the stimulus for each run \n frameorder gives image number in each trial \n fixorder gives order of fixation luminance \n fixcolor gives levels of fixation luminance \n expcondorder gives order of experiment conditions every frame \n condorder gives order of experiment conditions in every trial'
-save RivalryExptest img desc stimorder frameorder fixorder fixcolor expcondorder condorder rg_colororder RGcolororder
+save RivalryExptest img desc stimorder frameorder fixorder fixcolor expcondorder condorder
 
 
 return
