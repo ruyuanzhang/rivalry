@@ -16,7 +16,7 @@ nTrial          =[7 3]; % [a b] where
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions
 trialNum        = conditions*nTrial'; % OK. We need these many stimulus trials in a run
-effectiveSize   = 112;
+effectiveSize   = 184;
 imageSize       = round(sqrt(2)*effectiveSize); %  pixels
 %imageSize       = 720;
 bgColor         = 127;
