@@ -3,7 +3,7 @@
 clear all;close all;clc
 load('RivalryExp'); %load the design matrix
 
-runnum          =  1;
+runnum          =  2;
 buttons         ={'1','2','3','4'};
 result          =zeros(16,4);%four columns:1,face;2,house;3,word;4,mixture
 condorder = condorder(runnum,:);
@@ -12,7 +12,7 @@ for i = 1: numel(keybuttons) %how many trial
     %first get the condition at this key press
     TrialNum = floor(floor(keytimes(i))/4) - 4; %substract the first 4 blank trials
     if condorder(TrialNum) ~=0
-        switch keybuttons(i)
+        switch keybuttons{i}
             case buttons(1)
                 result(condorder(TrialNum),1)=result(condorder(TrialNum),1)+1;
             case buttons(2)
