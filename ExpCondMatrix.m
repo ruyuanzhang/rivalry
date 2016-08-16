@@ -10,9 +10,12 @@ conditionMatrix=[
      3     4; % H,O
 
 
+
      2     3; % F+H, no stim
      3     2; % no stim, F+H
      2     3; % F+H,F+H
+
+
 
      2     1; % F, no stim
      1     2; % no stim, F
