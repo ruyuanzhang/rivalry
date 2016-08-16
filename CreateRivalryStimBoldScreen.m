@@ -16,9 +16,9 @@ nTrial          =[7 3]; % [a b] where
                             %b trials for singal trial conditiosn in a run
                             %total a+b conditions
 trialNum        = conditions*nTrial'; % OK. We need these many stimulus trials in a run
-effectiveSize   = 500;
-%imageSize       = round(sqrt(2)*effectiveSize); %  pixels
-imageSize       = 720;
+effectiveSize   = 112;
+imageSize       = round(sqrt(2)*effectiveSize); %  pixels
+%imageSize       = 720;
 bgColor         = 127;
 contrastRatio   = 0.5; 
 %contrast ratio for face stimuli for adjusting the relative contrast strengh of face and house.
@@ -36,6 +36,7 @@ for i=1:19
     %let's resize face and house images and adjust their contrast to 50%
     tmp1=double(face(:,:,i));
     tmp1=imresize(tmp1,[imageSize imageSize]);
+    tmp1=imnormconst(tmp1);
     tmp1=varycontrast(tmp1/254,50); %change to 50% contrast;
     tmp1=round(tmp1*254);
     tmp1=setbgcolor(tmp1,127);
@@ -44,6 +45,7 @@ for i=1:19
     
     tmp2=double(house(:,:,i));
     tmp2=imresize(tmp2,[imageSize imageSize]);
+    tmp2=imnormconst(tmp2);
     tmp2=varycontrast(double(tmp2)/254,50); %change to 50% contrast;
     tmp2=round(tmp2*254);
     tmp2=setbgcolor(tmp2,127);
@@ -54,13 +56,13 @@ for i=1:19
     
     tmp3=double(object(:,:,i));
     tmp3=imresize(tmp3,[imageSize imageSize]);
+    tmp3=imnormconst(tmp3);
     tmp3=varycontrast(double(tmp3)/254,50); %change to 50% contrast;
     tmp3=round(tmp3*254);
     tmp3=setbgcolor(tmp3,127);
     %tmp2=double(imhistmatch(uint8(tmp1),uint8(tmp2)));
     objectimg(:,:,i)=tmp3;
-    
-  
+
 end
 
 
@@ -155,7 +157,7 @@ end
 
 %% Save it out
 desc = ' img is the image stack \n stimorder gives the order of the stimulus for each run \n frameorder gives image number in each trial \n fixorder gives order of fixation luminance \n fixcolor gives levels of fixation luminance \n expcondorder gives order of experiment conditions every frame \n condorder gives order of experiment conditions in every trial'
-save RivalryExp_original img desc stimorder frameorder fixorder fixcolor expcondorder condorder
+save RivalryExp img desc stimorder frameorder fixorder fixcolor expcondorder condorder
 
 % also change the test stimuli
 clear all;

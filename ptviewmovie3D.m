@@ -941,8 +941,6 @@ end
 %%%%%%%%%%%%%%%%% SET UP DOTS BACKGROUND
 SetupBgDots;
 
-
-
 %%%%%%%%%%%%%%%%% START THE EXPERIMENT
 
 % draw the background, overlay, and fixation
@@ -1167,11 +1165,11 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
+            expcondorder(1,frame0)= 5;
             [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             %frameorder(1,frame0)=1;
             
-
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
@@ -1187,15 +1185,20 @@ for frame=1:frameskip:size(frameorder,2)+1
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             
-            %
-            txttemp = (double(txttemp)-127)/127; %r,set range to -0.5~0.5, original image is 50% const
-            txttemp2 = (double(txttemp2)-127)/127;%b
-            %txttemp = (txttemp-127)*rblumconst(2)*(rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127))+rblumconst(1);
-            txttemp = txttemp*rblumconst(2)*(rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127))+rblumconst(1);
-            txttemp2 = txttemp2*rblumconst(4)*(rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127))+rblumconst(3);
-  
-            texture = Screen('MakeTexture',win,txttemp);
-            texture2 = Screen('MakeTexture',win,txttemp2);
+            if expcondorder(1,frame0)<8 && expcondorder(1,frame0)>4
+                txttemp = (double(txttemp)-127)*2+127; %r,set range to -1~1, original image is 50% const,but here we set contrast to 1, so that we can use alpha blending below
+                txttemp2 = (double(txttemp2)-127)*2+127;%b
+                
+                
+                
+                texture = Screen('MakeTexture',win,txttemp);
+                texture2 = Screen('MakeTexture',win,txttemp2);
+                
+            else
+                
+                texture = Screen('MakeTexture',win,txttemp);
+                texture2 = Screen('MakeTexture',win,txttemp2);
+            end
         end
     end
     movierect = CenterRect([0 0 round(scfactor*d2images) round(scfactor*d1images)],rect) + ...
@@ -1206,13 +1209,17 @@ for frame=1:frameskip:size(frameorder,2)+1
     DrawDotsBg; %specifically for binocular rivalry
     mask=createMask(round(min(d1images,d2images)/2),'maskType','circular');
     mask = Screen('MakeTexture',win,mask);
-
+    annulus=createMask(round(min(d1images,d2images)/2)+50,'maskType','annulus','innerRadius',round(min(d1images,d2images)/2));
+    annulusMask = Screen('MakeTexture',win,annulus);
+    annulusRect=CenterRect([0 0 size(annulus,2) size(annulus,1)],rect) + ...
+                repmat(extracircshift([2 1]),[1 2]) + ...
+                [offset(1) offset(2) offset(1) offset(2)];
+    %pixAddMask = a
     
     %compuate the rotation angle
     rotate = 1;
     setupImgRotate;
-    lefteyealpha=[255 255 255];   
-    righteyealpha=[255 255 255];
+    
     
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
@@ -1229,24 +1236,56 @@ for frame=1:frameskip:size(frameorder,2)+1
                     Screen('DrawTexture',win,mask,[],movierect,[],[],[],[]); % we draw a 2D round mask
                     
                 elseif stereoMode == 1||2||5 %present two different images to two eyes
-                    Screen('SelectStereoDrawBuffer', win, 0);
-                    %Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,lefteyealpha);
-                    %Screen('BlendFunction', win, GL_SRC_ALPHA,
-                    %GL_ONE_MINUS_SRC_ALPHA);
-                    %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
-                    %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    %Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                     
-                    
-                    Screen('SelectStereoDrawBuffer', win, 1);
-                    %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,framecolor(frame0,:));
-                    Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
-                    %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
-                    %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                    %Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
-                    
+                    if expcondorder(1,frame0) < 5 || expcondorder(1,frame0) > 7
+                        Screen('SelectStereoDrawBuffer', win, 0);
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255));
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                        Screen('SelectStereoDrawBuffer', win, 1);
+                        %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,framecolor(frame0,:));
+                        if expcondorder(1,frame0) < 5
+                            Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                        else
+                            Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                        end
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask                        
+                    elseif expcondorder(1,frame0) == 5
+                        Screen('SelectStereoDrawBuffer', win, 0);
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)/2*255));
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                        
+                        %Screen('SelectStereoDrawBuffer', win, 1);
+                        %Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                        %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        %Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                    elseif expcondorder(1,frame0) == 6
+                        Screen('SelectStereoDrawBuffer', win, 1);
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                        %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)/2*255));
+                        %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)/2*255));
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                        
+                    elseif expcondorder(1,frame0) == 7
+                        Screen('SelectStereoDrawBuffer', win, 0);
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255));
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)/2*255));
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                        
+                        Screen('SelectStereoDrawBuffer', win, 1);
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)/2*255));
+                        Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
+                    end
                     
                 elseif stereoModel == 3||4 %present same images but jitter dispartity
                     %%% 3D BEGIN
@@ -1270,26 +1309,78 @@ for frame=1:frameskip:size(frameorder,2)+1
   end
   %%==========Here is the key part==========================
   %08/08/16 by Ruyuan
-  %Now we drawtexture, we need to take a screesnop of the whole screen and
-  %independently set contrast and luminance for two eye channels
-  
-  %take the whole screen snap,
-  %===========!!!!!================================
-  %Somehow this Screen('GetImage') function works weird on mac retina
-  %screen.But works good
+  % we take some special care about the pixel addition condition
+ 
   
   
-%   
-%   im_r = Screen('GetImage',win,[],'backBuffer',[],3);
-%   im_b = Screen('GetImage',win,[],'backBuffer',[],1);
-%   im_r = double(im_r);
-%   im_r = (im_r-127)/127; %scale img to -1~1
-%   im_b = double(im_b);
-%   im_b = (im_b-127)/127; %scale img to -1~1
-%   
-%   im = Screen('GetImage',win,[],'backBuffer',[],3);
-%   im = double(im);
-%   im = (im-127)/127; %scale img to -1~1
+% if expcondorder(1,frame0) == 5
+%      im = Screen('GetImage',win,movierect,'backBuffer',[],3);
+%      im = double(im);
+%      r_range = (rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127));
+%      b_range = (rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127));
+%      txtAdd1 = (im(:,:,1)-rblumconst(1))/r_range/rblumconst(2);
+%      txtAdd2 = (im(:,:,2)-rblumconst(3))/b_range/rblumconst(4);
+%      txtAdd = (txtAdd1+txtAdd2)*rblumconst(2)*r_range+rblumconst(1);
+%      
+%      textureAdd = Screen('MakeTexture',win,txtAdd);
+%      textureBlank = Screen('MakeTexture',win,rblumconst(3)*ones(size(txtAdd)));
+%      if size(framecolor,2) == 3  % the usual case
+%          Screen('SelectStereoDrawBuffer', win, 0);
+%          Screen('DrawTexture',win,textureAdd,[],movierect,0,filtermode,1,[255 255 255]);
+%          %Screen('FillRect',win,127,rect);
+%          Screen('SelectStereoDrawBuffer', win, 1);
+%          Screen('DrawTexture',win,textureBlank,[],movierect,0,filtermode,1,[255 255 255]);
+%          %Screen('FillRect',win,127,rect); 
+%      end
+%      Screen('Close',textureAdd);
+%      Screen('Close',textureBlank);
+%      
+% elseif expcondorder(1,frame0) == 6
+%      im = Screen('GetImage',win,movierect,'backBuffer',[],3);
+%      im = double(im);
+%      r_range = (rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127));
+%      b_range = (rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127));
+%      txtAdd1 = (im(:,:,1)-rblumconst(1))/r_range/rblumconst(2);
+%      txtAdd2 = (im(:,:,2)-rblumconst(3))/b_range/rblumconst(4);
+%      txtAdd = (txtAdd1+txtAdd2)*rblumconst(4)*b_range+rblumconst(3);
+%      
+%      textureAdd = Screen('MakeTexture',win,txtAdd);
+%      textureBlank = Screen('MakeTexture',win,rblumconst(1)*ones(size(txtAdd)));
+%      if size(framecolor,2) == 3  % the usual case
+%          Screen('SelectStereoDrawBuffer', win, 0);
+%          Screen('DrawTexture',win,textureBlank,[],movierect,0,filtermode,1,[255 255 255]);
+%          %Screen('FillRect',win,127,rect);
+%          Screen('SelectStereoDrawBuffer', win, 1);
+%          Screen('DrawTexture',win,textureAdd,[],movierect,0,filtermode,1,[255 255 255]);
+%          %Screen('FillRect',win,127,rect); 
+%      end
+%      Screen('Close',textureAdd);
+%      Screen('Close',textureBlank);
+% elseif expcondorder(1,frame0) == 7
+%      im = Screen('GetImage',win,movierect,'backBuffer',[],3);
+%      im = double(im);
+%      r_range = (rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127));
+%      b_range = (rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127));
+%      txtAdd1 = (im(:,:,1)-rblumconst(1))/r_range/rblumconst(2);
+%      txtAdd2 = (im(:,:,2)-rblumconst(3))/b_range/rblumconst(4);
+%      txtAdd = (txtAdd1+txtAdd2)*rblumconst(2)*r_range+rblumconst(1);
+%      txtAdd_b = (txtAdd1+txtAdd2)*rblumconst(4)*b_range+rblumconst(3);
+%      
+%      textureAdd = Screen('MakeTexture',win,txtAdd);
+%      textureAdd_b = Screen('MakeTexture',win,txtAdd_b);
+%      
+%      if size(framecolor,2) == 3  % the usual case
+%          Screen('SelectStereoDrawBuffer', win, 0);
+%          Screen('DrawTexture',win,textureAdd,[],movierect,0,filtermode,1,[255 255 255]);
+%          %Screen('FillRect',win,127,rect);
+%          Screen('SelectStereoDrawBuffer', win, 1);
+%          Screen('DrawTexture',win,textureAdd_b,[],movierect,0,filtermode,1,[255 255 255]);
+%          %Screen('FillRect',win,127,rect); 
+%      end
+%      Screen('Close',textureAdd);
+%      Screen('Close',textureAdd_b);
+% end
+  
 %   
 %   
 %   
@@ -1584,34 +1675,34 @@ for frame=1:frameskip:size(frameorder,2)+1
             WaitSecs(allowforceglitch(2));
           end
           
-%           %Participant interactively change the red/green alpha channel
-%           lumstep=0.1;
-%           conststep=0.0005;
-%           
-% 
-%           if ~iscell(kn) %exclude the cases has more than one button press
-%               switch kn(1)
-%                   case '1'
-%                       rblumconst=rblumconst+[lumstep 0 0 0];
-%                   case '2'
-%                       rblumconst=rblumconst-[lumstep 0 0 0];
-%                   case '3'
-%                       rblumconst=rblumconst+[0 conststep 0 0];
-%                   case '4'
-%                       rblumconst=rblumconst-[0 conststep 0 0];
-%                   case '5'
-%                       rblumconst=rblumconst+[0 0 lumstep 0];
-%                   case '6'
-%                       rblumconst=rblumconst-[0 0 lumstep 0];
-%                   case '7'
-%                       rblumconst=rblumconst+[0 0 0 conststep];
-%                   case '8'
-%                       rblumconst=rblumconst-[0 0 0 conststep];
-%               end
-%           end
-%           rblumconst = [min(rblumconst(1),254) min(rblumconst(2),1) min(rblumconst(3),254) min(rblumconst(4),1)];
-%           rblumconst = [max(rblumconst(1),0) max(rblumconst(2),0) max(rblumconst(3),0) max(rblumconst(4),0)];
-%           rblumconst
+          %Participant interactively change the red/green alpha channel
+          lumstep=0.1;
+          conststep=0.0005;
+          
+
+          if ~iscell(kn) %exclude the cases has more than one button press
+              switch kn(1)
+                  case '1'
+                      rblumconst=rblumconst+[lumstep 0 0 0];
+                  case '2'
+                      rblumconst=rblumconst-[lumstep 0 0 0];
+                  case '3'
+                      rblumconst=rblumconst+[0 conststep 0 0];
+                  case '4'
+                      rblumconst=rblumconst-[0 conststep 0 0];
+                  case '5'
+                      rblumconst=rblumconst+[0 0 lumstep 0];
+                  case '6'
+                      rblumconst=rblumconst-[0 0 lumstep 0];
+                  case '7'
+                      rblumconst=rblumconst+[0 0 0 conststep];
+                  case '8'
+                      rblumconst=rblumconst-[0 0 0 conststep];
+              end
+          end
+          rblumconst = [min(rblumconst(1),127) min(rblumconst(2),1) min(rblumconst(3),127) min(rblumconst(4),1)];
+          rblumconst = [max(rblumconst(1),0.001) max(rblumconst(2),0.001) max(rblumconst(3),0.001) max(rblumconst(4),0.001)];
+          rblumconst
           
 
         end
