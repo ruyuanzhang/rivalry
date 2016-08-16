@@ -14,7 +14,7 @@ end
 
 if rotate == 1
     rotangle = rotangle+rotDir*angleStep;
-    if rotangle > 30 ||rotangle < -30
+    if rotangle > 15 ||rotangle < -15
         rotDir=-rotDir;
     end
 elseif rotate == 0

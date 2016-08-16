@@ -1678,34 +1678,34 @@ for frame=1:frameskip:size(frameorder,2)+1
             WaitSecs(allowforceglitch(2));
           end
           
-          %Participant interactively change the red/green alpha channel
-          lumstep=0.1;
-          conststep=0.0005;
-          
-
-          if ~iscell(kn) %exclude the cases has more than one button press
-              switch kn(1)
-                  case '1'
-                      rblumconst=rblumconst+[lumstep 0 0 0];
-                  case '2'
-                      rblumconst=rblumconst-[lumstep 0 0 0];
-                  case '3'
-                      rblumconst=rblumconst+[0 conststep 0 0];
-                  case '4'
-                      rblumconst=rblumconst-[0 conststep 0 0];
-                  case '5'
-                      rblumconst=rblumconst+[0 0 lumstep 0];
-                  case '6'
-                      rblumconst=rblumconst-[0 0 lumstep 0];
-                  case '7'
-                      rblumconst=rblumconst+[0 0 0 conststep];
-                  case '8'
-                      rblumconst=rblumconst-[0 0 0 conststep];
-              end
-          end
-          rblumconst = [min(rblumconst(1),127) min(rblumconst(2),1) min(rblumconst(3),127) min(rblumconst(4),1)];
-          rblumconst = [max(rblumconst(1),0.001) max(rblumconst(2),0.001) max(rblumconst(3),0.001) max(rblumconst(4),0.001)];
-          rblumconst
+%           %Participant interactively change the red/green alpha channel
+%           lumstep=0.1;
+%           conststep=0.0005;
+%           
+% 
+%           if ~iscell(kn) %exclude the cases has more than one button press
+%               switch kn(1)
+%                   case '1'
+%                       rblumconst=rblumconst+[lumstep 0 0 0];
+%                   case '2'
+%                       rblumconst=rblumconst-[lumstep 0 0 0];
+%                   case '3'
+%                       rblumconst=rblumconst+[0 conststep 0 0];
+%                   case '4'
+%                       rblumconst=rblumconst-[0 conststep 0 0];
+%                   case '5'
+%                       rblumconst=rblumconst+[0 0 lumstep 0];
+%                   case '6'
+%                       rblumconst=rblumconst-[0 0 lumstep 0];
+%                   case '7'
+%                       rblumconst=rblumconst+[0 0 0 conststep];
+%                   case '8'
+%                       rblumconst=rblumconst-[0 0 0 conststep];
+%               end
+%           end
+%           rblumconst = [min(rblumconst(1),127) min(rblumconst(2),1) min(rblumconst(3),127) min(rblumconst(4),1)];
+%           rblumconst = [max(rblumconst(1),0.001) max(rblumconst(2),0.001) max(rblumconst(3),0.001) max(rblumconst(4),0.001)];
+%           rblumconst
           
 
         end
