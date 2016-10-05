@@ -1,7 +1,7 @@
 %quickly change image size online 
 clear all;close all;clc;
 load('RivalryExp_original'); %load the original files,
-%the original image size is 270*270
+%the original image size is 720*720
 
 
 effectiveimageSize   = 112; %orginal one is 5 deg, 232 is 4 deg

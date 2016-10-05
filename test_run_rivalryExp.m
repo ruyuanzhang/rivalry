@@ -20,7 +20,7 @@ if ~exist('stimfile','var') || isempty(stimfile)
 end
 
 %load the file
-load('RivalryExpTest.mat');
+load('RivalryExp.mat');
 
 % add functions untilized in the exp
 addpath(genpath(pwd));
@@ -43,7 +43,7 @@ movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror
 
 rblumconst=[127 1 127 1]; %initial contrast for left and right image
 
-frameduration = 24;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
+frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
@@ -87,7 +87,11 @@ oldclut = pton3D(ptonparams{:});
 ptoff3D(oldclut,stereoMode);
 
 %Save the timing info and key button press for future analysis
-%load('test.mat');
+load('test.mat');
+
+% plot the green channel staircase
+plot(greeeyelum,'g-o','lineWidth',2);axis tight;
+
 %save(['run' num2str(runnum)],'timeframes','timekeys');
 
 % clear path

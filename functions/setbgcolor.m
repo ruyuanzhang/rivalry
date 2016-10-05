@@ -30,14 +30,14 @@ if ~exist('currentbg','var') || isempty(currentbg)
   currentbg = [];
 end
 
-x=size(img); %works for both gray and rgb img
-row=x(1);
-col=x(2);
+[row,col]=size(img); %works for both gray and rgb img
+
+
 
 if numel(size(img))==3
     currentbg=mean(img(1,1,:));
 elseif numel(size(img))==2
-    currentbg=img(1,1);
+    currentbg=img(1,1); % we use img(1,1) as the background
 end
 
 

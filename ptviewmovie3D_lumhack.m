@@ -1074,6 +1074,7 @@ end
 
 
 % show the movie
+greeneyelum=[];
 framecnt = 0;
 for frame=1:frameskip:size(frameorder,2)+1
   framecnt = framecnt + 1;
@@ -1165,7 +1166,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
-            %expcondorder(1,frame0)= 1;
+            expcondorder(1,frame0)= 1;
             [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             %frameorder(1,frame0)=1;
@@ -1185,20 +1186,12 @@ for frame=1:frameskip:size(frameorder,2)+1
                     extracircshift = frameorder(2:3,frame0)' .* (-2*(movieflip-.5));
             end
             
-            if expcondorder(1,frame0)<8 && expcondorder(1,frame0)>4
-                txttemp = (double(txttemp)-127)*2+127; %r,set range to -1~1, original image is 50% const,but here we set contrast to 1, so that we can use alpha blending below
-                txttemp2 = (double(txttemp2)-127)*2+127;%b
-                
-                
-                
-                texture = Screen('MakeTexture',win,txttemp);
-                texture2 = Screen('MakeTexture',win,txttemp2);
-                
-            else
-                
-                texture = Screen('MakeTexture',win,txttemp);
-                texture2 = Screen('MakeTexture',win,txttemp2);
-            end
+            
+            txttemp2=(rblumconst(4)<128)*((double(txttemp2)-127)*rblumconst(4)/127*rblumconst(3)+rblumconst(3))+...
+                (rblumconst(4)>127)*((double(txttemp2)-127)*rblumconst(4)/127*(255-rblumconst(3))+rblumconst(3));
+            
+            texture = Screen('MakeTexture',win,txttemp);
+            texture2 = Screen('MakeTexture',win,txttemp2);
         end
     end
     movierect = CenterRect([0 0 round(scfactor*d2images) round(scfactor*d1images)],rect) + ...
@@ -1241,23 +1234,23 @@ for frame=1:frameskip:size(frameorder,2)+1
                     
                     if expcondorder(1,frame0) < 5 || expcondorder(1,frame0) > 7
                         Screen('SelectStereoDrawBuffer', win, 0);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255));
+                            Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_r,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
                         Screen('SelectStereoDrawBuffer', win, 1);
-                        %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,framecolor(frame0,:));
+              
                         if expcondorder(1,frame0) < 5
-                            Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                            Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat([255 255 255],rblumconst(4)*255*0.5));
                         else
-                            Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                            Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat([255 255 255],rblumconst(4)*255*0.5));
                         end
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_b,[],annulusRect,[],[],[],[]); % we draw a 2D round mask                        
                     elseif expcondorder(1,frame0) == 5
                         Screen('SelectStereoDrawBuffer', win, 0);
                         Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255));
-                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)/2*255));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_r,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
@@ -1267,25 +1260,25 @@ for frame=1:frameskip:size(frameorder,2)+1
                         %Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                     elseif expcondorder(1,frame0) == 6
                         Screen('SelectStereoDrawBuffer', win, 1);
-                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255));
                         %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)/2*255));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255*0.5));
                         %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)/2*255));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_b,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
                     elseif expcondorder(1,frame0) == 7
                         Screen('SelectStereoDrawBuffer', win, 0);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/255*[255 255 255],rblumconst(2)*255));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)/2*255));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/255*[255 255 255],rblumconst(2)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_r,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
                         Screen('SelectStereoDrawBuffer', win, 1);
-                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)/2*255));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_b,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                     end
@@ -1625,34 +1618,32 @@ for frame=1:frameskip:size(frameorder,2)+1
         didglitch = 0;
       end
       
-      %% add by Ruyuan, since we noticed the timing issue
-      %try to read input
-      if detectinput
-        [keyIsDown,secs,keyCode,deltaSecs] = KbCheck(-3);  % all devices
-        if keyIsDown
-
-          % get the name of the key and record it
-          kn = KbName(keyCode);
-          timekeys = [timekeys; {secs kn}];
-
-          % check if ESCAPE was pressed
-          if isequal(kn,'ESCAPE')
-            fprintf('Escape key detected.  Exiting prematurely.\n');
-            getoutearly = 1;
-            break;
-          end
-
-          % force a glitch?
-          if allowforceglitch(1) && isequal(kn,'p')
-            WaitSecs(allowforceglitch(2));
-          end
-        
-
-        end
-      end
+%       %% add by Ruyuan, since we noticed the timing issue
+%       %try to read input
+%       if detectinput
+%         [keyIsDown,secs,keyCode,deltaSecs] = KbCheck(-3);  % all devices
+%         if keyIsDown
+% 
+%           % get the name of the key and record it
+%           kn = KbName(keyCode);
+%           timekeys = [timekeys; {secs kn}];
+% 
+%           % check if ESCAPE was pressed
+%           if isequal(kn,'ESCAPE')
+%             fprintf('Escape key detected.  Exiting prematurely.\n');
+%             getoutearly = 1;
+%             break;
+%           end
+% 
+%           % force a glitch?
+%           if allowforceglitch(1) && isequal(kn,'p')
+%             WaitSecs(allowforceglitch(2));
+%           end
+%         
+% 
+%         end
+%       end
       %% ============above added by Ruyuan
-      
-      
       % get out of this loop
       break;
     
@@ -1678,34 +1669,36 @@ for frame=1:frameskip:size(frameorder,2)+1
             WaitSecs(allowforceglitch(2));
           end
           
-          %Participant interactively change the red/green alpha channel
-          lumstep=0.1;
-          conststep=0.0005;
           
-
-          if ~iscell(kn) %exclude the cases has more than one button press
-              switch kn(1)
-                  case '1'
-                      rblumconst=rblumconst+[lumstep 0 0 0];
-                  case '2'
-                      rblumconst=rblumconst-[lumstep 0 0 0];
-                  case '3'
-                      rblumconst=rblumconst+[0 conststep 0 0];
-                  case '4'
-                      rblumconst=rblumconst-[0 conststep 0 0];
-                  case '5'
-                      rblumconst=rblumconst+[0 0 lumstep 0];
-                  case '6'
-                      rblumconst=rblumconst-[0 0 lumstep 0];
-                  case '7'
-                      rblumconst=rblumconst+[0 0 0 conststep];
-                  case '8'
-                      rblumconst=rblumconst-[0 0 0 conststep];
-              end
-          end
-          rblumconst = [min(rblumconst(1),127) min(rblumconst(2),1) min(rblumconst(3),127) min(rblumconst(4),1)];
-          rblumconst = [max(rblumconst(1),0.001) max(rblumconst(2),0.001) max(rblumconst(3),0.001) max(rblumconst(4),0.001)];
-          rblumconst
+          %% adaptive change of luminance
+%           %Participant interactively change the red/green alpha channel
+%           lumstep=0.1;
+%           conststep=0.0005;
+%           
+% 
+%           if ~iscell(kn) %exclude the cases has more than one button press
+%               switch kn(1)
+%                   case '1'
+%                       rblumconst=rblumconst+[lumstep 0 0 0];
+%                   case '2'
+%                       rblumconst=rblumconst-[lumstep 0 0 0];
+%                   case '3'
+%                       rblumconst=rblumconst+[0 conststep 0 0];
+%                   case '4'
+%                       rblumconst=rblumconst-[0 conststep 0 0];
+%                   case '5'
+%                       rblumconst=rblumconst+[0 0 lumstep 0];
+%                   case '6'
+%                       rblumconst=rblumconst-[0 0 lumstep 0];
+%                   case '7'
+%                       rblumconst=rblumconst+[0 0 0 conststep];
+%                   case '8'
+%                       rblumconst=rblumconst-[0 0 0 conststep];
+%               end
+%           end
+%           rblumconst = [min(rblumconst(1),127) min(rblumconst(2),1) min(rblumconst(3),127) min(rblumconst(4),1)];
+%           rblumconst = [max(rblumconst(1),0.001) max(rblumconst(2),0.001) max(rblumconst(3),0.001) max(rblumconst(4),0.001)];
+%           rblumconst
           
 
         end
@@ -1736,7 +1729,64 @@ for frame=1:frameskip:size(frameorder,2)+1
     % since we keep resetting to the empirical VBLTimestamp.
     when = VBLTimestamp + mfi * frameduration - mfi / 2;  % should we be less aggressive??
   end
-    
+  
+  
+  %% check the keybutton in this trial and adjust luminance for next trial accordingly
+  if (framecnt>80)&&(rem(frame,20)==0) % the last frame of each trial
+      frameend = timeframes(framecnt);
+      framestart = timeframes(framecnt-19);
+      
+      %dealing with multiple key press
+      timekeysB = {};
+      for p=1:size(timekeys,1)
+          if iscell(timekeys{p,2})
+              for pp=1:length(timekeys{p,2})
+                  timekeysB{end+1,1} = timekeys{p,1};
+                  timekeysB{end,2} = timekeys{p,2}{pp};
+              end
+          else
+              timekeysB(end+1,:) = timekeys(p,:);
+          end
+      end
+      keys=[];
+      if ~isempty(timekeysB)
+          presstimes = cell2mat(timekeysB(:,1));
+          ind=find((presstimes>=framestart)&(presstimes<frameend));
+          keys = cell2mat(timekeysB(ind,2)); %key press in this trial
+          keys=keys(keys~='t'); %remove trigger key 't'
+      end
+      if ~isempty(keys)
+          if numel(unique(keys))==1
+              key=unique(keys); %only one button is pressed
+          else % more than 1 buton are pressed
+              uniqkeys=unique(keys);
+              count=zeros(1,numel(uniqkeys));
+              for k=1:numel(uniqkeys)
+                  count(k)=sum(keys==uniqkeys(k));
+              end
+              [~, I]=max(count);
+              key = uniqkeys(I);
+          end
+          
+          switch key % we only change green channel
+              case 'b' %face,choose left eye
+                  if rblumconst(3)<128
+                    rblumconst(3)=exp(log(rblumconst(3))+0.1);
+                  else
+                    rblumconst(3)=255-exp(log((255-rblumconst(3)))-0.1);  
+                  end
+              case 'y' %house, right eye
+                  if rblumconst(3)<128
+                    rblumconst(3)=exp(log(rblumconst(3))-0.1);
+                  else 
+                    rblumconst(3)=255-exp(log(255-rblumconst(3))+0.1);  
+                  end                  
+          end
+      end
+      greeneyelum=[greeneyelum rblumconst(3)];
+      rblumconst
+  end
+  
 end
 
 % draw the background, overlay, and fixation
@@ -1850,7 +1900,7 @@ end
 % do some checks
 if wantcheck
   [keytimes,badtimes,keybuttons]=ptviewmoviecheck(timeframes,timekeys,[],'t');
-  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons');
+  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','greeneyelum');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

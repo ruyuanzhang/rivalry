@@ -6,8 +6,8 @@ function [leftEyeImg,rightEyeImg]  = ExpCondMatrix(condition)
 conditionMatrix=[
      2     3; % F,H
      3     2; % H,F
-     4     3; % O,H
-     3     4; % H,O
+     4     3; % C,H
+     3     4; % H,C
 
 
 

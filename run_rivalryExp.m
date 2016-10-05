@@ -19,6 +19,13 @@ if ~exist('stimfile','var') || isempty(stimfile)
     stimfile = fullfile(path,'rivalryExp.mat');
 end
 
+% receive some input
+subjnum = input('Input subject number:');
+expnum = input('What is the experiment number?\nRivalry:1\n');
+
+
+
+
 %load the file
 load('RivalryExp.mat');
 
@@ -41,13 +48,13 @@ offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
 %for kk
-rblumconst=[80 1 127 1];
+rblumconst=[127 1 127 1];
 
-frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
+frameduration = 12;  % number of monitor frames for one unit.  120/5 = 24
 
-ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
+%ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 %change resolution
-%ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
+ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
 
 
 
@@ -70,7 +77,9 @@ ptoff3D(oldclut,stereoMode);
 
 %Save the timing info and key button press for future analysis
 load('test.mat');
-save(['run' num2str(runnum)],'timeframes','timekeys','keytimes','badtimes','keybuttons');
+c=fix(clock);
+filename=sprintf('%d%02d%02d%02d%02d%02d_sub%03d_run%02d_exp%03d',c(1),c(2),c(3),c(4),c(5),c(6),subjnum,runnum,expnum);
+save(filename);
 
 % clear path
 rmpath(genpath(pwd));

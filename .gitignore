@@ -1,11 +1,8 @@
 bas3d/*
-
-stim/morekgs/*
+stim/*
 data/*
 
 *.m~
-
-LexicalityExp.mat
 
 run*.mat
 test.mat
