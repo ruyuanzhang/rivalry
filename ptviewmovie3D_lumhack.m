@@ -1074,7 +1074,7 @@ end
 
 
 % show the movie
-greeneyelum=[];
+redeyelum=[];
 framecnt = 0;
 for frame=1:frameskip:size(frameorder,2)+1
   framecnt = framecnt + 1;
@@ -1166,7 +1166,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
-            expcondorder(1,frame0)= 1;
+            r
             [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             %frameorder(1,frame0)=1;
@@ -1187,8 +1187,8 @@ for frame=1:frameskip:size(frameorder,2)+1
             end
             
             
-            txttemp2=(rblumconst(4)<128)*((double(txttemp2)-127)*rblumconst(4)/127*rblumconst(3)+rblumconst(3))+...
-                (rblumconst(4)>127)*((double(txttemp2)-127)*rblumconst(4)/127*(255-rblumconst(3))+rblumconst(3));
+            %txttemp=(rblumconst(1)<128)*((double(txttemp2)-127)*rblumconst(2)/127*rblumconst(1)+rblumconst(1))+...
+            %    (rblumconst(1)>127)*((double(txttemp2)-127)*rblumconst(2)/127*(255-rblumconst(1))+rblumconst(1));
             
             texture = Screen('MakeTexture',win,txttemp);
             texture2 = Screen('MakeTexture',win,txttemp2);
@@ -1769,21 +1769,21 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           
           switch key % we only change green channel
-              case 'b' %face,choose left eye
-                  if rblumconst(3)<128
-                    rblumconst(3)=exp(log(rblumconst(3))+0.1);
+              case 'y' %face,choose left eye
+                  if rblumconst(1)<128
+                    rblumconst(1)=exp(log(rblumconst(1))+0.1);
                   else
-                    rblumconst(3)=255-exp(log((255-rblumconst(3)))-0.1);  
+                    rblumconst(1)=255-exp(log((255-rblumconst(1)))-0.1);  
                   end
-              case 'y' %house, right eye
-                  if rblumconst(3)<128
-                    rblumconst(3)=exp(log(rblumconst(3))-0.1);
+              case 'b' %house, right eye
+                  if rblumconst(1)<128
+                    rblumconst(1)=exp(log(rblumconst(1))-0.1);
                   else 
-                    rblumconst(3)=255-exp(log(255-rblumconst(3))+0.1);  
+                    rblumconst(1)=255-exp(log(255-rblumconst(1))+0.1);  
                   end                  
           end
       end
-      greeneyelum=[greeneyelum rblumconst(3)];
+      redeyelum=[redeyelum rblumconst(1)];
       rblumconst
   end
   
@@ -1900,7 +1900,7 @@ end
 % do some checks
 if wantcheck
   [keytimes,badtimes,keybuttons]=ptviewmoviecheck(timeframes,timekeys,[],'t');
-  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','greeneyelum');
+  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','redeyelum');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

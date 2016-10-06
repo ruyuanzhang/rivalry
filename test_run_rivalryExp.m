@@ -90,7 +90,8 @@ ptoff3D(oldclut,stereoMode);
 load('test.mat');
 
 % plot the green channel staircase
-plot(greeeyelum,'g-o','lineWidth',2);axis tight;
+figure;
+plot(redeyelum,'g-o','lineWidth',2);axis tight;
 
 %save(['run' num2str(runnum)],'timeframes','timekeys');
 
