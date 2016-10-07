@@ -30,38 +30,22 @@ load('fLocStim.mat');
 %faceHouseimg = zeros(imageSize,imageSize,size(face,3));
 
 
-%% do some processing on face and house images
-for i=1:19
-   
-    %resize face,remember we don't change contrast here.
-    tmp1=img(:,:,i,2);
-    tmp1=imresize(tmp1,[imageSize imageSize]);%face
-    tmp1=round(tmp1*254);
-    faceimg(:,:,i)=tmp1; 
-    
-    tmp2=img(:,:,i,3);
-    tmp2=imresize(tmp2,[imageSize imageSize]);%house
-    tmp2=round(tmp2*254);
-    houseimg(:,:,i)=tmp2; 
-     
-    tmp3=img(:,:,i,4);
-    tmp3=imresize(tmp3,[imageSize imageSize]);%house
-    tmp3=round(tmp3*254);
-    objectimg(:,:,i)=tmp3;
+%%
 
-end
+faceimg=img(:,:,1:19,2);
+houseimg=img(:,:,1:19,3);
+carimg=img(:,:,1:19,4);
+clear img;
 
-
-viewimages(faceimg);colormap(gray);
-viewimages(houseimg);colormap(gray);
-%viewimages(faceHouseimg);colormap(gray);
-viewimages(objectimg);colormap(gray);
+viewimages(faceimg);colormap(gray);caxis([0 254]);
+viewimages(houseimg);colormap(gray);caxis([0 254]);
+viewimages(carimg);colormap(gray);caxis([0 254]);
 
 %create 76 pics
 faceimg=repmat(faceimg,[1,1,4]);
 houseimg=repmat(houseimg,[1 1 4]);
 %faceHouseimg=repmat(faceHouseimg,[1 1 4]);
-objectimg=repmat(objectimg,[1 1 4]);
+carimg=repmat(carimg,[1 1 4]);
 %We also need blank images with gray background
 blankimg    = bgColor*2*0.5*ones(imageSize,imageSize,trialNum);
 clear tmp images faces houses;% clear some redundency 
@@ -72,7 +56,7 @@ img = zeros(imageSize,imageSize,trialNum,5);
 img (:,:,:,1) = blankimg;
 img (:,:,:,2) = faceimg;
 img (:,:,:,3) = houseimg;
-img (:,:,:,4) = objectimg;%we already set pixel values before
+img (:,:,:,4) = carimg;%we already set pixel values before
 %img (:,:,:,5) = faceHouseimg;
 img (:,:,:,5) = blankimg;
 img = uint8(img);
