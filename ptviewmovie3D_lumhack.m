@@ -1166,7 +1166,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
-            r
+ 
             [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             %frameorder(1,frame0)=1;
@@ -1234,7 +1234,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                     
                     if expcondorder(1,frame0) < 5 || expcondorder(1,frame0) > 7
                         Screen('SelectStereoDrawBuffer', win, 0);
-                            Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*0.5));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_r,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
@@ -1260,25 +1260,25 @@ for frame=1:frameskip:size(frameorder,2)+1
                         %Screen('DrawTexture',win,annulusMask,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                     elseif expcondorder(1,frame0) == 6
                         Screen('SelectStereoDrawBuffer', win, 1);
-                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
                         %Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255*0.5));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*0.5));
                         %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)/2*255));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_b,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
                     elseif expcondorder(1,frame0) == 7
                         Screen('SelectStereoDrawBuffer', win, 0);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/255*[255 255 255],rblumconst(2)*255));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/255*[255 255 255],rblumconst(2)*255*0.5));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_r,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
                         Screen('SelectStereoDrawBuffer', win, 1);
-                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255));
+                        Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/255*[255 255 255],rblumconst(4)*255*0.5));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_b,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                     end
