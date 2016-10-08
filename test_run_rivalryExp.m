@@ -91,8 +91,8 @@ load('test.mat');
 
 % plot the green channel staircase
 figure;
-myplot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);
-myplot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);
+plot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
+plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
 
 %save(['run' num2str(runnum)],'timeframes','timekeys');
 

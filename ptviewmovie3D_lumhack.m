@@ -1167,7 +1167,7 @@ for frame=1:frameskip:size(frameorder,2)+1
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
 
-            expcondorder(1,frame0)=1;
+            expcondorder(1,frame0)=2;
             [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(expcondorder(1,frame0));% read in condition
 
             
