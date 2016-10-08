@@ -1,7 +1,7 @@
 % Create test stimulus for binocular rivalry experiment,basically we
 % present the stimulus for 8 sec so you can clearly see the binocular
 % difference
-clear all;close all;clc
+clear all;%close all;clc
 
 %% add functions repository
 addpath(genpath(pwd));

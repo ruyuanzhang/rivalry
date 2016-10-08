@@ -4,10 +4,10 @@
 % 'spiky' pixel, it's acceptable. So resulting images should be visually
 % checked
 
-cl;
+%cl;
 imageSize = 260;
 squre     = 184;
-RMS = [0.12*ones(1,19); 0.18*ones(1,19)];
+RMS = [0.10*ones(1,19); 0.2*ones(1,19); 0.2*ones(1,19)];
 
 
 
@@ -61,7 +61,7 @@ for i=1:19
     face(facemask(:)==0)=0.5;
     house(houseind)=(house(houseind)-mean(house(houseind)))/rmshouse*RMS(2,i)+0.5;
     house(housemask(:)==0)=0.5;
-    car(carind)=(car(carind)-mean(car(carind)))/rmscar*RMS(1,i)+0.5;
+    car(carind)=(car(carind)-mean(car(carind)))/rmscar*RMS(3,i)+0.5;
     car(carmask(:)==0)=0.5;
     facehouse=face+house-0.5;
     
@@ -78,7 +78,7 @@ for i=1:19
     % scale it
     face(ind)=(face(ind)-0.5)/rmsface2*RMS(1,i)+0.5;
     house(ind)=(house(ind)-0.5)/rmshouse2*RMS(2,i)+0.5;
-    car(ind)=(car(ind)-0.5)/rmscar2*RMS(1,i)+0.5;
+    car(ind)=(car(ind)-0.5)/rmscar2*RMS(3,i)+0.5;
     facehouse=face+house-0.5;
     
     % recompute rms again
@@ -106,4 +106,4 @@ viewimages(round(img(:,:,:,4)));colormap(gray);caxis([0 254]);
 viewimages(round(img(:,:,:,5)));colormap(gray);caxis([0 254]);
 
 %
-%save('fLocStim','img','mask');
+save('fLocStim','img','mask');
