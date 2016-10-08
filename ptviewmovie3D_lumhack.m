@@ -1074,7 +1074,7 @@ end
 
 
 % show the movie
-redeyelum=[];
+eyelum=[];
 framecnt = 0;
 for frame=1:frameskip:size(frameorder,2)+1
   framecnt = framecnt + 1;
@@ -1166,7 +1166,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
- 
+            expcondorder(1,frame0)=1;
             [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             %frameorder(1,frame0)=1;
@@ -1241,9 +1241,9 @@ for frame=1:frameskip:size(frameorder,2)+1
                         Screen('SelectStereoDrawBuffer', win, 1);
               
                         if expcondorder(1,frame0) < 5
-                            Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat([255 255 255],rblumconst(4)*255*0.5));
+                            Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*0.5));
                         else
-                            Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat([255 255 255],rblumconst(4)*255*0.5));
+                            Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*0.5));
                         end
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_b,[],annulusRect,[],[],[],[]); % we draw a 2D round mask                        
@@ -1668,38 +1668,7 @@ for frame=1:frameskip:size(frameorder,2)+1
           if allowforceglitch(1) && isequal(kn,'p')
             WaitSecs(allowforceglitch(2));
           end
-          
-          
-          %% adaptive change of luminance
-%           %Participant interactively change the red/green alpha channel
-%           lumstep=0.1;
-%           conststep=0.0005;
-%           
-% 
-%           if ~iscell(kn) %exclude the cases has more than one button press
-%               switch kn(1)
-%                   case '1'
-%                       rblumconst=rblumconst+[lumstep 0 0 0];
-%                   case '2'
-%                       rblumconst=rblumconst-[lumstep 0 0 0];
-%                   case '3'
-%                       rblumconst=rblumconst+[0 conststep 0 0];
-%                   case '4'
-%                       rblumconst=rblumconst-[0 conststep 0 0];
-%                   case '5'
-%                       rblumconst=rblumconst+[0 0 lumstep 0];
-%                   case '6'
-%                       rblumconst=rblumconst-[0 0 lumstep 0];
-%                   case '7'
-%                       rblumconst=rblumconst+[0 0 0 conststep];
-%                   case '8'
-%                       rblumconst=rblumconst-[0 0 0 conststep];
-%               end
-%           end
-%           rblumconst = [min(rblumconst(1),127) min(rblumconst(2),1) min(rblumconst(3),127) min(rblumconst(4),1)];
-%           rblumconst = [max(rblumconst(1),0.001) max(rblumconst(2),0.001) max(rblumconst(3),0.001) max(rblumconst(4),0.001)];
-%           rblumconst
-          
+           
 
         end
       end
@@ -1769,21 +1738,29 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
           
           switch key % we only change green channel
-              case 'y' %face,choose left eye
-                  if rblumconst(1)<128
-                    rblumconst(1)=exp(log(rblumconst(1))+0.1);
-                  else
-                    rblumconst(1)=255-exp(log((255-rblumconst(1)))-0.1);  
+              
+              case 'b' %face,
+                  if rblumconst(1)==127&&rblumconst(3)<127
+                      rblumconst(3)=exp(log(rblumconst(3))+0.1);
+                  elseif rblumconst(1)<=127&&rblumconst(3)==127
+                      rblumconst(1)=exp(log(rblumconst(1))-0.1);
                   end
-              case 'b' %house, right eye
-                  if rblumconst(1)<128
-                    rblumconst(1)=exp(log(rblumconst(1))-0.1);
-                  else 
-                    rblumconst(1)=255-exp(log(255-rblumconst(1))+0.1);  
+              case 'y' %house
+                  if rblumconst(1)==127&&rblumconst(3)<=127
+                      rblumconst(3)=exp(log(rblumconst(3))-0.1);
+                  elseif rblumconst(1)<127&&rblumconst(3)==127
+                      rblumconst(1)=exp(log(rblumconst(1))+0.1);
                   end                  
           end
+          if rblumconst(1)>127
+              rblumconst(1)=127;
+          end
+          if rblumconst(3)>127
+              rblumconst(3)=127;
+          end
+              
       end
-      redeyelum=[redeyelum rblumconst(1)];
+      eyelum=[eyelum; rblumconst(1) rblumconst(3)];
       rblumconst
   end
   
@@ -1900,7 +1877,7 @@ end
 % do some checks
 if wantcheck
   [keytimes,badtimes,keybuttons]=ptviewmoviecheck(timeframes,timekeys,[],'t');
-  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','redeyelum');
+  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','eyelum');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -4,13 +4,13 @@
 % 'spiky' pixel, it's acceptable. So resulting images should be visually
 % checked
 
-cl;
+%clearvars -except img;
 load('fLocStim.mat');
-
+clearvars -except img;
 RMS = 0.18*ones(1,19);
 imageSize = 260;
-squre     =184;
-mask=img;
+squre     = 184;
+
 %%
 rect=CenterRect([1 1 squre squre],[1 1 imageSize imageSize]);
 tmp=zeros(imageSize,imageSize);
@@ -19,9 +19,9 @@ ind=find(tmp==1);
 for i=1:19
     
     % read in image and mask
-    face=img(:,:,i,2);
-    house=img(:,:,i,3);
-    car=img(:,:,i,4);
+    face=img(:,:,i,2)/254;
+    house=img(:,:,i,3)/254;
+    car=img(:,:,i,4)/254;
     
    
     % recompute rms again

@@ -7,7 +7,11 @@
 cl;
 imageSize = 260;
 squre     = 184;
-RMS = 0.15*ones(1,19);
+RMS = 0.12*ones(1,19);
+
+
+
+
 img=zeros(imageSize,imageSize,19,5);
 mask=img;
 %%
@@ -40,15 +44,17 @@ for i=1:19
     housemask(housemask(:)~=0)=255;houseind=find(housemask(:)==255);
     carmask(carmask(:)~=0)=255;carind=find(carmask(:)==255);
     
-    % scale image to 0~1
-    face=imnormconst(face)/254;
-    house=imnormconst(house)/254;
-    car=imnormconst(car)/254;
+    % scale image to 
+    face=imnormconst(face);
+    house=imnormconst(house);
+    car=imnormconst(car);
     
     % compute pre rms contrast
     rmsface=sqrt(sum((face(faceind)-mean(face(faceind))).^2)/numel(faceind));
     rmshouse=sqrt(sum((house(houseind)-mean(house(houseind))).^2)/numel(houseind));
     rmscar=sqrt(sum((car(carind)-mean(car(carind))).^2)/numel(carind));
+    
+    
     
     % scale it
     face(faceind)=(face(faceind)-mean(face(faceind)))/rmsface*RMS(i)+0.5;
@@ -87,14 +93,11 @@ for i=1:19
     img(:,:,i,4) =round(car*254);
     img(:,:,i,5)=round(facehouse*254);
     
-    mask(:,:,i,1)=0.5;
-    mask(:,:,i,2)=facemask;
-    mask(:,:,i,3)=housemask;
-    mask(:,:,i,4)=carmask;
-    mask(:,:,i,5)=0.5;
-    
-    
-    
+    mask(:,:,i,1)=127;
+    mask(:,:,i,2)=round(facemask*254);
+    mask(:,:,i,3)=round(housemask*254);
+    mask(:,:,i,4)=round(carmask*254);
+        
 end
 %%
 viewimages(round(img(:,:,:,2)));colormap(gray);caxis([0 254]);
@@ -103,4 +106,4 @@ viewimages(round(img(:,:,:,4)));colormap(gray);caxis([0 254]);
 viewimages(round(img(:,:,:,5)));colormap(gray);caxis([0 254]);
 
 %
-save('fLocStim','img','mask');
+%save('fLocStim','img','mask');
