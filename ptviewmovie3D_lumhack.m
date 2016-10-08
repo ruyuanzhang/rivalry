@@ -1303,122 +1303,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     Screen('Close',texture);
     Screen('Close',texture2);
   end
-  %%==========Here is the key part==========================
-  %08/08/16 by Ruyuan
-  % we take some special care about the pixel addition condition
- 
-  
-  
-% if expcondorder(1,frame0) == 5
-%      im = Screen('GetImage',win,movierect,'backBuffer',[],3);
-%      im = double(im);
-%      r_range = (rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127));
-%      b_range = (rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127));
-%      txtAdd1 = (im(:,:,1)-rblumconst(1))/r_range/rblumconst(2);
-%      txtAdd2 = (im(:,:,2)-rblumconst(3))/b_range/rblumconst(4);
-%      txtAdd = (txtAdd1+txtAdd2)*rblumconst(2)*r_range+rblumconst(1);
-%      
-%      textureAdd = Screen('MakeTexture',win,txtAdd);
-%      textureBlank = Screen('MakeTexture',win,rblumconst(3)*ones(size(txtAdd)));
-%      if size(framecolor,2) == 3  % the usual case
-%          Screen('SelectStereoDrawBuffer', win, 0);
-%          Screen('DrawTexture',win,textureAdd,[],movierect,0,filtermode,1,[255 255 255]);
-%          %Screen('FillRect',win,127,rect);
-%          Screen('SelectStereoDrawBuffer', win, 1);
-%          Screen('DrawTexture',win,textureBlank,[],movierect,0,filtermode,1,[255 255 255]);
-%          %Screen('FillRect',win,127,rect); 
-%      end
-%      Screen('Close',textureAdd);
-%      Screen('Close',textureBlank);
-%      
-% elseif expcondorder(1,frame0) == 6
-%      im = Screen('GetImage',win,movierect,'backBuffer',[],3);
-%      im = double(im);
-%      r_range = (rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127));
-%      b_range = (rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127));
-%      txtAdd1 = (im(:,:,1)-rblumconst(1))/r_range/rblumconst(2);
-%      txtAdd2 = (im(:,:,2)-rblumconst(3))/b_range/rblumconst(4);
-%      txtAdd = (txtAdd1+txtAdd2)*rblumconst(4)*b_range+rblumconst(3);
-%      
-%      textureAdd = Screen('MakeTexture',win,txtAdd);
-%      textureBlank = Screen('MakeTexture',win,rblumconst(1)*ones(size(txtAdd)));
-%      if size(framecolor,2) == 3  % the usual case
-%          Screen('SelectStereoDrawBuffer', win, 0);
-%          Screen('DrawTexture',win,textureBlank,[],movierect,0,filtermode,1,[255 255 255]);
-%          %Screen('FillRect',win,127,rect);
-%          Screen('SelectStereoDrawBuffer', win, 1);
-%          Screen('DrawTexture',win,textureAdd,[],movierect,0,filtermode,1,[255 255 255]);
-%          %Screen('FillRect',win,127,rect); 
-%      end
-%      Screen('Close',textureAdd);
-%      Screen('Close',textureBlank);
-% elseif expcondorder(1,frame0) == 7
-%      im = Screen('GetImage',win,movierect,'backBuffer',[],3);
-%      im = double(im);
-%      r_range = (rblumconst(1)*(rblumconst(1)<128)+(254-rblumconst(1))*(rblumconst(1)>127));
-%      b_range = (rblumconst(3)*(rblumconst(3)<128)+(254-rblumconst(3))*(rblumconst(3)>127));
-%      txtAdd1 = (im(:,:,1)-rblumconst(1))/r_range/rblumconst(2);
-%      txtAdd2 = (im(:,:,2)-rblumconst(3))/b_range/rblumconst(4);
-%      txtAdd = (txtAdd1+txtAdd2)*rblumconst(2)*r_range+rblumconst(1);
-%      txtAdd_b = (txtAdd1+txtAdd2)*rblumconst(4)*b_range+rblumconst(3);
-%      
-%      textureAdd = Screen('MakeTexture',win,txtAdd);
-%      textureAdd_b = Screen('MakeTexture',win,txtAdd_b);
-%      
-%      if size(framecolor,2) == 3  % the usual case
-%          Screen('SelectStereoDrawBuffer', win, 0);
-%          Screen('DrawTexture',win,textureAdd,[],movierect,0,filtermode,1,[255 255 255]);
-%          %Screen('FillRect',win,127,rect);
-%          Screen('SelectStereoDrawBuffer', win, 1);
-%          Screen('DrawTexture',win,textureAdd_b,[],movierect,0,filtermode,1,[255 255 255]);
-%          %Screen('FillRect',win,127,rect); 
-%      end
-%      Screen('Close',textureAdd);
-%      Screen('Close',textureAdd_b);
-% end
-  
-%   
-%   
-%   
-%   r_lum = rblumconst(1);
-%   r_const =rblumconst(2);
-%   b_lum = rblumconst(3);
-%   b_const = rblumconst(4);
-%    
-%   %four button 1-4 to change red channel, both lum and const
-%   if r_lum<128
-%       txttemp_r = im(:,:,1)*r_const*r_lum+r_lum;% fix r channel
-%   else
-%       txttemp_r = im(:,:,1)*r_const*(254-r_lum)+r_lum;% fix r channel
-%   end
-%   if b_lum<128
-%       txttemp_b = im(:,:,2)*b_const*b_lum+b_lum;% fix r channel
-%   else
-%       txttemp_b = im(:,:,2)*b_const*(254-b_lum)+b_lum;% fix r channel
-%   end
-%    %txttemp_r=im*127+127;
-%    %txttemp_b=im*127+127;
-% % 
-% %   
-% %   tmp_Big = zeros(size(im));
-% %   tmp_Big(:,:,1)=txttemp_r; %red
-% %   tmp_Big(:,:,2)=txttemp_b;
-% %   tmp_Big(:,:,3)=txttemp_b; %
-%   textureBig1 = Screen('MakeTexture',win,txttemp_r);
-%   textureBig2 = Screen('MakeTexture',win,txttemp_b);
-%   %present stimuli
-%   if size(framecolor,2) == 3  % the usual case
-%       Screen('SelectStereoDrawBuffer', win, 0);
-%       Screen('DrawTexture',win,textureBig1,[],rect,0,filtermode,1,[255 255 255]);
-%       %Screen('FillRect',win,127,rect);
-%       Screen('SelectStereoDrawBuffer', win, 1);
-%       Screen('DrawTexture',win,textureBig2,[],rect,0,filtermode,1,[255 255 255]);
-%       %Screen('FillRect',win,127,rect);
-%       
-%   end
-%   Screen('Close',textureBig1);
-%   Screen('Close',textureBig2);
-%   
+   
   
   %%==================================================
     
@@ -1737,21 +1622,24 @@ for frame=1:frameskip:size(frameorder,2)+1
               key = uniqkeys(I);
           end
           
-          switch key % we only change green channel
-              
-              case 'b' %face,
-                  if rblumconst(1)==127&&rblumconst(3)<127
-                      rblumconst(3)=exp(log(rblumconst(3))+0.1);
-                  elseif rblumconst(1)<=127&&rblumconst(3)==127
-                      rblumconst(1)=exp(log(rblumconst(1))-0.1);
-                  end
-              case 'y' %house
-                  if rblumconst(1)==127&&rblumconst(3)<=127
-                      rblumconst(3)=exp(log(rblumconst(3))-0.1);
-                  elseif rblumconst(1)<127&&rblumconst(3)==127
-                      rblumconst(1)=exp(log(rblumconst(1))+0.1);
-                  end                  
-          end
+          
+              switch key % we only change green channel
+                  case 'y' %face,
+                      if rblumconst(1)==127&&rblumconst(3)<127
+                          rblumconst(3)=exp(log(rblumconst(3))+0.1);
+                      elseif rblumconst(1)<=127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))-0.1);
+                      end
+                  case 'b' %house
+                      if rblumconst(1)==127&&rblumconst(3)<=127
+                          rblumconst(3)=exp(log(rblumconst(3))-0.1);
+                      elseif rblumconst(1)<127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))+0.1);
+                      end
+              end
+        
+          
+          
           if rblumconst(1)>127
               rblumconst(1)=127;
           end
