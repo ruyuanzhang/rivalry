@@ -7,7 +7,7 @@
 cl;
 imageSize = 260;
 squre     = 184;
-RMS = 0.12*ones(1,19);
+RMS = [0.12*ones(1,19); 0.18*ones(1,19)];
 
 
 
@@ -57,11 +57,11 @@ for i=1:19
     
     
     % scale it
-    face(faceind)=(face(faceind)-mean(face(faceind)))/rmsface*RMS(i)+0.5;
+    face(faceind)=(face(faceind)-mean(face(faceind)))/rmsface*RMS(1,i)+0.5;
     face(facemask(:)==0)=0.5;
-    house(houseind)=(house(houseind)-mean(house(houseind)))/rmshouse*RMS(i)+0.5;
+    house(houseind)=(house(houseind)-mean(house(houseind)))/rmshouse*RMS(2,i)+0.5;
     house(housemask(:)==0)=0.5;
-    car(carind)=(car(carind)-mean(car(carind)))/rmscar*RMS(i)+0.5;
+    car(carind)=(car(carind)-mean(car(carind)))/rmscar*RMS(1,i)+0.5;
     car(carmask(:)==0)=0.5;
     facehouse=face+house-0.5;
     
@@ -76,9 +76,9 @@ for i=1:19
     %[rmsface2 rmshouse2 rmscar2]
     
     % scale it
-    face(ind)=(face(ind)-0.5)/rmsface2*RMS(i)+0.5;
-    house(ind)=(house(ind)-0.5)/rmshouse2*RMS(i)+0.5;
-    car(ind)=(car(ind)-0.5)/rmscar2*RMS(i)+0.5;
+    face(ind)=(face(ind)-0.5)/rmsface2*RMS(1,i)+0.5;
+    house(ind)=(house(ind)-0.5)/rmshouse2*RMS(2,i)+0.5;
+    car(ind)=(car(ind)-0.5)/rmscar2*RMS(1,i)+0.5;
     facehouse=face+house-0.5;
     
     % recompute rms again
