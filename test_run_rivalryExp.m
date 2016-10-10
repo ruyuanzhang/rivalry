@@ -43,7 +43,7 @@ movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror
 
 rblumconst=[127 1 127 1]; %initial contrast for left and right image
 
-frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
+frameduration = 24;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
@@ -91,8 +91,12 @@ load('test.mat');
 
 % plot the green channel staircase
 figure;
-myplot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);
-myplot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);
+plot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
+plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
+
+c=fix(clock);
+filename=sprintf('%d%02d%02d%02d%02d%02d_test',c(1),c(2),c(3),c(4),c(5),c(6));
+save(filename);
 
 %save(['run' num2str(runnum)],'timeframes','timekeys');
 
