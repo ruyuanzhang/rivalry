@@ -1624,13 +1624,13 @@ for frame=1:frameskip:size(frameorder,2)+1
           
           
               switch key % we only change green channel
-                  case 'y' %face,
+                  case 'y' %
                       if rblumconst(1)==127&&rblumconst(3)<127
                           rblumconst(3)=exp(log(rblumconst(3))+0.1);
                       elseif rblumconst(1)<=127&&rblumconst(3)==127
                           rblumconst(1)=exp(log(rblumconst(1))-0.1);
                       end
-                  case 'b' %house
+                  case 'b' %
                       if rblumconst(1)==127&&rblumconst(3)<=127
                           rblumconst(3)=exp(log(rblumconst(3))-0.1);
                       elseif rblumconst(1)<127&&rblumconst(3)==127

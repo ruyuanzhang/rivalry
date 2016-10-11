@@ -7,7 +7,7 @@
 %cl;
 imageSize = 260;
 squre     = 184;
-RMS = [0.15*ones(1,19); 0.20*ones(1,19); 0.20*ones(1,19)];
+RMS = [0.5*ones(1,19); 0.5*ones(1,19); 0.5*ones(1,19)];
 
 
 

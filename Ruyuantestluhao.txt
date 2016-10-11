@@ -1,6 +1,6 @@
 
 
-Ruyuan testing
+Ruyuan testing luhao
 run1, face = 0.1, house = 0.2, condition=1, test1.mat, 
 face(left eye), house(right eye), it seems house is too strong
 
@@ -18,3 +18,30 @@ face(left eye), house(right eye)
 
 run6, face = 0.15, house = 0.20, b,y, condition=2, test6.mat
 face(right eye), house(left eye)
+
+
+
+Ruyuan testing Tingyu
+run1, face = 0.1, house = 0.2, condition=1, test1.mat, 
+face(left eye), house(right eye), it seems house is too strong
+
+run2, face = 0.2, house = 0.1, y,b, condition=2,,switch key button in program. test2.mat
+face(right eye), house(left eye)
+
+run3, face = 0.15, house = 0.15, b,y, condition=1,test3.mat
+face(left eye), house(right eye)
+
+run4, face = 0.15, house = 0.15, y,b, condition=2, test4.mat
+face(right eye), house(left eye)
+
+
+run6, face = 0.15, house = 0.20, b,y, condition=2, test6.mat
+face(right eye), house(left eye)
+
+
+Ruyuan test Ruyuan
+run1, face = 0.15, house = 0.15, condition=1, 
+face(left eye), house(right eye), it seems face is too strong
+
+run2, face = 0.5, house = 0.5, condition=2,  
+face(right eye), house(left eye), it seems face is also strong
