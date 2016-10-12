@@ -85,12 +85,13 @@ for i=1:19
     rmsface2_post=sqrt(sum((face(ind)-0.5).^2)/numel(ind));
     rmshouse2_post=sqrt(sum((house(ind)-0.5).^2)/numel(ind));
     rmscar2_post=sqrt(sum((car(ind)-0.5).^2)/numel(ind));
-    [rmsface2_post rmshouse2_post rmscar2_post]
+    
+    
     
     img(:,:,i,1)=127;
     img(:,:,i,2)=round(face*254);
     img(:,:,i,3)=round(house*254);
-    img(:,:,i,4) =round(car*254);
+    img(:,:,i,4)=round(car*254);
     img(:,:,i,5)=round(facehouse*254);
     
     mask(:,:,i,1)=127;
@@ -100,6 +101,7 @@ for i=1:19
         
 end
 %%
+img=uint8(img);
 viewimages(round(img(:,:,:,2)));colormap(gray);caxis([0 254]);
 viewimages(round(img(:,:,:,3)));colormap(gray);caxis([0 254]);
 viewimages(round(img(:,:,:,4)));colormap(gray);caxis([0 254]);

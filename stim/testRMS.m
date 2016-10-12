@@ -5,9 +5,10 @@
 % checked
 
 %clearvars -except img;
+cl;
 load('fLocStim.mat');
 clearvars -except img;
-RMS = 0.18*ones(1,19);
+
 imageSize = 260;
 squre     = 184;
 
@@ -19,9 +20,9 @@ ind=find(tmp==1);
 for i=1:19
     
     % read in image and mask
-    face=img(:,:,i,2)/254;
-    house=img(:,:,i,3)/254;
-    car=img(:,:,i,4)/254;
+    face=double(img(:,:,i,2))/254;
+    house=double(img(:,:,i,3))/254;
+    car=double(img(:,:,i,4))/254;
     
    
     % recompute rms again
