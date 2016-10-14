@@ -1074,7 +1074,7 @@ end
 
 
 % show the movie
-eyelum=[];
+catconst=[];
 framecnt = 0;
 for frame=1:frameskip:size(frameorder,2)+1
   framecnt = framecnt + 1;
@@ -1166,11 +1166,9 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
-
-            expcondorder(1,frame0)=2;
-            [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(expcondorder(1,frame0));% read in condition
-
-            
+            cond=rem(ceil((framecnt-(5*16))/20),4)+1;
+            expcondorder(1,frame0)=cond;
+            [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(cond);% read in condition           
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
@@ -1215,17 +1213,23 @@ for frame=1:frameskip:size(frameorder,2)+1
     rotate = 1;
     setupImgRotate;
     
-    
+    switch cond
+        case 1
+            const=[rblumconst(2) rblumconst(4)]; 
+        case 2
+            const=[rblumconst(4) rblumconst(2)];
+        case 3
+            const=[rblumconst(5) rblumconst(4)];
+        case 4
+            const=[rblumconst(4) rblumconst(5)];
+    end
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation
                     Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
-                    
                     Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[255 255 255]);
-                    
-                    
                     %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     Screen('DrawTexture',win,mask,[],movierect,[],[],[],[]); % we draw a 2D round mask
@@ -1234,16 +1238,16 @@ for frame=1:frameskip:size(frameorder,2)+1
                     
                     if expcondorder(1,frame0) < 5 || expcondorder(1,frame0) > 7
                         Screen('SelectStereoDrawBuffer', win, 0);
-                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*0.5));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],const(1)*255*0.5));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_r,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
                         Screen('SelectStereoDrawBuffer', win, 1);
               
                         if expcondorder(1,frame0) < 5
-                            Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*0.5));
+                            Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],const(2)*255*0.5));
                         else
-                            Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*0.5));
+                            Screen('DrawTexture',win,texture2,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],const(2)*255*0.5));
                         end
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_b,[],annulusRect,[],[],[],[]); % we draw a 2D round mask                        
@@ -1503,31 +1507,6 @@ for frame=1:frameskip:size(frameorder,2)+1
         didglitch = 0;
       end
       
-%       %% add by Ruyuan, since we noticed the timing issue
-%       %try to read input
-%       if detectinput
-%         [keyIsDown,secs,keyCode,deltaSecs] = KbCheck(-3);  % all devices
-%         if keyIsDown
-% 
-%           % get the name of the key and record it
-%           kn = KbName(keyCode);
-%           timekeys = [timekeys; {secs kn}];
-% 
-%           % check if ESCAPE was pressed
-%           if isequal(kn,'ESCAPE')
-%             fprintf('Escape key detected.  Exiting prematurely.\n');
-%             getoutearly = 1;
-%             break;
-%           end
-% 
-%           % force a glitch?
-%           if allowforceglitch(1) && isequal(kn,'p')
-%             WaitSecs(allowforceglitch(2));
-%           end
-%         
-% 
-%         end
-%       end
       %% ============above added by Ruyuan
       % get out of this loop
       break;
@@ -1622,33 +1601,22 @@ for frame=1:frameskip:size(frameorder,2)+1
               key = uniqkeys(I);
           end
           
-          
-              switch key % we only change green channel
-                  case 'y' %
-                      if rblumconst(1)==127&&rblumconst(3)<127
-                          rblumconst(3)=exp(log(rblumconst(3))+0.1);
-                      elseif rblumconst(1)<=127&&rblumconst(3)==127
-                          rblumconst(1)=exp(log(rblumconst(1))-0.1);
-                      end
-                  case 'b' %
-                      if rblumconst(1)==127&&rblumconst(3)<=127
-                          rblumconst(3)=exp(log(rblumconst(3))-0.1);
-                      elseif rblumconst(1)<127&&rblumconst(3)==127
-                          rblumconst(1)=exp(log(rblumconst(1))+0.1);
-                      end
+          if cond==1||cond==2 % we only change contrast for face and car
+              if strcmp(key,'b') % see face
+                  rblumconst(2)=exp(log(rblumconst(2))-0.1);
+              elseif strcmp(key,'y')
+                  rblumconst(2)=exp(log(rblumconst(2))+0.1);
               end
-        
-          
-          
-          if rblumconst(1)>127
-              rblumconst(1)=127;
-          end
-          if rblumconst(3)>127
-              rblumconst(3)=127;
-          end
               
+          elseif cond==3||cond==4
+              if strcmp(key,'g')
+                  rblumconst(5)=exp(log(rblumconst(5))-0.1);
+              elseif strcmp(key,'y')
+                  rblumconst(5)=exp(log(rblumconst(5))+0.1);
+              end
+          end
       end
-      eyelum=[eyelum; rblumconst(1) rblumconst(3)];
+      catconst=[catconst; rblumconst(2) rblumconst(4) rblumconst(5)];
       rblumconst
   end
   
@@ -1765,7 +1733,7 @@ end
 % do some checks
 if wantcheck
   [keytimes,badtimes,keybuttons]=ptviewmoviecheck(timeframes,timekeys,[],'t');
-  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','eyelum');
+  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','catconst');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
