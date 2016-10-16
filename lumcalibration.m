@@ -85,7 +85,7 @@ plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_lumtest',c(1),c(2),c(3),c(4),c(5),c(6));
 save(filename);
-
+%sprintf('Mean luminance value in last 32 trials are %d for left(red) and %d right(blue)')
 %save(['run' num2str(runnum)],'timeframes','timekeys');
 
 % clear path

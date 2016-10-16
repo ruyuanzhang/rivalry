@@ -1165,7 +1165,6 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
-            
             [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             
             

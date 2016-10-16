@@ -1219,10 +1219,6 @@ for frame=1:frameskip:size(frameorder,2)+1
         rotangle = round(rand*90);
     end
     
-    
-    
-    
-    
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation
