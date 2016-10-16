@@ -1209,6 +1209,8 @@ for frame=1:frameskip:size(frameorder,2)+1
     setupImgRotate;
     
     switch leftEyeImg
+        case 1
+            const(1)=0; %blank
         case 2
             const(1)=rblumconst(2); %face
         case 3
@@ -1216,7 +1218,9 @@ for frame=1:frameskip:size(frameorder,2)+1
         case 4     
             const(1)=rblumconst(5); %car
     end
-    switch leftEyeImg
+    switch rightEyeImg
+        case 1
+            const(2)=0; %blank
         case 2
             const(2)=rblumconst(2); %face
         case 3
