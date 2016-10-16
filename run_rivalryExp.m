@@ -48,7 +48,7 @@ offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
 %for kk
-rblumconst=[127 1 127 1 1];
+rblumconst=[21 0.7427 127 1 1.0438];
 
 frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
 

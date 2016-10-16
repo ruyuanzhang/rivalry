@@ -9,7 +9,7 @@ function constcalibration(runnum,stimfile)
 %       runnum: number of current run?default = 1;
 %       stimfile: specifile stim file, default = "rivalryExp.mat"
 
-
+subj='YX';
 
 if ~exist('runnum','var') || isempty(runnum)
     runnum = 1;
@@ -41,7 +41,7 @@ offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
 
-rblumconst=[24 1 127 1 1]; %initial contrast for left and right image
+rblumconst=[21 1 127 1 1]; %initial contrast for left and right image
 
 frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
@@ -91,9 +91,9 @@ load('test.mat');
 
 % plot the green channel staircase
 figure;
-plot(catconst(:,1),'r-o','lineWidth',2);ylim([0 1]);hold on;
-plot(catconst(:,2),'g-o','lineWidth',2);ylim([0 1]);hold on;
-plot(catconst(:,2),'b-o','lineWidth',2);ylim([0 1]);hold on;
+plot(catconst(:,1),'r-o','lineWidth',2);ylim([0 2]);hold on;
+plot(catconst(:,2),'g-o','lineWidth',2);ylim([0 2]);hold on;
+plot(catconst(:,3),'b-o','lineWidth',2);ylim([0 2]);hold on;
 legend({'F','H','C'});
 
 c=fix(clock);

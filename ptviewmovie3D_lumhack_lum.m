@@ -1216,7 +1216,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     %compuate the rotation angle
     angleStep = 2;
     if frameorder(framecnt)~=frameorder(framecnt-1)
-        rotangle = round(rand*90);
+        rotangle = round(rand*70);
     end
     
     assert(size(framecolor,2)==3);
