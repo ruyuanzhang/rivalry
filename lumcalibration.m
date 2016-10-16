@@ -18,8 +18,13 @@ if ~exist('stimfile','var') || isempty(stimfile)
     stimfile = fullfile(path,'rivalryExp.mat');
 end
 
+subj='YX';
+
 %load the file
 load('RivalryExp.mat');
+
+% add functions untilized in the exp
+addpath(genpath(pwd));
 
 
 % replace images to gabors
@@ -30,8 +35,6 @@ img(:,:,:,2)=gabor;
 img(:,:,:,3)=gabor;
 img(:,:,:,4)=gabor;
 
-% add functions untilized in the exp
-addpath(genpath(pwd));
 
 %% Set experiment parameters
 
@@ -83,7 +86,7 @@ plot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
 plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
 
 c=fix(clock);
-filename=sprintf('%d%02d%02d%02d%02d%02d_lumtest',c(1),c(2),c(3),c(4),c(5),c(6));
+filename=sprintf('%d%02d%02d%02d%02d%02d_%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
 %sprintf('Mean luminance value in last 32 trials are %d for left(red) and %d right(blue)')
 %save(['run' num2str(runnum)],'timeframes','timekeys');
