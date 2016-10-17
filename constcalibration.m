@@ -40,8 +40,8 @@ fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum)
 offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
-
-rblumconst=[21 1 127 1 1]; %initial contrast for left and right image
+load('lumconst.mat');
+rblumconst=[round(lum(1)) 1 round(lum(2)) 1 1]; %initial contrast for left and right image
 
 frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
@@ -99,6 +99,9 @@ legend({'F','H','C'});
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_consttest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
+const=[mean(catconst(50:end,1)) mean(catconst(50:end,2)) mean(catconst(50:end,3))];
+sprintf('Contrast values are %.4f for Face, %.4f for house %.4f for car \n',const(1),const(2),const3);
+save('lumconst','lum','const');
 
 %save(['run' num2str(runnum)],'timeframes','timekeys');
 

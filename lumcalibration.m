@@ -84,12 +84,14 @@ load('test.mat');
 figure;
 plot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
 plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
+lum=[mean(eyelum(50:end,1)) mean(eyelum(50:end,2))];
 
 c=fix(clock);
-filename=sprintf('%d%02d%02d%02d%02d%02d_%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
+filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
-%sprintf('Mean luminance value in last 32 trials are %d for left(red) and %d right(blue)')
-%save(['run' num2str(runnum)],'timeframes','timekeys');
+sprintf('Mean luminance value in last 32 trials are %.4f for left(red) and %.4f right(blue) \n',lum(1),lum(2));
+save('lumconst','lum');
+
 
 % clear path
 rmpath(genpath(pwd));

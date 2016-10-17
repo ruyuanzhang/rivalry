@@ -1075,6 +1075,7 @@ end
 
 % show the movie
 catconst=[];
+condlist=rem(randperm(81),4)+1;
 framecnt = 0;
 for frame=1:frameskip:size(frameorder,2)+1
   framecnt = framecnt + 1;
@@ -1166,7 +1167,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
-            cond=rem(ceil((framecnt-(5*16))/20),4)+1;
+            cond=condlist(ceil((framecnt-5*16)/20));
             expcondorder(1,frame0)=cond;
             [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(cond);% read in condition           
             switch size(frameorder,1)
