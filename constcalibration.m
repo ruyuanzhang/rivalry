@@ -91,10 +91,12 @@ load('test.mat');
 
 % plot the green channel staircase
 figure;
-plot(catconst(:,1),'r-o','lineWidth',2);ylim([0 2]);hold on;
-plot(catconst(:,2),'g-o','lineWidth',2);ylim([0 2]);hold on;
-plot(catconst(:,3),'b-o','lineWidth',2);ylim([0 2]);hold on;
+plot(catconst(:,1),'r-o','lineWidth',2);ylim([0 1.5]);hold on;
+plot(catconst(:,2),'g-o','lineWidth',2);ylim([0 1.5]);hold on;
+plot(catconst(:,3),'b-o','lineWidth',2);ylim([0 1.5]);hold on;
 legend({'F','H','C'});
+xlabel('trials');
+ylabel('contrast');
 
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_consttest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
