@@ -9,7 +9,7 @@ function constcalibration(runnum,stimfile)
 %       runnum: number of current run?default = 1;
 %       stimfile: specifile stim file, default = "rivalryExp.mat"
 
-subj='YX';
+subj = input('Input subject number:','s');
 
 if ~exist('runnum','var') || isempty(runnum)
     runnum = 1;
@@ -99,8 +99,8 @@ legend({'F','H','C'});
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_consttest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
+fprintf('Mean conrast values for F,H,C are %.4f %.4f %.4f \n',mean(catconst(50:end,1)),mean(catconst(50:end,2)),mean(catconst(50:end,3)));
 
-%save(['run' num2str(runnum)],'timeframes','timekeys');
 
 % clear path
 rmpath(genpath(pwd));

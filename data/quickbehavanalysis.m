@@ -4,8 +4,8 @@ clear all;close all;clc
 
 
 
-taskrun=[1 2];
-filenames=matchfiles('*YX*');
+taskrun=[2 3 4];
+filenames=matchfiles('*YX_run*');
 
 
 %% ===============Experiment description================================
@@ -152,8 +152,8 @@ l=legend(ele([5,4,1]),{'LeftEye','RightEye','TotalTrial#'});
 %
 ax(2)=subplot(3,1,2);
 mybar([],result(1:7,:)',result_error(1:7,:)');hold on;
-%myplot(0:7,numel(taskrun)*7*ones(numel(0:7),1),'--k'); hold on;
-myplot(8:12,27*ones(numel(8:12),1),'--k'); hold on;
+myplot(0:7,numel(taskrun)*7*ones(numel(0:7),1),'--k'); hold on;
+%myplot(8:12,27*ones(numel(8:12),1),'--k'); hold on;
 ylabel('# of Choices');
 xlabel('Conditions');
 ele=get(gca,'Child');

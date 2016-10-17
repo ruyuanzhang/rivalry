@@ -18,7 +18,7 @@ if ~exist('stimfile','var') || isempty(stimfile)
     stimfile = fullfile(path,'rivalryExp.mat');
 end
 
-subj='YX';
+subj = input('Input subject number:','s');
 
 %load the file
 load('RivalryExp.mat');
@@ -86,10 +86,10 @@ plot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
 plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
 
 c=fix(clock);
-filename=sprintf('%d%02d%02d%02d%02d%02d_%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
+filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
-%sprintf('Mean luminance value in last 32 trials are %d for left(red) and %d right(blue)')
-%save(['run' num2str(runnum)],'timeframes','timekeys');
+sprintf('Mean luminance value in last 32 trials are %.4f for left(red) and %.4f right(blue)',mean(eyelum(50:end,1)),mean(eyelum(50:end,2)));
+
 
 % clear path
 rmpath(genpath(pwd));
