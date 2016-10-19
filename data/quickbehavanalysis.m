@@ -4,12 +4,10 @@ clear all;close all;clc
 
 
 
-<<<<<<< HEAD
-taskrun=[1 2 3 4];
-=======
-taskrun=[2 3 4];
->>>>>>> boldscreen
-filenames=matchfiles('*YX_run*');
+
+taskrun=[1 2 3];
+
+filenames=matchfiles('*QL_run*');
 
 
 %% ===============Experiment description================================

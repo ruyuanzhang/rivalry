@@ -83,9 +83,8 @@ ptoff3D(oldclut,stereoMode);
 load('test.mat');
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_run%02d_exp%03d',c(1),c(2),c(3),c(4),c(5),c(6),subj,runnum,expnum);
-if subjnum~=99
-    save(filename);
-end
+save(filename);
+
 % clear path
 rmpath(genpath(pwd));
 
