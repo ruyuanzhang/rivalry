@@ -18,7 +18,7 @@ if ~exist('stimfile','var') || isempty(stimfile)
     stimfile = fullfile(path,'rivalryExp.mat');
 end
 
-subj='YX';
+subj = input('Input subject number:','s');
 
 %load the file
 load('RivalryExp.mat');
@@ -51,7 +51,7 @@ fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum)
 offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
-rblumconst=[127 1 127 1]; %initial contrast for left and right image
+rblumconst=[127 1 127 1 1]; %initial contrast for left and right image
 
 frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
@@ -89,8 +89,10 @@ lum=[mean(eyelum(50:end,1)) mean(eyelum(50:end,2))];
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
-sprintf('Mean luminance value in last 32 trials are %.4f for left(red) and %.4f right(blue) \n',lum(1),lum(2));
-save('lumconst','lum');
+
+fprintf('Mean luminance value in last 32 trials are %.4f for left(red) and %.4f right(blue) \n',mean(eyelum(50:end,1)),mean(eyelum(50:end,2)));
+lumconst = [mean(eyelum(50:end,1)) 1  mean(eyelum(50:end,2)) 1 1];
+save(sprintf('lumconst_%s.mat',subj),'lumconst');
 
 
 % clear path

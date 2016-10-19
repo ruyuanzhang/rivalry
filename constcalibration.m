@@ -9,7 +9,7 @@ function constcalibration(runnum,stimfile)
 %       runnum: number of current run?default = 1;
 %       stimfile: specifile stim file, default = "rivalryExp.mat"
 
-subj='YX';
+subj = input('Input subject number:','s');
 
 if ~exist('runnum','var') || isempty(runnum)
     runnum = 1;
@@ -40,8 +40,12 @@ fprintf('\n\nRUNNING LEXICALITY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,runnum)
 offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
-load('lumconst.mat');
-rblumconst=[round(lum(1)) 1 round(lum(2)) 1 1]; %initial contrast for left and right image
+
+
+load(sprintf('lumconst_%s.mat',subj));
+rblumconst=lumconst; %initial contrast for left and right image
+rblumconst
+
 
 frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
@@ -91,19 +95,24 @@ load('test.mat');
 
 % plot the green channel staircase
 figure;
-plot(catconst(:,1),'r-o','lineWidth',2);ylim([0 2]);hold on;
-plot(catconst(:,2),'g-o','lineWidth',2);ylim([0 2]);hold on;
-plot(catconst(:,3),'b-o','lineWidth',2);ylim([0 2]);hold on;
+plot(catconst(:,1),'r-o','lineWidth',2);ylim([0 1.5]);hold on;
+plot(catconst(:,2),'g-o','lineWidth',2);ylim([0 1.5]);hold on;
+plot(catconst(:,3),'b-o','lineWidth',2);ylim([0 1.5]);hold on;
 legend({'F','H','C'});
+xlabel('trials');
+ylabel('contrast');
 
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_consttest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
-const=[mean(catconst(50:end,1)) mean(catconst(50:end,2)) mean(catconst(50:end,3))];
-sprintf('Contrast values are %.4f for Face, %.4f for house %.4f for car \n',const(1),const(2),const3);
-save('lumconst','lum','const');
 
-%save(['run' num2str(runnum)],'timeframes','timekeys');
+fprintf('Mean conrast values for F,H,C are %.4f %.4f %.4f \n',mean(catconst(50:end,1)),mean(catconst(50:end,2)),mean(catconst(50:end,3)));
+lumconst(2) = mean(catconst(50:end,1));
+lumconst(4) = mean(catconst(50:end,2));
+lumconst(5) = mean(catconst(50:end,3));
+save(sprintf('lumconst_%s.mat',subj),'lumconst');
+
+
 
 % clear path
 rmpath(genpath(pwd));

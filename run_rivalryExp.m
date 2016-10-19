@@ -20,7 +20,7 @@ if ~exist('stimfile','var') || isempty(stimfile)
 end
 
 % receive some input
-subjnum = input('Input subject number:');
+subj = input('Input subject number:','s');
 expnum = input('What is the experiment number?\nRivalry:1\n');
 
 
@@ -48,8 +48,11 @@ offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
 %for kk
-load('lumconst.mat');
-rblumconst=[round(lum(1)) const(1) round(lum(2)) const(2) const(3)];
+
+load(sprintf('lumconst_%s.mat',subj));
+rblumconst=lumconst;
+rblumconst
+
 
 frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
 
@@ -79,7 +82,7 @@ ptoff3D(oldclut,stereoMode);
 %Save the timing info and key button press for future analysis
 load('test.mat');
 c=fix(clock);
-filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_run%02d_exp%03d',c(1),c(2),c(3),c(4),c(5),c(6),subjnum,runnum,expnum);
+filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_run%02d_exp%03d',c(1),c(2),c(3),c(4),c(5),c(6),subj,runnum,expnum);
 if subjnum~=99
     save(filename);
 end

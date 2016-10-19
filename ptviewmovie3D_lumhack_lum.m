@@ -1216,7 +1216,9 @@ for frame=1:frameskip:size(frameorder,2)+1
     %compuate the rotation angle
     angleStep = 2;
     if frameorder(framecnt)~=frameorder(framecnt-1)
-        rotangle = round(rand*70);
+        rotangle = round(rand*70+10);
+        ori=sign(rand-0.5);
+        rotangle=ori*rotangle;
     end
     
     assert(size(framecolor,2)==3);
@@ -1225,9 +1227,7 @@ for frame=1:frameskip:size(frameorder,2)+1
                     Screen('DrawTexture',win,texture,[],movierect,0,filtermode,1,framecolor(frame0,:));
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     %Screen('DrawTexture',win,mask,[],movierect,[],[],[]); % we draw a 2D round mask
-                    
-                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[255 255 255]);
-                                      
+                    Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,[255 255 255]);                                     
                     %Screen('DrawTexture',win,texture2,[],movierect,-rotangle,filtermode,1,righteyealpha);
                     Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                     Screen('DrawTexture',win,mask,[],movierect,[],[],[],[]); % we draw a 2D round mask
@@ -1236,14 +1236,14 @@ for frame=1:frameskip:size(frameorder,2)+1
                     
                     if expcondorder(1,frame0) < 5 || expcondorder(1,frame0) > 7
                         Screen('SelectStereoDrawBuffer', win, 0);
-                        Screen('DrawTexture',win,texture,[],movierect,-rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*1));
+                        Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(1)/127*[255 255 255],rblumconst(2)*255*1));
                         Screen('BlendFunction', win, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                         Screen('DrawTexture',win,annulusMask_r,[],annulusRect,[],[],[],[]); % we draw a 2D round mask
                         
                         Screen('SelectStereoDrawBuffer', win, 1);
               
                         if expcondorder(1,frame0) < 5
-                            Screen('DrawTexture',win,texture,[],movierect,-rotangle+90,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*1));
+                            Screen('DrawTexture',win,texture,[],movierect,rotangle+90,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*1));
                         else
                             Screen('DrawTexture',win,texture,[],movierect,rotangle,filtermode,1,horzcat(rblumconst(3)/127*[255 255 255],rblumconst(4)*255*0.5));
                         end
@@ -1624,21 +1624,38 @@ for frame=1:frameskip:size(frameorder,2)+1
               key = uniqkeys(I);
           end
           
-          
-              switch key % we only change green channel
-                  case 'b' %
-                      if rblumconst(1)==127&&rblumconst(3)<127
-                          rblumconst(3)=exp(log(rblumconst(3))+0.1);
-                      elseif rblumconst(1)<=127&&rblumconst(3)==127
-                          rblumconst(1)=exp(log(rblumconst(1))-0.1);
-                      end
-                  case 'y' %
-                      if rblumconst(1)==127&&rblumconst(3)<=127
-                          rblumconst(3)=exp(log(rblumconst(3))-0.1);
-                      elseif rblumconst(1)<127&&rblumconst(3)==127
-                          rblumconst(1)=exp(log(rblumconst(1))+0.1);
-                      end
-              end
+          switch ori
+              case -1
+                  switch key % we only change green channel
+                      case 'b' %
+                          if rblumconst(1)==127&&rblumconst(3)<127
+                              rblumconst(3)=exp(log(rblumconst(3))+0.1);
+                          elseif rblumconst(1)<=127&&rblumconst(3)==127
+                              rblumconst(1)=exp(log(rblumconst(1))-0.1);
+                          end
+                      case 'y' %
+                          if rblumconst(1)==127&&rblumconst(3)<=127
+                              rblumconst(3)=exp(log(rblumconst(3))-0.1);
+                          elseif rblumconst(1)<127&&rblumconst(3)==127
+                              rblumconst(1)=exp(log(rblumconst(1))+0.1);
+                          end
+                  end
+              case 1
+                  switch key % we only change green channel
+                      case 'y' %
+                          if rblumconst(1)==127&&rblumconst(3)<127
+                              rblumconst(3)=exp(log(rblumconst(3))+0.1);
+                          elseif rblumconst(1)<=127&&rblumconst(3)==127
+                              rblumconst(1)=exp(log(rblumconst(1))-0.1);
+                          end
+                      case 'b' %
+                          if rblumconst(1)==127&&rblumconst(3)<=127
+                              rblumconst(3)=exp(log(rblumconst(3))-0.1);
+                          elseif rblumconst(1)<127&&rblumconst(3)==127
+                              rblumconst(1)=exp(log(rblumconst(1))+0.1);
+                          end
+                  end
+          end
           if rblumconst(1)>127
               rblumconst(1)=127;
           end
