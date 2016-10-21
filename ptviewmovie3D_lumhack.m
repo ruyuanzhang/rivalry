@@ -1213,17 +1213,13 @@ for frame=1:frameskip:size(frameorder,2)+1
     %compuate the rotation angle
     rotate = 1;
     setupImgRotate;
+    cond
+    rotDir
     
-    switch cond
-        case 1
-            const=[rblumconst(2) rblumconst(4)]; 
-        case 2
-            const=[rblumconst(4) rblumconst(2)];
-        case 3
-            const=[rblumconst(5) rblumconst(4)];
-        case 4
-            const=[rblumconst(4) rblumconst(5)];
-    end
+        
+    
+    
+    
     assert(size(framecolor,2)==3);
             if size(framecolor,2) == 3  % the usual case
                 if stereoMode == 0 % monocular representation
@@ -1602,7 +1598,7 @@ for frame=1:frameskip:size(frameorder,2)+1
               key = uniqkeys(I);
           end
           
-          if cond==1||cond==2 % we only change contrast for face and car
+          if rotangle % we only change contrast for face and car
               if strcmp(key,'b') % see face
                   rblumconst(2)=exp(log(rblumconst(2))-0.1);
               elseif strcmp(key,'y')
