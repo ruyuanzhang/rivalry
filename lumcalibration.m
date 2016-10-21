@@ -27,15 +27,6 @@ load('RivalryExp.mat');
 addpath(genpath(pwd));
 
 
-% replace images to gabors
-gabor=createGrating(size(img,1)/2);
-gabor = gabor.gratingImg;
-gabor = repmat(gabor,[1 1 76]);
-img(:,:,:,2)=gabor;
-img(:,:,:,3)=gabor;
-img(:,:,:,4)=gabor;
-
-
 %% Set experiment parameters
 
 stereoMode        =  5; 
@@ -53,7 +44,7 @@ movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror
 
 rblumconst=[127 1 127 1 1]; %initial contrast for left and right image
 
-frameduration = 24;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
+frameduration = 12;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 
@@ -71,7 +62,7 @@ scfactor = 1;  % scale images bigger or smaller
 %% Run experiment
 oldclut = pton3D(ptonparams{:});
 [timeframes,timekeys,digitrecord,trialoffsets] = ...
-    ptviewmovie3D_lumhack_lum(reshape(img,[size(img,1), size(img,2), 1 , size(img,3),size(img,4)]), ...
+    ptviewmovie3D_lumhack(reshape(img,[size(img,1), size(img,2), 1 , size(img,3),size(img,4)]), ...
     frameorder(runnum,:),[],frameduration,fixorder(runnum,:),fixcolor, ...
     fixationsize,grayval,[],[],offset,[],movieflip,scfactor,[], ...
     [],[],[],'t',[],[],[],[],[],[],[],[],stereoMode,expcondorder(runnum,:),rblumconst); % scanner button box trigger, for letter, use 't' ; for digit, use "5" 
