@@ -1608,7 +1608,6 @@ for frame=1:frameskip:size(frameorder,2)+1
               elseif strcmp(key,'y')
                   rblumconst(2)=exp(log(rblumconst(2))+0.1);
               end
-              
           elseif cond==3||cond==4
               if strcmp(key,'g')
                   rblumconst(5)=exp(log(rblumconst(5))-0.1);
