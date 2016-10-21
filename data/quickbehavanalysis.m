@@ -2,29 +2,43 @@
 % This script is to analyze behavioral results of a subject.
 clear all;close all;clc
 
+subj='QL';
+taskrun=[1 2 3 4];
+%% plot luminance and const
+H(1)=figure(1);
+filenames=matchfiles(sprintf('*%s_lum*',subj));
+load(filenames{1});
+ax(1)=subplot(3,1,1);
+myplot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
+myplot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
+ylabel('luminance');
+xlabel('trial');
+legend('red (left) eye','blue (right) eye','Location','southwest');
 
+if strcmp(subj,'QL')
+    load(filenames{2});
+    ax(2)=subplot(3,1,2);
+    myplot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
+    myplot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
+    legend('red (left) eye','blue (right) eye','Location','southwest');
+    ylabel('luminance');
+    xlabel('trial');
+end
 
+filenames=matchfiles(sprintf('*%s_const*',subj));
+load(filenames{1});
+ax(3)=subplot(3,1,3);
+myplot(catconst(:,1),'r-o','lineWidth',2);ylim([0 1.5]);hold on;
+myplot(catconst(:,2),'g-o','lineWidth',2);ylim([0 1.5]);hold on;
+myplot(catconst(:,3),'b-o','lineWidth',2);ylim([0 1.5]);hold on;
+legend({'F','H','C'},'Location','southwest');
+ylabel('trials');
+xlabel('contrast');
 
-taskrun=[1 2 3];
-
-filenames=matchfiles('*QL_run*');
-
-
-%% ===============Experiment description================================
-% 1. During rivalry experiment, a participant completes 12 experiment runs.
-% The number 1,3,4,6,7,9,10,12 are task runs. Run 2,5,8,11 are fixation
-% runs, we don't need to analyze fixation run data.
-% 2. In a task run, there are 76 stimulus trials. We have total 16 stimuli 
-%   conditions. 
-% 3. There are four choices for each conditions.Participants should respond
-% to stimuli by pressing one of four buttons, 'b','y','g','r'.
-% 4. So basically we should generate a 16*4 result matrix and a 8*76 keybutton
-% press matrix for all trials
-
-% All order of stimulus conditios was in 'condorder' variable after you
-% read in 'RivalryExp.mat'. condorder is a 14*81 matrix,
-
-
+set(H(1),'Position',[75 300 569 782]);
+%figrmwhitespace(ax,3,1);
+%%
+filenames=matchfiles(sprintf('*%s_run*',subj));
 %% ==================first, let's analyze the results=======================
 
 load('RivalryExp.mat'); %load the experimental design file
@@ -37,12 +51,6 @@ keysPress       =zeros(8,81);
 
 for run=taskrun% we loop across 8 task runs
     
-%All order of stimulus conditios was in 'condorder' variable after you
-%read in 'RivalryExp.mat'. condorder is a 14*81 matrix. Row refers for
-%different runs. Here, we only consider row 1,3,4,6,7,9,10,12. Column are
-%all trials in a run. There are 76 stimulus trial and 5 blank trials.We
-%only need to analyze 76 stimulus trials. You will see number 1 to 16,
-%which stands for stimulus condition number in this trial
 
     
     cond = condorder(run,:);
@@ -134,8 +142,7 @@ result_error(8:16,:)=sqrt(totalTrial_sig*result(8:16,:)/totalTrial_sig.*(1-resul
 %% now we create the figures below
 %% ==================Second, make a figure visualize the results===========
 %% plot the result of first four conditions
-close all;
-H=figure;
+H(2)=figure(2);
 %set(H,'Position',[435 133 1092 907]); % make a bigger figure
 data = [result(1,1)  result(2,2) result(3,3) result(4,2);result(1,2)  result(2,1) result(3,2) result(4,3)];
 error = [result_error(1,1)  result_error(2,2) result_error(3,3) result_error(4,2);result_error(1,2)  result_error(2,1) result_error(3,2) result_error(4,3)];
@@ -179,6 +186,8 @@ set(gca,'XTickLabel',{
 l=legend(ele([9:-1:6,1]),{'Face','House','Car','Mixture','TotalTrial#'});
 
 
+
 %% adjust figure
+set(H(2),'Position',[644 335 681 768]);
 %figrmwhitespace(ax,3,1);
 
