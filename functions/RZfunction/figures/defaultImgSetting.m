@@ -39,18 +39,18 @@ set(rootind,'DefaultFigurePaperPositionMode','auto');
 
 %% below are specific to groot, somehow it's wrong to use 0 on linux
 %Default legend settings
-set(groot,'defaultLegendBox','off');
-set(groot,'defaultLegendLocation','northwest');
+%set(groot,'defaultLegendBox','off');
+%bset(groot,'defaultLegendLocation','northwest');
 
-%Default bar and error bar settings
-%set(groot,'DefaultBarFaceColor',[0 0 0]);
-set(groot,'DefaultErrorBarLineStyle','none');
-set(groot,'DefaultErrorBarColor',[0 0 0]);
-set(groot,'DefaultErrorBarLineWidth',1.5);
-
-%Default legend setting
-set(groot,'DefaultLegendBox','off');
-set(groot,'DefaultLegendLocation','northwest');
+% %Default bar and error bar settings
+% %set(groot,'DefaultBarFaceColor',[0 0 0]);
+% set(groot,'DefaultErrorBarLineStyle','none');
+% set(groot,'DefaultErrorBarColor',[0 0 0]);
+% set(groot,'DefaultErrorBarLineWidth',1.5);
+% 
+% %Default legend setting
+% set(groot,'DefaultLegendBox','off');
+% set(groot,'DefaultLegendLocation','northwest');
 
 
 end

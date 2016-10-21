@@ -75,7 +75,7 @@ load('test.mat');
 figure;
 plot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
 plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
-lum=[mean(eyelum(50:end,1)) mean(eyelum(50:end,2))];
+
 
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);

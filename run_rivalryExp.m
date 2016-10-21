@@ -50,15 +50,16 @@ movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror
 %for kk
 
 load(sprintf('lumconst_%s.mat',subj));
-rblumconst=lumconst;
+%rblumconst=lumconst;
+rblumconst=[127.0000    0.7729   100.7457    1.0000    0.7605];
 rblumconst
 
 
 frameduration = 24;  % number of monitor frames for one unit.  120/5 = 24
 
-%ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
+ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 %change resolution
-ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
+%ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
 
 
 

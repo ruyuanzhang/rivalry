@@ -1752,7 +1752,7 @@ end
 % do some checks
 if wantcheck
   [keytimes,badtimes,keybuttons]=ptviewmoviecheck(timeframes,timekeys,[],'t');
-  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','catconst');
+  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','eyelum');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
