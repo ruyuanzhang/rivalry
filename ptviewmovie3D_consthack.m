@@ -1601,7 +1601,6 @@ for frame=1:frameskip:size(frameorder,2)+1
               [~, I]=max(count);
               key = uniqkeys(I);
           end
-          
           if cond==1||cond==2 % we only change contrast for face and car
               if strcmp(key,'b') % see face
                   rblumconst(2)=exp(log(rblumconst(2))-0.1);
