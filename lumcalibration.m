@@ -71,18 +71,35 @@ ptoff3D(oldclut,stereoMode);
 %Save the timing info and key button press for future analysis
 load('test.mat');
 
-% plot the green channel staircase
+% compute the plot the green channel staircase
+labeltoplot=nReversalLabel;
+labeltoplot(labeltoplot==0)=-1;
+labeltoplot(labeltoplot==1)=min(eyelum(labeltoplot==1,1),eyelum(labeltoplot==1,2));
+% We discard first three reversals and average other reversals.
+labels=find(nReversalLabel~=0);
+lumthreshold(1)=mean(eyelum(labels(4:end),1));
+lumthreshold(2)=mean(eyelum(labels(4:end),2));
+
 figure;
 plot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
 plot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
+plot(labeltoplot,'k*','MarkerSize',10);ylim([0 150]);hold on; % plot reversal
+plot(1:numel(eyelum(:,1)),ones(1,numel(eyelum(:,1)))*lumthreshold(1),'r--');ylim([0 150]);hold on;  %plot threshold
+plot(1:numel(eyelum(:,2)),ones(1,numel(eyelum(:,2)))*lumthreshold(2),'g--');ylim([0 150]);hold on;  %plot threshold
+xlabel('Trials');
+ylabel('Luminance');
+legend({'Red (left) eye','Green (right) eye'});
+
+
+
 
 
 c=fix(clock);
 filename=sprintf('%d%02d%02d%02d%02d%02d_sub%s_lumtest',c(1),c(2),c(3),c(4),c(5),c(6),subj);
 save(filename);
 
-fprintf('Mean luminance value in last 32 trials are %.4f for left(red) and %.4f right(blue) \n',mean(eyelum(50:end,1)),mean(eyelum(50:end,2)));
-lumconst = [mean(eyelum(50:end,1)) 1  mean(eyelum(50:end,2)) 1 1];
+fprintf('Mean luminance value in last 32 trials are %.4f for left(red) and %.4f right(blue) \n',lumthreshold(1),lumthreshold(2)));
+lumconst = [lumthreshold(1) 1  lumthreshold(2) 1 1];
 save(sprintf('lumconst_%s.mat',subj),'lumconst');
 
 

@@ -2,41 +2,8 @@
 % This script is to analyze behavioral results of a subject.
 clear all;close all;clc
 
-subj='QL';
-taskrun=[1 2 3 4];
-%% plot luminance and const
-H(1)=figure(1);
-filenames=matchfiles(sprintf('*%s_lum*',subj));
-load(filenames{1});
-ax(1)=subplot(3,1,1);
-myplot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
-myplot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
-ylabel('luminance');
-xlabel('trial');
-legend('red (left) eye','blue (right) eye','Location','southwest');
-
-if strcmp(subj,'QL')
-    load(filenames{2});
-    ax(2)=subplot(3,1,2);
-    myplot(eyelum(:,1),'r-o','lineWidth',2);ylim([0 150]);hold on;
-    myplot(eyelum(:,2),'g-o','lineWidth',2);ylim([0 150]);hold on;
-    legend('red (left) eye','blue (right) eye','Location','southwest');
-    ylabel('luminance');
-    xlabel('trial');
-end
-
-filenames=matchfiles(sprintf('*%s_const*',subj));
-load(filenames{1});
-ax(3)=subplot(3,1,3);
-myplot(catconst(:,1),'r-o','lineWidth',2);ylim([0 1.5]);hold on;
-myplot(catconst(:,2),'g-o','lineWidth',2);ylim([0 1.5]);hold on;
-myplot(catconst(:,3),'b-o','lineWidth',2);ylim([0 1.5]);hold on;
-legend({'F','H','C'},'Location','southwest');
-ylabel('trials');
-xlabel('contrast');
-
-set(H(1),'Position',[75 300 569 782]);
-%figrmwhitespace(ax,3,1);
+subj='TZ';
+taskrun=[1 2];
 %%
 filenames=matchfiles(sprintf('*%s_run*',subj));
 %% ==================first, let's analyze the results=======================
@@ -188,6 +155,7 @@ l=legend(ele([9:-1:6,1]),{'Face','House','Car','Mixture','TotalTrial#'});
 
 
 %% adjust figure
+mysuptitle('Subject TZ');
 set(H(2),'Position',[644 335 681 768]);
-%figrmwhitespace(ax,3,1);
+figrmwhitespace(ax,3,1,[0 0 0 0.05]);
 
