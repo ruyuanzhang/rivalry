@@ -1,11 +1,9 @@
 %% analyze data immediately
 % This script is to analyze behavioral results of a subject.
 clear all;close all;clc
-addpath(genpath(pwd));
 
-subj='TZ2';
-taskrun=[1 2 3];
-
+subj='TZ';
+taskrun=[1 2];
 %%
 filenames=matchfiles(sprintf('*%s_run*',subj));
 %% ==================first, let's analyze the results=======================
@@ -157,6 +155,7 @@ l=legend(ele([9:-1:6,1]),{'Face','House','Car','Mixture','TotalTrial#'});
 
 
 %% adjust figure
+mysuptitle('Subject TZ');
 set(H(2),'Position',[644 335 681 768]);
-%figrmwhitespace(ax,3,1);
+figrmwhitespace(ax,3,1,[0 0 0 0.05]);
 

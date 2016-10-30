@@ -1074,8 +1074,9 @@ end
 
 
 % show the movie
-eyelum=[];
-condlist=rem(randperm(81),4)+1;
+eyelum=[rblumconst(1) rblumconst(3)];
+nReversalLabel = 0;
+nReversal = 0;
 framecnt = 0;
 for frame=1:frameskip:size(frameorder,2)+1
   framecnt = framecnt + 1;
@@ -1167,9 +1168,7 @@ for frame=1:frameskip:size(frameorder,2)+1
             texture = Screen('MakeTexture',win,txttemp);
 
         elseif stereoMode == 1 || stereoMode == 2||stereoMode == 3||stereoMode == 4||stereoMode == 0|| stereoMode == 5
-            cond=condlist(ceil((framecnt-5*16)/20));
-            expcondorder(1,frame0)=cond;
-            [leftEyeImg,rightEyeImg] = ExpCondMatrix_lumhack(cond);% read in condition           
+            [leftEyeImg,rightEyeImg] = ExpCondMatrix(expcondorder(1,frame0));% read in condition
             switch size(frameorder,1)
                 case 1
                     txttemp = feval(flipfun,images(:,:,:,frameorder(1,frame0),leftEyeImg));
@@ -1558,10 +1557,23 @@ for frame=1:frameskip:size(frameorder,2)+1
   
   
   %% check the keybutton in this trial and adjust luminance for next trial accordingly
-  if (framecnt>80)&&(rem(frame,20)==0) % the last frame of each trial
-      frameend = timeframes(framecnt);
-      framestart = timeframes(framecnt-19);
+  
+  if (framecnt>80)&&(rem(frame,20)==0)&&expcondorder(1,framecnt-19)<5&&expcondorder(1,framecnt-19)>0 % the last frame of each trial and we only use staircase on rivalry trials
       
+      cond=expcondorder(1,framecnt-19);
+      %  
+      logstep = 0.1;
+      if nReversal<=3
+          logstep=0.3;
+      elseif nReversal>3&&nReversal<=5
+          logstep=0.2;
+      elseif nReversal > 5
+          logstep=0.1;
+      end
+      
+      
+      frameend = timeframes(framecnt); 
+      framestart = timeframes(framecnt-19);
       %dealing with multiple key press
       timekeysB = {};
       for p=1:size(timekeys,1)
@@ -1595,38 +1607,66 @@ for frame=1:frameskip:size(frameorder,2)+1
               key = uniqkeys(I);
           end
           
-          key
           
-      
-          if rotDir>0 % red channel rotate to right
-              if strcmp(key,'y') % y is right, choose red channel
-                  if rblumconst(1)==127&&rblumconst(3)<127
-                      rblumconst(3)=exp(log(rblumconst(3))+0.1);
-                  elseif rblumconst(1)<=127&&rblumconst(3)==127
-                      rblumconst(1)=exp(log(rblumconst(1))-0.1);
+          switch cond
+              case 1 % F,H
+                  if strcmp(key,'b') % choose face,left
+                      if rblumconst(1)==127&&rblumconst(3)<127
+                          rblumconst(3)=exp(log(rblumconst(3))+logstep);
+                      elseif rblumconst(1)<=127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))-logstep);
+                      end
+                  elseif strcmp(key,'y') % choose house, right
+                      if rblumconst(1)==127&&rblumconst(3)<=127
+                          rblumconst(3)=exp(log(rblumconst(3))-logstep);
+                      elseif rblumconst(1)<127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))+logstep);
+                      end
                   end
-              elseif strcmp(key,'b')
-                  if rblumconst(1)==127&&rblumconst(3)<=127
-                      rblumconst(3)=exp(log(rblumconst(3))-0.1);
-                  elseif rblumconst(1)<127&&rblumconst(3)==127
-                      rblumconst(1)=exp(log(rblumconst(1))+0.1);
+              case 2 % H,F
+                  if strcmp(key,'y') % choose face,left
+                      if rblumconst(1)==127&&rblumconst(3)<127
+                          rblumconst(3)=exp(log(rblumconst(3))+logstep);
+                      elseif rblumconst(1)<=127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))-logstep);
+                      end
+                  elseif strcmp(key,'b') % choose house, right
+                      if rblumconst(1)==127&&rblumconst(3)<=127
+                          rblumconst(3)=exp(log(rblumconst(3))-logstep);
+                      elseif rblumconst(1)<127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))+logstep);
+                      end
                   end
-              end
-          elseif rotDir<0 % red channel rotate to left
-              if strcmp(key,'b')
-                  if rblumconst(1)==127&&rblumconst(3)<127
-                      rblumconst(3)=exp(log(rblumconst(3))+0.1);
-                  elseif rblumconst(1)<=127&&rblumconst(3)==127
-                      rblumconst(1)=exp(log(rblumconst(1))-0.1);
+              case 3 % C,H
+                  if strcmp(key,'g') % choose face,left
+                      if rblumconst(1)==127&&rblumconst(3)<127
+                          rblumconst(3)=exp(log(rblumconst(3))+logstep);
+                      elseif rblumconst(1)<=127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))-logstep);
+                      end
+                  elseif strcmp(key,'y') % choose house, right
+                      if rblumconst(1)==127&&rblumconst(3)<=127
+                          rblumconst(3)=exp(log(rblumconst(3))-logstep);
+                      elseif rblumconst(1)<127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))+logstep);
+                      end
                   end
-              elseif strcmp(key,'y')
-                  if rblumconst(1)==127&&rblumconst(3)<=127
-                      rblumconst(3)=exp(log(rblumconst(3))-0.1);
-                  elseif rblumconst(1)<127&&rblumconst(3)==127
-                      rblumconst(1)=exp(log(rblumconst(1))+0.1);
+              case 4 % H,C
+                  if strcmp(key,'y') % choose face,left
+                      if rblumconst(1)==127&&rblumconst(3)<127
+                          rblumconst(3)=exp(log(rblumconst(3))+logstep);
+                      elseif rblumconst(1)<=127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))-logstep);
+                      end
+                  elseif strcmp(key,'g') % choose house, right
+                      if rblumconst(1)==127&&rblumconst(3)<=127
+                          rblumconst(3)=exp(log(rblumconst(3))-logstep);
+                      elseif rblumconst(1)<127&&rblumconst(3)==127
+                          rblumconst(1)=exp(log(rblumconst(1))+logstep);
+                      end
                   end
-              end
           end
+          
           % set upper limit
           if rblumconst(1)>127
               rblumconst(1)=127;
@@ -1636,6 +1676,19 @@ for frame=1:frameskip:size(frameorder,2)+1
           end
       end
       eyelum=[eyelum; rblumconst(1) rblumconst(3)];
+      nReversalLabel = [nReversalLabel 0];
+      if size(eyelum,1)>2
+          if (eyelum(end,1)-eyelum(end-1,1))*(eyelum(end-1,1)-eyelum(end-2,1))<0
+              nReversal = nReversal+1;
+              nReversalLabel(end-1)=1;
+          end
+          if (eyelum(end,2)-eyelum(end-1,2))*(eyelum(end-1,2)-eyelum(end-2,2))<0
+              nReversal = nReversal+1;
+              nReversalLabel(end-1)=1;
+          end
+      end
+      
+      % count reversal
       rblumconst
   end
   
@@ -1752,7 +1805,7 @@ end
 % do some checks
 if wantcheck
   [keytimes,badtimes,keybuttons]=ptviewmoviecheck(timeframes,timekeys,[],'t');
-  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','eyelum');
+  save('test','timeframes','timekeys','keytimes','badtimes','keybuttons','eyelum','nReversal','nReversalLabel');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
