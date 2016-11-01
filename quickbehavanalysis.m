@@ -3,7 +3,7 @@
 clear all;close all;clc
 addpath(genpath(pwd));
 
-subj='TZ2';
+subj='QL2';
 taskrun=[1 2 3];
 
 %%
