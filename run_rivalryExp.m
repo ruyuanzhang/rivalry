@@ -50,8 +50,8 @@ movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror
 %for kk
 
 load(sprintf('lumconst_%s.mat',subj));
-rblumconst=lumconst;
-%rblumconst=[127.0000    0.7729   100.7457    1.0000    0.7605];
+%rblumconst=lumconst;
+rblumconst=[127    0.7729   25    1.0000    1.1];
 rblumconst
 
 

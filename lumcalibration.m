@@ -46,10 +46,10 @@ rblumconst=[127 1 127 1 1]; %initial contrast for left and right image
 
 frameduration = 24;  % number of monitor frames for one unit.  60/5 = 12,120/5=24
 %ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
-%ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
+ptonparams = {[1920 1080 120 24],[],0,skipsync,stereoMode};  % manually
 
 %change resolution
-ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
+%ptonparams = {[],[],0,skipsync,stereoMode};  % don't change resolution
 
 
 % Size of fixation

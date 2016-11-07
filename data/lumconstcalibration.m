@@ -2,7 +2,7 @@
 % This script is to analyze behavioral results of a subject.
 clear all;close all;clc
 
-subj='TZ';
+subj='MH1';
 
 %% plot luminance and const
 H(1)=figure(1);

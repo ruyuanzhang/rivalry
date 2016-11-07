@@ -3,8 +3,8 @@
 clear all;close all;clc
 addpath(genpath(pwd));
 
-subj='QL2';
-taskrun=[1 2 3];
+subj='MH1';
+taskrun=[1 3 4 6 7 9 10 12];
 
 %%
 filenames=matchfiles(sprintf('*%s_run*',subj));
