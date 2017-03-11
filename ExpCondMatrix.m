@@ -12,7 +12,7 @@ conditionMatrix=[
 
 
      2     3; % F+H, no stim
-     2     2; % no stim, F+H
+     2     3; % no stim, F+H
      2     3; % F+H,F+H
 
 
