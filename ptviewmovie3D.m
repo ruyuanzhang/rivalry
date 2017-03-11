@@ -8,7 +8,7 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   ptviewmovie(images,frameorder,framecolor,frameduration,fixationorder,fixationcolor,fixationsize, ...
 %               grayval,detectinput,wantcheck,offset,moviemask,movieflip,scfactor,allowforceglitch, ...
 %               triggerfun,framefiles,frameskip,triggerkey,specialcon,trialtask,maskimages,specialoverlay, ...
-%               frameevents,framefuncs,setupscript,cleanupscript)
+%               frameevents,framefuncs,setupscript,cleanupscript,stereoMode,expcondorder,rblumconst)
 % 
 % <images> is a .mat file with 'images' as a uint8
 %   A x B x 1/3 x N matrix with different images along the fourth dimension.  
@@ -249,6 +249,10 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %   experiment starts.  Default: [].
 % <cleanupscript> (optional) is a string or a function handle that is evaluated after the
 %   experiment ends.  Default: [].
+% 
+% ======= below are part hack by Ruyuan Zhang for binocular rivalry
+% experiment
+%
 % <stereoMode> (optional) is a interger (0, 1, 2 , 3, 4), where
 %       0: default, no stereoMode;
 %       1: stereoMode,workwith heploscope Two different stimuli will be presented
@@ -260,12 +264,13 @@ function [timeframes,timekeys,digitrecord,trialoffsets] = ...
 %       5: anaglyph stereoMode
 % <expcondorder> (optional) is a design matrix indicate condition in each
 % trial, hacked by Ruyuan..
-% <RGcolor> (optional) is the red and green alpha channel value,
-% predetermined in pilot, hacked by Ruyuan
-% <RGcolororder> (optional) is the order of left/right eye corrspondence of
-% red and green channel. We want red and gree strickly balanced across eyes
-% and experiment condition
+% <rblumconst> is a vector indicate luminance of left/right eye and
+% contrast for each
+% category.[lumlefteye,contface,lumrighteye,consthouse,constcar],we usually
+% fix consthouse =1 and vary constface and constcar.
 %
+% 
+% 
 %
 % return <timeframes> as a 1 x size(<frameorder>,2) vector with the time of each frame showing.
 %   (time is relative to the time of the first frame.)
@@ -1206,7 +1211,7 @@ for frame=1:frameskip:size(frameorder,2)+1
     rotate = 1;
     setupImgRotate;
     
-    switch leftEyeImg
+    switch leftEyeImg % index of image
         case 1
             const(1)=0; %blank
         case 2

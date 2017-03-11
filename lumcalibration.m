@@ -28,7 +28,6 @@ addpath(genpath(pwd));
 
 
 %% Set experiment parameters
-
 stereoMode        =  5; 
 
 % 0,no stereo; 1,haploscope, two different images;2, Vpixx two
