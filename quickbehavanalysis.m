@@ -3,13 +3,21 @@
 clear all;close all;clc
 addpath(genpath(pwd));
 
-subj='MH1';
-taskrun=[1 3 4 6 7 9 10 12];
+%% =============== This part is the part to change
+% During scanning, you need to monitor eye balance and stimulus preference,
+% then we can change luminance accordingly. subj is the string you input
+% when running the run_rivalryExp function. It will read in behavioral
+% choice files '*%s_run*'.
+% taskrun is the run you want to analyze. For instance, once you finish 3 runs, which are
+% attend/fix/attend. You should in put [1 3] for task run since no need to
+% analyze fixation runs.
 
-%%
+subj='QL2';
+%taskrun=[1 3 4 6 7 9 10 12];
+taskrun=[1 3 4];
+%% ======
 filenames=matchfiles(sprintf('*%s_run*',subj));
 %% ==================first, let's analyze the results=======================
-
 load('RivalryExp.mat'); %load the experimental design file
 addpath(genpath(pwd)); % add this whole folder to matlab path
 
@@ -19,8 +27,6 @@ keysPress       =zeros(8,81);
 
 
 for run=taskrun% we loop across 8 task runs
-    
-
     
     cond = condorder(run,:);
     
