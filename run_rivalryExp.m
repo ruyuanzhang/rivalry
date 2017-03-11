@@ -38,7 +38,7 @@ stereoMode        =  5;
 
 % 0,no stereo; 1,haploscope, two different images;2, Vpixx two
 % different images;3,haploscope same image with disparity;4 Vpixx same image with
-% dispartity
+% dispartity;5:bold screen
 
 skipsync          =  0; % skip syncrony test for the monitor;
 
@@ -47,9 +47,8 @@ fprintf('\n\nRUNNING BINOCULAR RIVALRY EXPERIMENT STIMFILE %s\nRUN %d',stimfile,
 offset = [0 0];  % [] means no translation of the stimuli
 movieflip = [0 0];  % [0 0] means no flips.  [1 0] is necessary for flexi mirror to show up right-side up
 
-%for kk
 
-load(sprintf('lumconst_%s.mat',subj));
+%load(sprintf('lumconst_%s.mat',subj));
 %rblumconst=lumconst;
 rblumconst=[127    0.7729   25    1.0000    1.1];
 rblumconst
